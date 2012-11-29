@@ -697,11 +697,27 @@ containing a value of this type.
         public static final int abs__bright_foreground_inverse_holo_dark=0x7f060006;
         public static final int abs__bright_foreground_inverse_holo_light=0x7f060007;
         public static final int abs__holo_blue_light=0x7f060008;
-        public static final int abs__primary_text_disable_only_holo_dark=0x7f06000a;
-        public static final int abs__primary_text_disable_only_holo_light=0x7f06000b;
-        public static final int abs__primary_text_holo_dark=0x7f06000c;
-        public static final int abs__primary_text_holo_light=0x7f06000d;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f06001a;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f06001b;
+        public static final int abs__primary_text_holo_dark=0x7f06001c;
+        public static final int abs__primary_text_holo_light=0x7f06001d;
+        public static final int background_dark=0x7f060010;
+        public static final int background_holo_dark=0x7f060011;
+        public static final int background_holo_light=0x7f060012;
+        public static final int black=0x7f06000f;
+        public static final int blue=0x7f06000d;
+        public static final int bright_foreground_disabled_holo_dark=0x7f060015;
+        public static final int bright_foreground_disabled_holo_light=0x7f060016;
+        public static final int bright_foreground_holo_dark=0x7f060013;
+        public static final int bright_foreground_holo_light=0x7f060014;
+        public static final int bright_foreground_inverse_holo_dark=0x7f060017;
+        public static final int bright_foreground_inverse_holo_light=0x7f060018;
+        public static final int green=0x7f06000c;
         public static final int holo_blue_bright=0x7f060009;
+        public static final int holo_blue_light=0x7f060019;
+        public static final int red=0x7f06000b;
+        public static final int transparent=0x7f06000a;
+        public static final int white=0x7f06000e;
     }
     public static final class dimen {
         /**  Default height of an action bar. 

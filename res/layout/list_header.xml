@@ -1,10 +1,15 @@
 <!-- list_header.xml -->
-<TextView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/list_header_title"
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content"
-	android:paddingTop="2dip"
-	android:paddingBottom="2dip"
-	android:paddingLeft="5dip"
-	style="?android:attr/listSeparatorTextViewStyle" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_header_title"
+    style="?android:attr/listSeparatorTextViewStyle"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="50dip"
+    android:layout_marginRight="50dip"
+    android:paddingBottom="2dip"
+    android:paddingLeft="5dip"
+    android:paddingTop="2dip"
+    android:text="Menu"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="@color/holo_blue_light" />
+

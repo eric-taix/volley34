@@ -7,6 +7,8 @@ import org.jared.android.volley.MenuActivity;
 import org.jared.android.volley.R;
 import org.jared.android.volley.adapter.SectionAdapter;
 
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -33,15 +35,21 @@ public class MenuFragment extends ListFragment {
 		item.put(ITEM_CAPTION, caption);
 		return item;
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		// Crée les listes qui forment le menu
 		SectionAdapter adapter = new SectionAdapter(this.getActivity());
-		adapter.addSection("Menu", new ArrayAdapter<String>(this.getActivity(), R.layout.list_item, new String[] { "Championnat", "Coupe", "Equipes", "Clubs" }));
-		adapter.addSection("Outils", new ArrayAdapter<String>(this.getActivity(), R.layout.list_item, new String[] { "Réglages", "A propos" }));
-		
+		adapter.addSection("MENU",
+				new ArrayAdapter<String>(this.getActivity(), R.layout.list_item, new String[] { "Championnat", "Coupe", "Equipes", "Clubs" }));
+		adapter.addSection("OUTILS", new ArrayAdapter<String>(this.getActivity(), R.layout.list_item, new String[] { "Réglages", "A propos" }));
+		getListView().setBackgroundColor(getResources().getColor(R.color.background_dark));
+		getListView().setCacheColorHint(getResources().getColor(R.color.transparent));
+		// On positionne un divider plus "sympa"
+		int[] colors = { 0, 0xFF777777, 0 };
+		getListView().setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
+		getListView().setDividerHeight(1);
 		setListAdapter(adapter);
 	}
 
@@ -60,8 +68,5 @@ public class MenuFragment extends ListFragment {
 			ma.switchContent(fragment);
 		}
 	}
-
-	
-
 
 }

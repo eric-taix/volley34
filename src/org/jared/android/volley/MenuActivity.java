@@ -74,7 +74,7 @@ public class MenuActivity extends SlidingFragmentActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			toggle();
-		}
+		} 
 		return super.onOptionsItemSelected(item);
 	}
 
