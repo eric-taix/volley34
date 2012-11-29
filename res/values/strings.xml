@@ -1,3 +1,8 @@
 <resources>
+
     <string name="app_name">volley</string>
+    <string name="main_title">Volley34</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_menu">MenuActivity</string>
+
 </resources>
