@@ -918,17 +918,23 @@ containing a value of this type.
         public static final int flamingo=0x7f020058;
         public static final int heron=0x7f020059;
         public static final int ic_action_search=0x7f02005a;
-        public static final int ic_launcher=0x7f02005b;
-        public static final int indicator=0x7f02005c;
-        public static final int new_indicator=0x7f02005d;
-        public static final int octocat=0x7f02005e;
-        public static final int ostrich=0x7f02005f;
-        public static final int peacock=0x7f020060;
-        public static final int penguin=0x7f020061;
-        public static final int shadow=0x7f020062;
-        public static final int toucan=0x7f020063;
-        public static final int turkey=0x7f020064;
-        public static final int vulture=0x7f020065;
+        public static final int ic_apropos=0x7f02005b;
+        public static final int ic_championnat=0x7f02005c;
+        public static final int ic_club=0x7f02005d;
+        public static final int ic_coupe=0x7f02005e;
+        public static final int ic_equipes=0x7f02005f;
+        public static final int ic_launcher=0x7f020060;
+        public static final int ic_reglages=0x7f020061;
+        public static final int indicator=0x7f020062;
+        public static final int new_indicator=0x7f020063;
+        public static final int octocat=0x7f020064;
+        public static final int ostrich=0x7f020065;
+        public static final int peacock=0x7f020066;
+        public static final int penguin=0x7f020067;
+        public static final int shadow=0x7f020068;
+        public static final int toucan=0x7f020069;
+        public static final int turkey=0x7f02006a;
+        public static final int vulture=0x7f02006b;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040027;
@@ -965,6 +971,8 @@ containing a value of this type.
         public static final int fullscreen=0x7f040013;
         public static final int grid_item_img=0x7f04002e;
         public static final int homeAsUp=0x7f040006;
+        public static final int imageView=0x7f040033;
+        public static final int imageView1=0x7f040035;
         public static final int left=0x7f040010;
         public static final int listMode=0x7f040002;
         public static final int list_complex_caption=0x7f040030;
@@ -973,18 +981,19 @@ containing a value of this type.
         public static final int list_item_title=0x7f040032;
         public static final int margin=0x7f040012;
         public static final int menu_frame=0x7f04002d;
-        public static final int menu_settings=0x7f040037;
+        public static final int menu_settings=0x7f04003a;
         public static final int normal=0x7f040001;
         public static final int right=0x7f040011;
         public static final int selected_view=0x7f040014;
         public static final int showCustom=0x7f040008;
         public static final int showHome=0x7f040005;
         public static final int showTitle=0x7f040007;
-        public static final int slidingmenulayout=0x7f040034;
-        public static final int slidingmenumain=0x7f040033;
-        public static final int slidingmenurowicon=0x7f040035;
-        public static final int slidingmenurowtitle=0x7f040036;
+        public static final int slidingmenulayout=0x7f040037;
+        public static final int slidingmenumain=0x7f040036;
+        public static final int slidingmenurowicon=0x7f040038;
+        public static final int slidingmenurowtitle=0x7f040039;
         public static final int tabMode=0x7f040003;
+        public static final int textView=0x7f040034;
         public static final int useLogo=0x7f040004;
         public static final int wrap_content=0x7f040000;
     }
@@ -1020,13 +1029,14 @@ containing a value of this type.
         public static final int list_header=0x7f030019;
         public static final int list_item=0x7f03001a;
         public static final int menu_frame=0x7f03001b;
-        public static final int shadow=0x7f03001c;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001d;
-        public static final int sherlock_spinner_item=0x7f03001e;
-        public static final int slidingmenumain=0x7f03001f;
-        public static final int slidingmenumainlist=0x7f030020;
-        public static final int slidingmenurow=0x7f030021;
-        public static final int view_menu=0x7f030022;
+        public static final int menu_layout=0x7f03001c;
+        public static final int shadow=0x7f03001d;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001e;
+        public static final int sherlock_spinner_item=0x7f03001f;
+        public static final int slidingmenumain=0x7f030020;
+        public static final int slidingmenumainlist=0x7f030021;
+        public static final int slidingmenurow=0x7f030022;
+        public static final int view_menu=0x7f030023;
     }
     public static final class menu {
         public static final int activity_menu=0x7f0c0000;
