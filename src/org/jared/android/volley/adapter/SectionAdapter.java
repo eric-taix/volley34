@@ -34,6 +34,16 @@ public class SectionAdapter extends BaseAdapter {
 		this.sections.put(section, adapter);
 	}
 
+	public void insertSection(String section,  Adapter adapter, int position) {
+		this.headers.insert(section, position);
+		this.sections.put(section, adapter);
+	}
+
+	public void removeSection(String section) {
+		this.headers.remove(section);
+		this.sections.remove(section);
+	}
+	
 	public Object getItem(int position) {
 		for (Object section : this.sections.keySet()) {
 			Adapter adapter = sections.get(section);

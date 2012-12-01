@@ -4,6 +4,7 @@
 package org.jared.android.volley.adapter;
 
 import org.jared.android.volley.R;
+import org.jared.android.volley.model.Menu;
 
 import android.content.Context;
 import android.view.LayoutInflater;

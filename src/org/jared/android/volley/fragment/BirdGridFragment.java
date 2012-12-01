@@ -21,6 +21,7 @@ public class BirdGridFragment extends Fragment {
 	private int mImgRes;
 	
 	public BirdGridFragment() { }
+	
 	public BirdGridFragment(int pos) {
 		mPos = pos;
 	}

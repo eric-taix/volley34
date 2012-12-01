@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.adapter;
+package org.jared.android.volley.model;
 
 /**
  * Un objet reprsentant un item du menu. 

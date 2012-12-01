@@ -5,10 +5,11 @@ import org.jared.android.volley.fragment.MenuFragment_;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.Fragment;  
 import android.view.View;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.slidingmenu.lib.SlidingMenu;
@@ -20,7 +21,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
  * @author eric.taix@gmail.com
  */
 @EActivity(R.layout.activity_main)
-public class MenuActivity extends SlidingFragmentActivity {
+public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
 	private Fragment mContent;
 
 	@Override
@@ -33,8 +34,10 @@ public class MenuActivity extends SlidingFragmentActivity {
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) {
-			mContent = new BirdGridFragment(0);
+			mContent = new BirdGridFragment(0); 
 		}
+		
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 
 	@AfterViews
@@ -59,14 +62,15 @@ public class MenuActivity extends SlidingFragmentActivity {
 		// On affiche le menu
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment_()).commit();
 
-		// Customisation du SlindingMenu
+		// Customisation du SlindingMenu 
 		SlidingMenu sm = getSlidingMenu();
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		sm.setShadowWidthRes(R.dimen.shadow_width);
+		sm.setShadowWidthRes(R.dimen.shadow_width); 
 		sm.setShadowDrawable(R.drawable.shadow);
-		sm.setBehindScrollScale(0.25f);
-		sm.setFadeDegree(0.25f);
+		sm.setBehindScrollScale(0.5f);
+		sm.setFadeDegree(0.5f);
 		setSlidingActionBarEnabled(false);
+		showIndeterminate(false);
 	}
 
 	@Override
@@ -84,6 +88,15 @@ public class MenuActivity extends SlidingFragmentActivity {
 		getSupportFragmentManager().putFragment(outState, "mContent", mContent);
 	}
 
+	/**
+	 * Méthode permettant d'afficher la progression
+	 * @param visible
+	 */
+	@Override
+	public void showIndeterminate(boolean visible) {
+		setSupportProgressBarIndeterminateVisibility(visible);
+	}
+	
 	/**
 	 * Remplace le contenu courant par le fragment passé en paramètre
 	 * @param fragment

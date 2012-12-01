@@ -6,7 +6,7 @@
     <color name="blue">#009</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
-    <color name="background_dark">#0A0A0A</color>
+    <color name="background_menu">#303030</color>
     <color name="background_holo_dark">#ff000000</color>
     <color name="background_holo_light">#fff3f3f3</color>
     <color name="bright_foreground_holo_dark">@color/abs__background_holo_light</color>
