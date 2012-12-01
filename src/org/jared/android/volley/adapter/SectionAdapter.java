@@ -6,13 +6,10 @@ package org.jared.android.volley.adapter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.jared.android.volley.R;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
 /**
@@ -22,11 +19,11 @@ import android.widget.BaseAdapter;
 public class SectionAdapter extends BaseAdapter {
 
 	public final Map<String, Adapter> sections = new LinkedHashMap<String, Adapter>();
-	public final ArrayAdapter<String> headers;
+	public final HeaderAdapter headers;
 	public final static int TYPE_SECTION_HEADER = 0;
 
-	public SectionAdapter(Context context) {
-		headers = new ArrayAdapter<String>(context, R.layout.list_header);
+	public SectionAdapter(Context context, int headerLayout) {
+		headers = new HeaderAdapter(context, headerLayout);
 	}
 
 	public void addSection(String section, Adapter adapter) {
@@ -45,12 +42,12 @@ public class SectionAdapter extends BaseAdapter {
 	}
 	
 	public Object getItem(int position) {
-		for (Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
+		for (String header : headers.getHeaders()) {
+			Adapter adapter = sections.get(header);
 			int size = adapter.getCount() + 1;
 
 			// VŽrifie si la position est dans la section
-			if (position == 0) return section;
+			if (position == 0) return header;
 			if (position < size) return adapter.getItem(position - 1);
 
 			// Sinon on passe ˆ la prochaine section
@@ -103,8 +100,9 @@ public class SectionAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		int sectionnum = 0;
-		for (Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
+		for (String header : headers.getHeaders()) {
+			Adapter adapter = sections.get(header);
+			
 			int size = adapter.getCount() + 1;
 
 			// VŽrifie si la position est dans la section

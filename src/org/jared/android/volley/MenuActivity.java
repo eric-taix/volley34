@@ -34,7 +34,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) {
-			mContent = new BirdGridFragment(0); 
+			mContent = new BirdGridFragment(0);  
 		}
 		
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);

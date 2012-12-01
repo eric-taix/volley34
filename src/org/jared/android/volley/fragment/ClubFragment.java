@@ -47,7 +47,7 @@ public class ClubFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		allAdapter = new ClubAdapter(getActivity());
 		favoriteAdapter = new ClubAdapter(getActivity());
-		sectionAdapter = new SectionAdapter(this.getActivity());
+		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
 		sectionAdapter.addSection("CLUBS FAVORIS", favoriteAdapter);
 		sectionAdapter.addSection("TOUS LES CLUBS", allAdapter);
 		getListView().setCacheColorHint(getResources().getColor(R.color.transparent));
@@ -71,13 +71,13 @@ public class ClubFragment extends ListFragment {
 	void updateClubs(List<Club> clubs) {
 		allAdapter.setClubs(clubs);
 		List<Club> favClubs = getFavoriteClubs(clubs);
-		if (favClubs == null || favClubs.size() == 0) {
-			sectionAdapter.removeSection("CLUBS FAVORIS");
-		}
-		else {
-			sectionAdapter.insertSection("CLUBS FAVORIS", favoriteAdapter, 0);
-			favoriteAdapter.setClubs(favClubs);
-		}
+//		if (favClubs == null || favClubs.size() == 0) {
+//			sectionAdapter.removeSection("CLUBS FAVORIS");
+//		}
+//		else { 
+//			sectionAdapter.insertSection("CLUBS FAVORIS", favoriteAdapter, 0);
+//		}
+		favoriteAdapter.setClubs(favClubs);
 		sectionAdapter.notifyDataSetChanged();
 		showIndeterminate(false);
 	}

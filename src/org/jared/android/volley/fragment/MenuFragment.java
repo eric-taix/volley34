@@ -28,7 +28,7 @@ public class MenuFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		// Crée les listes qui forment le menu
-		SectionAdapter adapter = new SectionAdapter(this.getActivity());
+		SectionAdapter adapter = new SectionAdapter(this.getActivity(), R.layout.menu_header);
 		adapter.addSection("MENU", new MenuAdapter(getActivity(), new Menu[] { new Menu("Championnat", R.drawable.ic_championnat),
 				new Menu("Coupe", R.drawable.ic_coupe), new Menu("Equipes", R.drawable.ic_equipes), new Menu("Clubs", R.drawable.ic_club) }));
 		adapter.addSection("OUTILS", new MenuAdapter(getActivity(), new Menu[] { new Menu("Réglages", R.drawable.ic_reglages),

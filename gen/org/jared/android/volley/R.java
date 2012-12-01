@@ -988,13 +988,14 @@ containing a value of this type.
         public static final int abs__bright_foreground_inverse_holo_dark=0x7f050017;
         public static final int abs__bright_foreground_inverse_holo_light=0x7f050018;
         public static final int abs__holo_blue_light=0x7f050019;
-        public static final int abs__primary_text_disable_only_holo_dark=0x7f05002b;
-        public static final int abs__primary_text_disable_only_holo_light=0x7f05002c;
-        public static final int abs__primary_text_holo_dark=0x7f05002d;
-        public static final int abs__primary_text_holo_light=0x7f05002e;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f05002d;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f05002e;
+        public static final int abs__primary_text_holo_dark=0x7f05002f;
+        public static final int abs__primary_text_holo_light=0x7f050030;
         public static final int background_holo_dark=0x7f050022;
         public static final int background_holo_light=0x7f050023;
         public static final int background_menu=0x7f050021;
+        public static final int bg_gray=0x7f05002c;
         public static final int black=0x7f050020;
         public static final int blue=0x7f05001e;
         public static final int bright_foreground_disabled_holo_dark=0x7f050026;
@@ -1012,6 +1013,7 @@ containing a value of this type.
         public static final int default_title_indicator_selected_color=0x7f05000e;
         public static final int default_title_indicator_text_color=0x7f05000f;
         public static final int default_underline_indicator_selected_color=0x7f050010;
+        public static final int emphasis=0x7f05002b;
         public static final int green=0x7f05001d;
         public static final int holo_blue_bright=0x7f05001a;
         public static final int holo_blue_light=0x7f05002a;
@@ -1025,8 +1027,8 @@ containing a value of this type.
         public static final int vpi__bright_foreground_holo_light=0x7f050003;
         public static final int vpi__bright_foreground_inverse_holo_dark=0x7f050006;
         public static final int vpi__bright_foreground_inverse_holo_light=0x7f050007;
-        public static final int vpi__dark_theme=0x7f05002f;
-        public static final int vpi__light_theme=0x7f050030;
+        public static final int vpi__dark_theme=0x7f050031;
+        public static final int vpi__light_theme=0x7f050032;
         public static final int white=0x7f05001f;
     }
     public static final class dimen {
@@ -1256,17 +1258,18 @@ containing a value of this type.
         public static final int ostrich=0x7f020067;
         public static final int peacock=0x7f020068;
         public static final int penguin=0x7f020069;
-        public static final int shadow=0x7f02006a;
-        public static final int toucan=0x7f02006b;
-        public static final int turkey=0x7f02006c;
-        public static final int vpi__tab_indicator=0x7f02006d;
-        public static final int vpi__tab_selected_focused_holo=0x7f02006e;
-        public static final int vpi__tab_selected_holo=0x7f02006f;
-        public static final int vpi__tab_selected_pressed_holo=0x7f020070;
-        public static final int vpi__tab_unselected_focused_holo=0x7f020071;
-        public static final int vpi__tab_unselected_holo=0x7f020072;
-        public static final int vpi__tab_unselected_pressed_holo=0x7f020073;
-        public static final int vulture=0x7f020074;
+        public static final int section_header=0x7f02006a;
+        public static final int shadow=0x7f02006b;
+        public static final int toucan=0x7f02006c;
+        public static final int turkey=0x7f02006d;
+        public static final int vpi__tab_indicator=0x7f02006e;
+        public static final int vpi__tab_selected_focused_holo=0x7f02006f;
+        public static final int vpi__tab_selected_holo=0x7f020070;
+        public static final int vpi__tab_selected_pressed_holo=0x7f020071;
+        public static final int vpi__tab_unselected_focused_holo=0x7f020072;
+        public static final int vpi__tab_unselected_holo=0x7f020073;
+        public static final int vpi__tab_unselected_pressed_holo=0x7f020074;
+        public static final int vulture=0x7f020075;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f04002c;
@@ -1379,15 +1382,16 @@ containing a value of this type.
         public static final int list_header=0x7f03001a;
         public static final int list_item=0x7f03001b;
         public static final int menu_frame=0x7f03001c;
-        public static final int menu_layout=0x7f03001d;
-        public static final int shadow=0x7f03001e;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001f;
-        public static final int sherlock_spinner_item=0x7f030020;
-        public static final int slidingmenumain=0x7f030021;
-        public static final int slidingmenumainlist=0x7f030022;
-        public static final int slidingmenurow=0x7f030023;
-        public static final int tabs_layout=0x7f030024;
-        public static final int view_menu=0x7f030025;
+        public static final int menu_header=0x7f03001d;
+        public static final int menu_layout=0x7f03001e;
+        public static final int shadow=0x7f03001f;
+        public static final int sherlock_spinner_dropdown_item=0x7f030020;
+        public static final int sherlock_spinner_item=0x7f030021;
+        public static final int slidingmenumain=0x7f030022;
+        public static final int slidingmenumainlist=0x7f030023;
+        public static final int slidingmenurow=0x7f030024;
+        public static final int tabs_layout=0x7f030025;
+        public static final int view_menu=0x7f030026;
     }
     public static final class menu {
         public static final int activity_menu=0x7f0c0000;
@@ -1429,7 +1433,7 @@ containing a value of this type.
         public static final int title_activity_menu=0x7f0a000d;
     }
     public static final class style {
-        public static final int AppTheme=0x7f09005d;
+        public static final int AppTheme=0x7f09005e;
         public static final int DialogWindowTitle_Sherlock=0x7f090037;
         public static final int DialogWindowTitle_Sherlock_Light=0x7f090038;
         public static final int Sherlock___TextAppearance_Small=0x7f09004b;
@@ -1523,6 +1527,7 @@ containing a value of this type.
         public static final int Widget_Sherlock_Spinner_DropDown_ActionBar=0x7f090028;
         public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f090036;
         public static final int Widget_TabPageIndicator=0x7f090002;
+        public static final int sectionHeader=0x7f09005d;
     }
     public static final class styleable {
         /** Attributes that can be used with a CirclePageIndicator.
