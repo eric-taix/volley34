@@ -1,11 +1,12 @@
 package org.jared.android.volley;
 
 import org.jared.android.volley.fragment.BirdGridFragment;
-import org.jared.android.volley.fragment.*;
+import org.jared.android.volley.fragment.MenuFragment_;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -23,7 +24,8 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 @EActivity(R.layout.activity_main)
 public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
 	private Fragment mContent;
-
+	private boolean landScape = false;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +46,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	public void afterViews() {
 		// On vérifie si on est en mode portrait
 		if (findViewById(R.id.menu_frame) == null) {
+			landScape = false;
 			setBehindContentView(R.layout.menu_frame);
 			getSlidingMenu().setSlidingEnabled(true);
 			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -51,7 +54,8 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		else {
-			// add a dummy view
+			landScape = true;
+			// Vue bidon derrière car aucun besoin d'avoir cette vue
 			setBehindContentView(new View(this));
 			getSlidingMenu().setSlidingEnabled(false);
 			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
@@ -75,6 +79,21 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		showIndeterminate(false);
 	}
 
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	if (!landScape) {
+				if (!getSlidingMenu().isMenuShowing()) {
+					getSlidingMenu().showMenu(true);
+					return true;
+				}
+			}
+	    	finish();
+	    	return true;
+	    }
+	    return super.onKeyUp(keyCode, event);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
