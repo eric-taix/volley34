@@ -25,25 +25,35 @@
         android:layout_alignTop="@+id/background"
         android:src="@drawable/ic_star_enabled" />
 
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp"
+        android:paddingTop="20dp" >
+
+    </ListView>
+
     <org.jared.android.volley.widget.LogoRoundedImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="0dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="40dp"
         android:adjustViewBounds="true"
         android:maxHeight="50dp"
         android:maxWidth="50dp"
-        android:scaleType="matrix"
-        android:src="@drawable/asppt" />
+        android:scaleType="fitStart"
+        android:src="@drawable/empty" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="40dp"
         android:layout_toLeftOf="@id/logo"
         android:background="#AA000000"
         android:gravity="center_horizontal"
@@ -52,14 +62,5 @@
         android:text="FR Vailhauquès"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
-
-    <ListView
-        android:id="@+id/listView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/title"
-        android:paddingTop="20dp" >
-
-    </ListView>
 
 </RelativeLayout>

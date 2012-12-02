@@ -23,29 +23,38 @@ import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * ActivitŽ permettant d'afficher un club
+ * 
  * @author eric.taix@gmail.com
  */
 @EActivity(value = R.layout.club_detail_layout)
 public class ClubActivity extends SherlockActivity {
- 
+
 	public static final String EXTRA_CLUB = "CLUB";
+
 	@ViewById(R.id.title)
 	TextView title;
 	@ViewById(R.id.logo)
 	ImageView logo;
 	@ViewById(R.id.favorite)
 	ImageView favorite;
-	
+
 	@ViewById(R.id.listView)
 	ListView listView;
-	
+
 	// Le club courant
 	private Club currentClub;
-	
-	/* (non-Javadoc)
+	// Options for ImageLoader
+	private static DisplayImageOptions logoOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.empty)
+			.showImageForEmptyUri(R.drawable.empty).cacheInMemory().cacheOnDisc().build();
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -88,7 +97,9 @@ public class ClubActivity extends SherlockActivity {
 		title.setText(currentClub.nomCourt);
 		if (currentClub.urlLogo != null && currentClub.urlLogo.length() > 0) {
 			logo.setVisibility(View.VISIBLE);
-			
+			// On affiche le logo du club en t‰che de fond
+			ImageLoader imageLoader = ImageLoader.getInstance();
+			imageLoader.displayImage(currentClub.urlLogo, logo, logoOptions);
 		}
 		else {
 			logo.setVisibility(View.INVISIBLE);
