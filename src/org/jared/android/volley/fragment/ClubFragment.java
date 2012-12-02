@@ -6,6 +6,7 @@ package org.jared.android.volley.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jared.android.volley.*;
 import org.jared.android.volley.R;
 import org.jared.android.volley.RefreshableActivity;
 import org.jared.android.volley.adapter.ClubAdapter;
@@ -15,10 +16,13 @@ import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ClubList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.View;
+import android.widget.ListView;
 
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EFragment;
@@ -67,19 +71,34 @@ public class ClubFragment extends ListFragment {
 		updateClubs(clubList.clubs);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Intent intent = new Intent(getActivity(), ClubActivity_.class);
+		intent.putExtra(ClubActivity.EXTRA_CLUB, (Club)l.getAdapter().getItem(position));
+		startActivity(intent);
+	}
+
 	@UiThread
 	void updateClubs(List<Club> clubs) {
+		hackVailhauques(clubs);
 		allAdapter.setClubs(clubs);
 		List<Club> favClubs = getFavoriteClubs(clubs);
-//		if (favClubs == null || favClubs.size() == 0) {
-//			sectionAdapter.removeSection("CLUBS FAVORIS");
-//		}
-//		else { 
-//			sectionAdapter.insertSection("CLUBS FAVORIS", favoriteAdapter, 0);
-//		}
 		favoriteAdapter.setClubs(favClubs);
 		sectionAdapter.notifyDataSetChanged();
 		showIndeterminate(false);
+	}
+
+	private void hackVailhauques(List<Club> clubs) {
+		for (Club club : clubs) {
+			if (club.nom.toUpperCase().contains("VAILHAUQUES")) {
+				club.favorite = true;
+			}
+		}
 	}
 
 	/**

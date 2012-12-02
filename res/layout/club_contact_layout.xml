@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="12dp"
+    android:paddingTop="12dp" >
+
+    <org.jared.android.volley.widget.RoundedImageView
+        android:id="@+id/portrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="5dp"
+        android:paddingLeft="5dp"
+        android:src="@drawable/ic_unknown" />
+
+    <TextView
+        android:id="@+id/nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/portrait"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/portrait"
+        android:text="Delphine Coutrot"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageView
+        android:id="@+id/img_mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/portrait"
+        android:layout_below="@id/portrait"
+        android:layout_marginLeft="5dp"
+        android:src="@drawable/ic_mail" />
+
+    <TextView
+        android:id="@+id/mail"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/nom"
+        android:layout_alignTop="@id/img_mail"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_toRightOf="@id/img_mail"
+        android:text="dcoutrot@mail.com" />
+
+    <ImageView
+        android:id="@+id/img_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/img_mail"
+        android:layout_below="@id/mail"
+        android:layout_marginRight="5dp"
+        android:clickable="true"
+        android:src="@drawable/ic_phone" />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/mail"
+        android:layout_alignTop="@id/img_phone"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:text="06 22 22 22 22" />
+
+</RelativeLayout>

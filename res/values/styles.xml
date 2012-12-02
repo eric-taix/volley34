@@ -2,8 +2,6 @@
 <resources>
 
     <style name="VolleyTheme" parent="Theme.Sherlock">
-        <item name="homeAsUpIndicator">@drawable/new_indicator</item>
-        <item name="android:homeAsUpIndicator">@drawable/new_indicator</item>
         <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
     </style>
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="12dp"
+    android:paddingTop="12dp" >
+
+    <TextView
+        android:id="@+id/nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="10dp"
+        android:text="Foyer rural de Vailhauquès"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ImageView
+        android:id="@+id/web"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nom"
+        android:layout_below="@+id/nom"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:src="@drawable/ic_web" />
+
+    <TextView
+        android:id="@+id/urlWeb"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/web"
+        android:layout_marginTop="3dp"
+        android:layout_toRightOf="@+id/web"
+        android:text="Voir le site web" />
+
+</RelativeLayout>

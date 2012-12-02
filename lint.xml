@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="ContentDescription">
+        <ignore path="res/layout/club_contact_layout.xml" />
+        <ignore path="res/layout/club_detail_layout.xml" />
+        <ignore path="res/layout/club_information_layout.xml" />
+    </issue>
     <issue id="DefaultLocale">
         <ignore path="src/org/jared/android/volley/fragment/ClubFragment.java" />
+    </issue>
+    <issue id="HardcodedText">
+        <ignore path="res/layout/club_contact_layout.xml" />
+        <ignore path="res/layout/club_detail_layout.xml" />
+        <ignore path="res/layout/club_information_layout.xml" />
     </issue>
 </lint>

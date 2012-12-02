@@ -51,7 +51,7 @@ public class MenuFragment extends ListFragment {
 		else {
 			newContent = new ClubFragment_();
 		}
-		if (newContent != null) switchFragment(newContent);
+		if (newContent != null) switchFragment(v, newContent);
 	}
 
 	/**
@@ -59,12 +59,12 @@ public class MenuFragment extends ListFragment {
 	 * 
 	 * @param fragment
 	 */
-	private void switchFragment(Fragment fragment) {
+	private void switchFragment(View source, Fragment fragment) {
 		if (getActivity() == null) return;
 
 		if (getActivity() instanceof MenuActivity) {
 			MenuActivity ma = (MenuActivity) getActivity();
-			ma.switchContent(fragment);
+			ma.switchContent(source, fragment);
 		}
 	}
 

@@ -1,11 +1,11 @@
 package org.jared.android.volley;
 
 import org.jared.android.volley.fragment.BirdGridFragment;
-import org.jared.android.volley.fragment.MenuFragment_;
+import org.jared.android.volley.fragment.*;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;  
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.actionbarsherlock.view.MenuItem;
@@ -48,7 +48,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 			getSlidingMenu().setSlidingEnabled(true);
 			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 			// On affiche l'icon up qui servira à ouvrir le menu
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		else {
 			// add a dummy view
@@ -61,7 +61,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mContent).commit();
 		// On affiche le menu
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment_()).commit();
-
+ 
 		// Customisation du SlindingMenu 
 		SlidingMenu sm = getSlidingMenu();
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
@@ -69,6 +69,8 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		sm.setShadowDrawable(R.drawable.shadow);
 		sm.setBehindScrollScale(0.5f);
 		sm.setFadeDegree(0.5f);
+		sm.setSelectorEnabled(true);
+		sm.setSelectorDrawable(R.drawable.ic_club);
 		setSlidingActionBarEnabled(false);
 		showIndeterminate(false);
 	}
@@ -96,13 +98,14 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	public void showIndeterminate(boolean visible) {
 		setSupportProgressBarIndeterminateVisibility(visible);
 	}
-	
+	 
 	/**
 	 * Remplace le contenu courant par le fragment passé en paramètre
 	 * @param fragment
 	 */
-	public void switchContent(final Fragment fragment) {
+	public void switchContent(View source, final Fragment fragment) {
 		mContent = fragment;
+		getSlidingMenu().setSelectedView(source);
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 		Handler h = new Handler();
 		h.postDelayed(new Runnable() {
