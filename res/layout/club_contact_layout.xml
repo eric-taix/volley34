@@ -7,12 +7,15 @@
 
     <org.jared.android.volley.widget.RoundedImageView
         android:id="@+id/portrait"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="5dp"
+        android:baselineAlignBottom="false"
+        android:maxHeight="42dp"
+        android:maxWidth="42dp"
         android:paddingLeft="5dp"
         android:src="@drawable/ic_unknown" />
 

@@ -8,11 +8,15 @@ import org.jared.android.volley.adapter.ClubInformationAdapter;
 import org.jared.android.volley.adapter.SectionAdapter;
 import org.jared.android.volley.model.Club;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * @author eric.taix@gmail.com
  */
 @EActivity(value = R.layout.club_detail_layout)
-public class ClubActivity extends SherlockActivity {
+public class ClubActivity extends SherlockActivity implements OnItemClickListener {
 
 	public static final String EXTRA_CLUB = "CLUB";
 
@@ -48,9 +52,9 @@ public class ClubActivity extends SherlockActivity {
 
 	// Le club courant
 	private Club currentClub;
-	// Options for ImageLoader
-	private static DisplayImageOptions logoOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.empty)
-			.showImageForEmptyUri(R.drawable.empty).cacheInMemory().cacheOnDisc().build();
+	// Options de l'ImageLoader pour les logo des clubs: cache mémoire + cache disque
+	private static DisplayImageOptions logoOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.empty).showImageForEmptyUri(R.drawable.empty)
+			.cacheInMemory().build();
 
 	/*
 	 * (non-Javadoc)
@@ -105,5 +109,36 @@ public class ClubActivity extends SherlockActivity {
 			logo.setVisibility(View.INVISIBLE);
 		}
 		favorite.setVisibility(currentClub.favorite ? View.VISIBLE : View.INVISIBLE);
+		listView.setOnItemClickListener(this);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		// Le site Web
+        if (position == 1) {
+        	if (currentClub.urlSiteWeb != null && currentClub.urlSiteWeb.length() > 0) {
+        		String url = currentClub.urlSiteWeb;
+        		if (!url.toLowerCase().startsWith("http://") || !url.toLowerCase().startsWith("https://")) {
+        			url = "http://"+url;
+        		}
+        		Intent intent = new Intent(Intent.ACTION_VIEW);
+        		intent.setData(Uri.parse(url));
+        		startActivity(intent);
+        	}
+        }
+        // Le contact
+        else if (position == 3) {
+        	
+        }
+        // Une des équipes
+        else {
+        	
+        }
+	}
+
 }

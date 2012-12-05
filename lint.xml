@@ -6,6 +6,8 @@
         <ignore path="res/layout/club_information_layout.xml" />
     </issue>
     <issue id="DefaultLocale">
+        <ignore path="src/org/jared/android/volley/ClubActivity.java" />
+        <ignore path="src/org/jared/android/volley/adapter/ClubContactAdapter.java" />
         <ignore path="src/org/jared/android/volley/fragment/ClubFragment.java" />
     </issue>
     <issue id="HardcodedText">
