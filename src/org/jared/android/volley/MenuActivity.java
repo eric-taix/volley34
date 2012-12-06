@@ -1,7 +1,8 @@
 package org.jared.android.volley;
 
-import org.jared.android.volley.fragment.BirdGridFragment;
-import org.jared.android.volley.fragment.*;
+import org.jared.android.volley.fragment.MenuFragment_;
+import org.jared.android.volley.fragment.NotAvailableFragment;
+import org.jared.android.volley.fragment.NotAvailableFragment_;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,9 +37,12 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) {
-			mContent = new BirdGridFragment(0);  
+			mContent = new NotAvailableFragment_();
+			Bundle args = new Bundle();
+	        args.putString(NotAvailableFragment.TITLE, "Championnat");
+			mContent.setArguments(args);
 		}
-		
+		 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 

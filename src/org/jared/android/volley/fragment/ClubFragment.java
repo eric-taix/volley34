@@ -67,8 +67,13 @@ public class ClubFragment extends ListFragment {
 
 	@Background
 	void getClubs() {
-		ClubList clubList = restClient.getClubs();
-		updateClubs(clubList.clubs);
+		try {
+			ClubList clubList = restClient.getClubs();
+			updateClubs(clubList.clubs);
+		}
+		catch (Throwable th) {
+			updateClubs(null);
+		}
 	}
 
 	/*
@@ -79,17 +84,19 @@ public class ClubFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Intent intent = new Intent(getActivity(), ClubActivity_.class);
-		intent.putExtra(ClubActivity.EXTRA_CLUB, (Club)l.getAdapter().getItem(position));
+		intent.putExtra(ClubActivity.EXTRA_CLUB, (Club) l.getAdapter().getItem(position));
 		startActivity(intent);
 	}
 
 	@UiThread
 	void updateClubs(List<Club> clubs) {
-		hackVailhauques(clubs);
-		allAdapter.setClubs(clubs);
-		List<Club> favClubs = getFavoriteClubs(clubs);
-		favoriteAdapter.setClubs(favClubs);
-		sectionAdapter.notifyDataSetChanged();
+		if (clubs != null) {
+			hackVailhauques(clubs);
+			allAdapter.setClubs(clubs);
+			List<Club> favClubs = getFavoriteClubs(clubs);
+			favoriteAdapter.setClubs(favClubs);
+			sectionAdapter.notifyDataSetChanged();
+		}
 		showIndeterminate(false);
 	}
 

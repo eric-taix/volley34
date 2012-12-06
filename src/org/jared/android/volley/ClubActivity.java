@@ -3,13 +3,18 @@
  */
 package org.jared.android.volley;
 
-import net.londatiga.android.ActionItem;
-import net.londatiga.android.QuickAction;
-
+import org.jared.android.volley.action.ContactAction;
+import org.jared.android.volley.action.MailAction;
+import org.jared.android.volley.action.PhoneAction;
+import org.jared.android.volley.action.ShareAction;
+import org.jared.android.volley.action.SmsAction;
 import org.jared.android.volley.adapter.ClubContactAdapter;
 import org.jared.android.volley.adapter.ClubInformationAdapter;
 import org.jared.android.volley.adapter.SectionAdapter;
 import org.jared.android.volley.model.Club;
+import org.jared.android.volley.widget.quickaction.Action;
+import org.jared.android.volley.widget.quickaction.ActionItem;
+import org.jared.android.volley.widget.quickaction.QuickAction;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -23,11 +28,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.ViewById;
@@ -124,36 +129,44 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 				R.drawable.ic_star_disabled));
 		listView.setOnItemClickListener(this);
 		// CrŽation du menu pour le contact
-		ActionItem addItem = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail));
-		ActionItem acceptItem = new ActionItem(ID_PHONE, "TŽlŽphoner", getResources().getDrawable(R.drawable.ic_phone));
-		ActionItem uploadItem = new ActionItem(ID_SMS, "Envoyer un SMS", getResources().getDrawable(R.drawable.ic_sms));
-		ActionItem contactItem = new ActionItem(ID_CONTACT, "Ajouter aux contacts", getResources().getDrawable(R.drawable.ic_address_book));
-		ActionItem shareItem = new ActionItem(ID_SHARE, "Partager", getResources().getDrawable(R.drawable.ic_share));
-
 		quickAction = new QuickAction(this);
+		if (currentClub.mail != null && currentClub.mail.length() > 0) {
+			ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail), new MailAction(currentClub.mail, currentClub.nom));
+			quickAction.addActionItem(mailAction);
+		}
+		if (currentClub.telephone != null && currentClub.telephone.length() > 0) {
+			ActionItem phoneAction = new ActionItem(ID_PHONE, "TŽlŽphoner", getResources().getDrawable(R.drawable.ic_phone), new PhoneAction(currentClub.telephone));
+			ActionItem smsAction = new ActionItem(ID_SMS, "Envoyer un SMS", getResources().getDrawable(R.drawable.ic_sms),  new SmsAction(currentClub.telephone));
+			quickAction.addActionItem(phoneAction);
+			quickAction.addActionItem(smsAction);
+		}
+		if ((currentClub.telephone != null && currentClub.telephone.length() > 0) || (currentClub.mail != null && currentClub.mail.length() > 0)) {
+			ActionItem contactAction = new ActionItem(ID_CONTACT, "Ajouter aux contacts", getResources().getDrawable(R.drawable.ic_address_book), new ContactAction(currentClub));
+			ActionItem shareAction = new ActionItem(ID_SHARE, "Partager", getResources().getDrawable(R.drawable.ic_share), new ShareAction(currentClub));
+			quickAction.addActionItem(contactAction);
+			quickAction.addActionItem(shareAction);
+		}
 
-		quickAction.addActionItem(addItem);
-		quickAction.addActionItem(acceptItem);
-		quickAction.addActionItem(uploadItem);
-		quickAction.addActionItem(contactItem);
-		quickAction.addActionItem(shareItem);
 
-		// setup the action item click listener
+
+		// Mise en place du listener sur le quick action
 		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
 			@Override
 			public void onItemClick(QuickAction quickAction, int pos, int actionId) {
 				ActionItem actionItem = quickAction.getActionItem(pos);
-
-				if (actionId == ID_MAIL) {
-					Toast.makeText(getApplicationContext(), "Add item selected", Toast.LENGTH_SHORT).show();
-				}
-				else {
-					Toast.makeText(getApplicationContext(), actionItem.getTitle() + " selected", Toast.LENGTH_SHORT).show();
-				}
+				Action action = actionItem.getAction();
+				executeAction(action);
 			}
 		});
 	}
 
+	@Background
+	public void executeAction(Action action) {
+		if (action != null) {
+			action.execute(ClubActivity.this);
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -45,12 +45,36 @@ public class MenuFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		Fragment newContent = null;
-		if (position == 1) {
-			newContent = new ChampionnatFragment_();
-		}
-		else {
+		Bundle args = new Bundle();
+		switch(position) {
+		case 1:
+			newContent = new NotAvailableFragment_();
+			args.putString(NotAvailableFragment.TITLE, "Championnat");
+			break;
+		case 2:
+			newContent = new NotAvailableFragment_();
+			args.putString(NotAvailableFragment.TITLE, "Coupe");
+			break;
+		case 3:
+			newContent = new NotAvailableFragment_();
+			args.putString(NotAvailableFragment.TITLE, "Equipes");
+			break;
+		case 4:
 			newContent = new ClubFragment_();
+			break;
+		case 6:
+			newContent = new NotAvailableFragment_();
+			args.putString(NotAvailableFragment.TITLE, "RŽglages");
+			break;
+		case 7:
+			newContent = new NotAvailableFragment_();
+			args.putString(NotAvailableFragment.TITLE, "A propos");
+			break;
+		default:
+			newContent = new NotAvailableFragment_();
+		
 		}
+		newContent.setArguments(args);
 		if (newContent != null) switchFragment(v, newContent);
 	}
 
