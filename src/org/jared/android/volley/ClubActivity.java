@@ -147,7 +147,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			quickAction.addActionItem(shareAction);
 		}
 
-
+ 
 
 		// Mise en place du listener sur le quick action
 		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
