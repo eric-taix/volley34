@@ -5,7 +5,7 @@
     android:paddingBottom="12dp"
     android:paddingTop="12dp" >
 
-    <org.jared.android.volley.widget.RoundedImageView
+    <org.jared.android.volley.ui.widget.RoundedImageView
         android:id="@+id/portrait"
         android:layout_width="42dp"
         android:layout_height="42dp"

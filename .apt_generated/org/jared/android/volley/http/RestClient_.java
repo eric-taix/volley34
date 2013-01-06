@@ -6,11 +6,14 @@
 package org.jared.android.volley.http;
 
 import java.util.Collections;
+import java.util.HashMap;
 import org.jared.android.volley.model.ClubList;
+import org.jared.android.volley.model.EquipeClubList;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +27,7 @@ public class RestClient_
     public RestClient_() {
         restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new SimpleXmlHttpMessageConverter());
+        restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
         rootUrl = "http://webservices.volley34.fr";
     }
 
@@ -38,11 +42,21 @@ public class RestClient_
     }
 
     @Override
+    public EquipeClubList getEquipes(String codeClub) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("codeClub", codeClub);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetEquipesClub?CodeClub={codeClub}"), HttpMethod.GET, requestEntity, EquipeClubList.class, urlVariables).getBody();
+    }
+
+    @Override
     public ClubList getClubs() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetClub"), HttpMethod.POST, requestEntity, ClubList.class).getBody();
+        return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetClub"), HttpMethod.GET, requestEntity, ClubList.class).getBody();
     }
 
 }

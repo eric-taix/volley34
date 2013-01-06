@@ -15,15 +15,15 @@
         android:label="@string/app_name"
         android:theme="@style/VolleyTheme" android:name="VolleyApplication_">
         <activity
-            android:name="org.jared.android.volley.MenuActivity_"
-            android:label="@string/title_activity_menu" >
+            android:name=".ui.MenuActivity_"
+            android:label="@string/main_title" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ClubActivity_" android:icon="@drawable/ic_club"></activity>
+        <activity android:name=".ui.ClubActivity_" android:icon="@drawable/ic_club"></activity>
     </application>
 
 </manifest>

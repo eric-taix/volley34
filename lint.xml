@@ -9,6 +9,7 @@
         <ignore path="src/org/jared/android/volley/ClubActivity.java" />
         <ignore path="src/org/jared/android/volley/adapter/ClubContactAdapter.java" />
         <ignore path="src/org/jared/android/volley/fragment/ClubFragment.java" />
+        <ignore path="src/org/jared/android/volley/ui/ClubActivity.java" />
     </issue>
     <issue id="HardcodedText">
         <ignore path="res/layout/club_contact_layout.xml" />
