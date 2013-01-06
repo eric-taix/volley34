@@ -11,12 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.http.RestClient_;
 
-public final class ClubFragment_
-    extends ClubFragment
+public final class ContentFragment_
+    extends ContentFragment
 {
 
     private View contentView_;
@@ -33,13 +36,18 @@ public final class ClubFragment_
     }
 
     private void afterSetContentView_() {
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        afterViews();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView_ = super.onCreateView(inflater, container, savedInstanceState);
         if (contentView_ == null) {
-            contentView_ = inflater.inflate(layout.list, container, false);
+            contentView_ = inflater.inflate(layout.list_layout, container, false);
         }
         afterSetContentView_();
         return contentView_;
@@ -52,21 +60,21 @@ public final class ClubFragment_
         return contentView_.findViewById(id);
     }
 
-    public static ClubFragment_.FragmentBuilder_ builder() {
-        return new ClubFragment_.FragmentBuilder_();
+    public static ContentFragment_.FragmentBuilder_ builder() {
+        return new ContentFragment_.FragmentBuilder_();
     }
 
     @Override
-    public void updateClubsFromDB() {
+    public void updateFromDB() {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubFragment_.super.updateClubsFromDB();
+                    ContentFragment_.super.updateFromDB();
                 } catch (RuntimeException e) {
-                    Log.e("ClubFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -75,16 +83,16 @@ public final class ClubFragment_
     }
 
     @Override
-    public void updateClubsFromNetWork() {
+    public void updateFromNetWork() {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubFragment_.super.updateClubsFromNetWork();
+                    ContentFragment_.super.updateFromNetWork();
                 } catch (RuntimeException e) {
-                    Log.e("ClubFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -100,8 +108,8 @@ public final class ClubFragment_
             args_ = new Bundle();
         }
 
-        public ClubFragment build() {
-            ClubFragment_ fragment_ = new ClubFragment_();
+        public ContentFragment build() {
+            ContentFragment_ fragment_ = new ContentFragment_();
             fragment_.setArguments(args_);
             return fragment_;
         }

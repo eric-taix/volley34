@@ -19,6 +19,8 @@ public interface RestClient {
 	ClubList getClubs();
 	@Get("/wsEquipes.asmx/GetEquipesClub?CodeClub={codeClub}")
 	EquipeClubList getEquipes(String codeClub);
+	@Get("/wsEquipes.asmx/GetEquipeInfo?CodeEquipe={codeEquipe}")
+	void getEquipeDetail(String codeEquipe);
 	
 	//----------------------------
 	RestTemplate getRestTemplate();

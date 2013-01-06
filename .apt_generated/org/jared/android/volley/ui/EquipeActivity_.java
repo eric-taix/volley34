@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,20 +21,19 @@ import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.http.RestClient_;
-import org.jared.android.volley.model.Club;
+import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
-public final class ClubActivity_
-    extends ClubActivity
+public final class EquipeActivity_
+    extends EquipeActivity
 {
 
-    private Handler handler_ = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         init_(savedInstanceState);
         super.onCreate(savedInstanceState);
-        setContentView(layout.club_detail_layout);
+        setContentView(layout.equipe_detail_layout);
     }
 
     private void init_(Bundle savedInstanceState) {
@@ -44,10 +42,9 @@ public final class ClubActivity_
 
     private void afterSetContentView_() {
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
@@ -57,7 +54,7 @@ public final class ClubActivity_
 
                     @Override
                     public void onClick(View view) {
-                        ClubActivity_.this.favoriteClicked();
+                        EquipeActivity_.this.favoriteClicked();
                     }
 
                 }
@@ -85,8 +82,8 @@ public final class ClubActivity_
         afterSetContentView_();
     }
 
-    public static ClubActivity_.IntentBuilder_ intent(Context context) {
-        return new ClubActivity_.IntentBuilder_(context);
+    public static EquipeActivity_.IntentBuilder_ intent(Context context) {
+        return new EquipeActivity_.IntentBuilder_(context);
     }
 
     @Override
@@ -103,60 +100,6 @@ public final class ClubActivity_
     }
 
     @Override
-    public void updateEquipesFromDB() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    ClubActivity_.super.updateEquipesFromDB();
-                } catch (RuntimeException e) {
-                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateEquipesFromNetwork() {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    ClubActivity_.super.updateEquipesFromNetwork();
-                } catch (RuntimeException e) {
-                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateClub(final Club clubToUpdate) {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    ClubActivity_.super.updateClub(clubToUpdate);
-                } catch (RuntimeException e) {
-                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
@@ -164,9 +107,27 @@ public final class ClubActivity_
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.executeAction(action);
+                    EquipeActivity_.super.executeAction(action);
                 } catch (RuntimeException e) {
-                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateEquipe(final Equipe equipeToUpdate) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    EquipeActivity_.super.updateEquipe(equipeToUpdate);
+                } catch (RuntimeException e) {
+                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -181,14 +142,14 @@ public final class ClubActivity_
 
         public IntentBuilder_(Context context) {
             context_ = context;
-            intent_ = new Intent(context, ClubActivity_.class);
+            intent_ = new Intent(context, EquipeActivity_.class);
         }
 
         public Intent get() {
             return intent_;
         }
 
-        public ClubActivity_.IntentBuilder_ flags(int flags) {
+        public EquipeActivity_.IntentBuilder_ flags(int flags) {
             intent_.setFlags(flags);
             return this;
         }

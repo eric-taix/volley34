@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ClubActivity_" android:icon="@drawable/ic_club"></activity>
+        <activity android:name=".ui.EquipeActivity_"></activity>
     </application>
 
 </manifest>

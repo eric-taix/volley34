@@ -47,32 +47,37 @@ public class MenuFragment extends ListFragment {
 		Fragment newContent = null;
 		Bundle args = new Bundle();
 		switch(position) {
+		case 1:
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new FavorisFragmentProvider());
+			break;
 		case 2:
-			newContent = new NotAvailableFragment_();
-			args.putString(NotAvailableFragment.TITLE, "Championnat");
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new ChampionnatFragmentProvider());
 			break;
 		case 3:
-			newContent = new NotAvailableFragment_();
-			args.putString(NotAvailableFragment.TITLE, "Coupe");
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new CoupeFragmentProvider());
 			break;
 		case 4:
-			newContent = new NotAvailableFragment_();
-			args.putString(NotAvailableFragment.TITLE, "Equipes");
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new EquipeFragmentProvider());
 			break;
 		case 5:
-			newContent = new ClubFragment_();
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new ClubFragmentProvider());
 			break;
 		case 6:
-			newContent = new NotAvailableFragment_();
-			args.putString(NotAvailableFragment.TITLE, "RŽglages");
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
 			break;
 		case 7:
-			newContent = new NotAvailableFragment_();
-			args.putString(NotAvailableFragment.TITLE, "A propos");
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
 			break;
 		default:
-			newContent = new NotAvailableFragment_();
-		
+			newContent = new ContentFragment_();
+			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
 		}
 		newContent.setArguments(args);
 		if (newContent != null) switchFragment(v, newContent);

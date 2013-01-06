@@ -19,7 +19,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @author eric.taix@gmail.com
  */
 public class EquipeDAO {
-	// Définition de la table Club
 	public static final String TABLE = "equipe";
 	public static final String NOM_CLUB_COURT = "nom_club_court";
 	public static final String NOM_CLUB = "nom_club";
@@ -32,11 +31,9 @@ public class EquipeDAO {
 			+ " text, " + NOM_CLUB + " text, " + CODE_CLUB + " text, " + FAVORITE + " boolean);";
 
 	/**
-	 * Ajout un club
-	 * 
-	 * @param club
+	 * Sauvegarde
 	 */
-	public static void saveClub(SQLiteOpenHelper dbHelper, Equipe equipe) {
+	public static void saveEquipe(SQLiteOpenHelper dbHelper, Equipe equipe) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getWritableDatabase();
@@ -51,11 +48,9 @@ public class EquipeDAO {
 	}
 
 	/**
-	 * Met à jour un club
-	 * 
-	 * @param club
+	 * Met à jour
 	 */
-	public static void updateClub(SQLiteOpenHelper dbHelper, Equipe equipe) {
+	public static void updateEquipe(SQLiteOpenHelper dbHelper, Equipe equipe) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getWritableDatabase();
@@ -69,17 +64,17 @@ public class EquipeDAO {
 	}
 
 	/**
-	 * Sauvegarde toutes les équipes passées en paramètre d'un club particulier. Si le codeClub est null alors cela signifie qu'il s'agit de toutes les équipes,
+	 * Sauvegarde toutes les équipes passées en paramètre d'une équipe particulier. Si le code est null alors cela signifie qu'il s'agit de toutes les équipes,
 	 * tous club confondus
 	 * 
 	 * @param clubs
 	 */
-	public static void saveAll(SQLiteOpenHelper dbHelper, List<Equipe> equipes, String codeClub) {
+	public static void saveAll(SQLiteOpenHelper dbHelper, List<Equipe> equipes, String code) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getWritableDatabase();
 			// On lit les équipes courantes
-			List<Equipe> oldEquipes = getAllEquipes(db, codeClub);
+			List<Equipe> oldEquipes = getAllEquipes(db, code);
 			for (Equipe equipe : equipes) {
 				int index = oldEquipes.indexOf(equipe);
 				if (index != -1) {
@@ -88,8 +83,8 @@ public class EquipeDAO {
 				}
 			}
 			// On détruit tout en fonction du club
-			if (codeClub != null) {
-				db.delete(TABLE, CODE_CLUB + " = ?", new String[] { codeClub });
+			if (code != null) {
+				db.delete(TABLE, CODE_CLUB + " = ?", new String[] { code });
 			}
 			else {
 				db.delete(TABLE, null, null);
@@ -108,16 +103,13 @@ public class EquipeDAO {
 	}
 
 	/**
-	 * Retourne tous les clubs
-	 * 
-	 * @param dbHelper
-	 * @return
+	 * Retourne tous
 	 */
-	public static List<Equipe> getAllEquipes(SQLiteOpenHelper dbHelper, String codeClub) {
+	public static List<Equipe> getAllEquipes(SQLiteOpenHelper dbHelper, String code) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getReadableDatabase();
-			return getAllEquipes(db, codeClub);
+			return getAllEquipes(db, code);
 		}
 		finally {
 			if (db != null) {
@@ -126,11 +118,11 @@ public class EquipeDAO {
 		}
 	}
 
-	private static List<Equipe> getAllEquipes(SQLiteDatabase db, String codeClub) {
+	private static List<Equipe> getAllEquipes(SQLiteDatabase db, String code) {
 		Cursor cursor = null;
-		if (codeClub != null) {
+		if (code != null) {
 			String selectQuery = "SELECT * FROM " + TABLE + " WHERE " + CODE_CLUB + "= ? ORDER BY " + NOM_EQUIPE;
-			cursor = db.rawQuery(selectQuery, new String[] { codeClub });
+			cursor = db.rawQuery(selectQuery, new String[] { code });
 		}
 		else {
 			String selectQuery = "SELECT * FROM " + TABLE + " ORDER BY " + NOM_EQUIPE;

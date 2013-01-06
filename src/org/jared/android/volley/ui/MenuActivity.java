@@ -1,9 +1,9 @@
 package org.jared.android.volley.ui;
 
 import org.jared.android.volley.R;
+import org.jared.android.volley.ui.fragment.ChampionnatFragmentProvider;
+import org.jared.android.volley.ui.fragment.ContentFragment_;
 import org.jared.android.volley.ui.fragment.MenuFragment_;
-import org.jared.android.volley.ui.fragment.NotAvailableFragment;
-import org.jared.android.volley.ui.fragment.NotAvailableFragment_;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,9 +38,9 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) { 
-			mContent = new NotAvailableFragment_();
+			mContent = new ContentFragment_();  
+			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
 			Bundle args = new Bundle();
-	        args.putString(NotAvailableFragment.TITLE, "Championnat");
 			mContent.setArguments(args);
 		}
 		 

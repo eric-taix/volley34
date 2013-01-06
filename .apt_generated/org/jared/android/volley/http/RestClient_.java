@@ -52,6 +52,16 @@ public class RestClient_
     }
 
     @Override
+    public void getEquipeDetail(String codeEquipe) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("codeEquipe", codeEquipe);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetEquipeInfo?CodeEquipe={codeEquipe}"), HttpMethod.GET, requestEntity, null, urlVariables).getBody();
+    }
+
+    @Override
     public ClubList getClubs() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
