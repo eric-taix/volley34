@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="12dp"
-    android:paddingTop="12dp" >
+    android:paddingBottom="6dp"
+    android:paddingTop="6dp" >
 
     <org.jared.android.volley.ui.widget.RoundedImageView
         android:id="@+id/portrait"
@@ -38,6 +38,19 @@
         android:layout_marginLeft="5dp"
         android:src="@drawable/ic_mail" />
 
+    <Button
+        android:id="@+id/button_contact" 
+        style="@style/HoloButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:layout_marginRight="4dp"
+        android:minWidth="90dp"
+        android:text="Contacter"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
     <TextView
         android:id="@+id/mail"
         android:layout_width="fill_parent"
@@ -46,8 +59,12 @@
         android:layout_alignTop="@id/img_mail"
         android:layout_marginRight="5dp"
         android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@id/button_contact"
         android:layout_toRightOf="@id/img_mail"
-        android:text="dcoutrot@mail.com" />
+        android:ellipsize="end"
+        android:lines="1"
+        android:scrollHorizontally="true"
+        android:text="dcoutrotphilibbert@mail.com" />
 
     <ImageView
         android:id="@+id/img_phone"
@@ -67,6 +84,8 @@
         android:layout_alignTop="@id/img_phone"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/button_contact"
+        android:ellipsize="end"
         android:text="06 22 22 22 22" />
 
 </RelativeLayout>

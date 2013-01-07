@@ -37,6 +37,22 @@ public abstract class ClubBaseAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#areAllItemsEnabled()
+	 */
+	@Override
+	public boolean areAllItemsEnabled() {
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.widget.BaseAdapter#isEnabled(int)
+	 */
+	@Override
+	public boolean isEnabled(int position) {
+		return false;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

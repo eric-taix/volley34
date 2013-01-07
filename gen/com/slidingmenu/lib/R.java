@@ -375,7 +375,7 @@ public final class R {
 		public static final int abs__btn_cab_done_focused_holo_light = 0x7f020015;
 		public static final int abs__ab_share_pack_holo_light = 0x7f020006;
 		public static final int abs__list_selector_background_transition_holo_light = 0x7f020034;
-		public static final int defaultshadowright = 0x7f02005d;
+		public static final int defaultshadowright = 0x7f020068;
 		public static final int abs__ab_solid_light_holo = 0x7f020008;
 		public static final int abs__list_focused_holo = 0x7f02002f;
 		public static final int abs__spinner_ab_pressed_holo_light = 0x7f02004f;
@@ -408,7 +408,7 @@ public final class R {
 		public static final int abs__menu_dropdown_panel_holo_dark = 0x7f020039;
 		public static final int abs__progress_bg_holo_dark = 0x7f02003b;
 		public static final int abs__activated_background_holo_light = 0x7f020011;
-		public static final int defaultshadow = 0x7f02005c;
+		public static final int defaultshadow = 0x7f020067;
 		public static final int abs__btn_cab_done_holo_dark = 0x7f020016;
 		public static final int abs__cab_background_bottom_holo_light = 0x7f02001b;
 		public static final int abs__btn_cab_done_default_holo_light = 0x7f020013;

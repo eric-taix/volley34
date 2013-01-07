@@ -15,4 +15,14 @@
         <item name="android:textSize">14sp</item>
     </style>
     
+    <style name="HoloButton">
+        <item name="android:background">@drawable/btn_default_holo_dark</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">30dip</item>
+        <item name="android:minWidth">64dip</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
 </resources>

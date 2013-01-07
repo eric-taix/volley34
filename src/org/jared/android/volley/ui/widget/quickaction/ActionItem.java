@@ -1,7 +1,7 @@
 package org.jared.android.volley.ui.widget.quickaction;
 
-import android.graphics.drawable.Drawable;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 /**
  * Action item, displayed as menu with icon and text.

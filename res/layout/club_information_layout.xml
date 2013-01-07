@@ -16,24 +16,17 @@
         android:text="Foyer rural de Vailhauquès"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <ImageView
-        android:id="@+id/web"
+    <Button
+        android:id="@+id/buttonWeb"
+        style="@style/HoloButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/nom"
-        android:layout_below="@+id/nom"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:clickable="true"
-        android:src="@drawable/ic_web" />
-
-    <TextView
-        android:id="@+id/urlWeb"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/web"
-        android:layout_marginTop="3dp"
-        android:layout_toRightOf="@+id/web"
-        android:text="Voir le site web" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/nom"
+        android:layout_marginRight="4dp"
+        android:minHeight="30dp"
+        android:minWidth="90dp"
+        android:text="Site Web"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

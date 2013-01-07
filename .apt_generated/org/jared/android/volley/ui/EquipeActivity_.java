@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import org.jared.android.volley.R.layout;
-import org.jared.android.volley.http.RestClient_;
+import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
@@ -37,15 +37,15 @@ public final class EquipeActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
-        restClient = new RestClient_();
+        application = ((VolleyApplication) this.getApplication());
     }
 
     private void afterSetContentView_() {
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -100,6 +100,24 @@ public final class EquipeActivity_
     }
 
     @Override
+    public void updateEquipe(final Equipe equipeToUpdate) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    EquipeActivity_.super.updateEquipe(equipeToUpdate);
+                } catch (RuntimeException e) {
+                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
     public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
@@ -118,14 +136,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateEquipe(final Equipe equipeToUpdate) {
+    public void retrieveDetailFromNetwork() {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateEquipe(equipeToUpdate);
+                    EquipeActivity_.super.retrieveDetailFromNetwork();
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

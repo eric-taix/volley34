@@ -38,10 +38,10 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) { 
-			mContent = new ContentFragment_();  
+			mContent = new ContentFragment_(); 
 			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
 			Bundle args = new Bundle();
-			mContent.setArguments(args);
+			mContent.setArguments(args); 
 		}
 		 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);

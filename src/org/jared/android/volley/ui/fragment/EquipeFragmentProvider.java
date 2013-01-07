@@ -9,7 +9,7 @@ import java.util.List;
 import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Equipe;
-import org.jared.android.volley.model.EquipeClubList;
+import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.EquipeActivity;
@@ -92,7 +92,7 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public Object doGetFromNetwork(RestClient client) {
-		EquipeClubList response = client.getEquipes("");
+		EquipesClubResponse response = client.getEquipes("");
 		return response.equipes;
 	}
 

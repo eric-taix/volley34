@@ -12,8 +12,8 @@ import org.simpleframework.xml.Root;
  * Le modèle contenant un ensemble de clubs
  * @author eric.taix@gmail.com
  */
-@Root(name="Club")
-public class ClubList {
+@Root(name="sp_GetAll_EquipeOfClub")
+public class EquipesClubResponse {
     @ElementList(inline=true)
-	public List<Club> clubs;
+	public List<Equipe> equipes;
 }

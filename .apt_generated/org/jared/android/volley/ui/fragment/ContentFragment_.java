@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
 import org.jared.android.volley.R.layout;
-import org.jared.android.volley.http.RestClient_;
+import org.jared.android.volley.VolleyApplication;
 
 public final class ContentFragment_
     extends ContentFragment
@@ -26,7 +26,7 @@ public final class ContentFragment_
     private Handler handler_ = new Handler();
 
     private void init_(Bundle savedInstanceState) {
-        restClient = new RestClient_();
+        application = ((VolleyApplication) getActivity().getApplication());
     }
 
     @Override
@@ -36,10 +36,10 @@ public final class ContentFragment_
     }
 
     private void afterSetContentView_() {
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         afterViews();
     }
 

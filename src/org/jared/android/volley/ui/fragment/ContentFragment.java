@@ -6,7 +6,7 @@ package org.jared.android.volley.ui.fragment;
 import java.util.Date;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.http.RestClient;
+import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.repository.MajDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
 
@@ -21,11 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
-import com.googlecode.androidannotations.annotations.rest.RestService;
 
 /**
  * Fragment permettant d'afficher le fait qu'une fonctionnalité n'existe pas
@@ -35,9 +35,6 @@ import com.googlecode.androidannotations.annotations.rest.RestService;
 @EFragment(R.layout.list_layout)
 public class ContentFragment extends Fragment {
 
-	@RestService
-	RestClient restClient;
-
 	@ViewById(R.id.list)
 	ListView listView;
 	@ViewById(R.id.maj)
@@ -46,7 +43,8 @@ public class ContentFragment extends Fragment {
 	ProgressBar progressBar;
 	@ViewById(R.id.title)
 	TextView title;
-
+	@App
+	VolleyApplication application;
 	private ContentFragmentProvider provider;
 
 	@AfterViews
@@ -58,7 +56,7 @@ public class ContentFragment extends Fragment {
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
-		listView.setDividerHeight(1);
+		listView.setDividerHeight(0);
 		listView.setAdapter(provider.getListAdapter());
 		listView.setOnItemClickListener(provider);
 		// On met à jour l'interface
@@ -93,7 +91,7 @@ public class ContentFragment extends Fragment {
 	void updateFromNetWork() {
 		try {
 			VolleyDatabase db = new VolleyDatabase(getActivity());
-			Object result = provider.doGetFromNetwork(restClient);
+			Object result = provider.doGetFromNetwork(application.restClient);
 			provider.doSaveToDatabase(result, db);
 			MajDAO.udateMaj(db, provider.getCode());
 		}

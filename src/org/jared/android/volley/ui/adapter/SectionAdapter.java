@@ -94,7 +94,25 @@ public class SectionAdapter extends BaseAdapter {
 	}
 
 	public boolean isEnabled(int position) {
-		return (getItemViewType(position) != TYPE_SECTION_HEADER);
+		if (getItemViewType(position) == TYPE_SECTION_HEADER) {
+			return false;
+		}
+		for (String header : headers.getHeaders()) {
+			Adapter adapter = sections.get(header);
+			int size = adapter.getCount() + 1;
+
+			// VŽrifie si la position est dans la section
+			if (position == 0) return false;
+			if (position < size) {
+				if (adapter instanceof BaseAdapter) {
+					return ((BaseAdapter)adapter).isEnabled(position - 1);
+				}
+				return true;
+			}
+			// Sinon on passe ˆ la prochaine section
+			position -= size;
+		}
+		return true;
 	}
 
 	@Override

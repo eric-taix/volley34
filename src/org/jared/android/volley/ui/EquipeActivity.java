@@ -7,8 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.http.RestClient;
+import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Equipe;
+import org.jared.android.volley.model.EquipeDetailResponse;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.MajDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
@@ -36,12 +37,12 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.ViewById;
-import com.googlecode.androidannotations.annotations.rest.RestService;
 
 /**
  * Activité permettant d'afficher un club
@@ -60,9 +61,8 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	public static final int ID_CONTACT = 3;
 	public static final int ID_SHARE = 4;
 
-	@RestService
-	RestClient restClient;
-
+	@App
+	VolleyApplication application;
 	@ViewById(R.id.title)
 	TextView title;
 	@ViewById(R.id.favorite)
@@ -161,6 +161,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		updateUI();
 		// En tâche de fond on interroge le serveur
 		progressBar.setVisibility(View.VISIBLE);
+		retrieveDetailFromNetwork();
 	}
 
 	/**
@@ -176,6 +177,23 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
 	}
 
+	/**
+	 * Récupère (si possible) le détail de l'équipe
+	 */
+	@Background
+	public void retrieveDetailFromNetwork() {
+		try {
+			EquipeDetailResponse edr = application.restClient.getEquipeDetail(currentEquipe.codeEquipe);
+			System.out.println(edr);
+//			VolleyDatabase db = new VolleyDatabase(this);
+//			EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
+//			MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+		}
+		finally {
+//			updateEquipesFromDB();
+		}
+	}
+	
 	@Background
 	void updateEquipe(Equipe equipeToUpdate) {
 		try {

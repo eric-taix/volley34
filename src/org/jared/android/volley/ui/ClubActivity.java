@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.http.RestClient;
+import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.Equipe;
-import org.jared.android.volley.model.EquipeClubList;
+import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.repository.ClubDAO;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.MajDAO;
@@ -48,13 +48,13 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.googlecode.androidannotations.annotations.AfterViews;
+import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
-import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -75,9 +75,8 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	public static final int ID_CONTACT = 3;
 	public static final int ID_SHARE = 4;
 
-	@RestService
-	RestClient restClient;
-
+	@App
+	VolleyApplication application;
 	@ViewById(R.id.title)
 	TextView title;
 	@ViewById(R.id.logo)
@@ -144,7 +143,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		// On positionne un divider plus "sympa"
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
-		listView.setDividerHeight(1);
+		listView.setDividerHeight(0);
 		listView.setAdapter(sectionAdapter);
 		// On fixe les infos
 		title.setText(currentClub.nomCourt);
@@ -155,13 +154,14 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			imageLoader.displayImage(currentClub.urlLogo, logo, logoOptions);
 		}
 		else {
-			logo.setVisibility(View.INVISIBLE);
+			logo.setVisibility(View.GONE);
 		}
 		favorite.setImageDrawable(currentClub.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
 				R.drawable.ic_star_disabled));
 		listView.setOnItemClickListener(this);
 		// CrŽation du menu pour le contact
 		quickAction = new QuickAction(this);
+		contactAdapter.setContactQuickAction(quickAction);
 		if (currentClub.mail != null && currentClub.mail.length() > 0) {
 			ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail), new MailAction(
 					currentClub.mail, currentClub.nom));
@@ -247,7 +247,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	@Background
 	public void updateEquipesFromNetwork() {
 		try {
-			EquipeClubList ecl = restClient.getEquipes(currentClub.code);
+			EquipesClubResponse ecl = application.restClient.getEquipes(currentClub.code);
 			VolleyDatabase db = new VolleyDatabase(this);
 			EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
 			MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
@@ -293,7 +293,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			quickAction.show(view);
 		}
 		// Une des Žquipes
-		else {
+		if (position > 5) {
 
 		}
 	}

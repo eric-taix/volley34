@@ -9,5 +9,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="ext-libs/simple-xml-2.6.9.jar" sourcepath="/Users/eric/developpement/sources/simple-xml-2.6.9/src"/>
+	<classpathentry exported="true" kind="lib" path="ext-libs/spring-android-rest-template-1.0.0.RC1.jar" sourcepath="/Users/eric/developpement/sources/spring-android-1.0.0.RC1/src/spring-android-rest-template-1.0.0.RC1-sources.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -5,6 +5,7 @@
 
 package org.jared.android.volley;
 
+import org.jared.android.volley.http.RestClient_;
 
 public final class VolleyApplication_
     extends VolleyApplication
@@ -12,6 +13,7 @@ public final class VolleyApplication_
 
 
     private void init_() {
+        restClient = new RestClient_();
     }
 
     @Override

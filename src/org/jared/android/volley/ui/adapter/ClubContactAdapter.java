@@ -5,13 +5,16 @@ package org.jared.android.volley.ui.adapter;
 
 import org.jared.android.volley.R;
 import org.jared.android.volley.model.Club;
+import org.jared.android.volley.ui.widget.quickaction.QuickAction;
 import org.jared.android.volley.utils.MD5;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +26,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class ClubContactAdapter extends ClubBaseAdapter {
 
+	private QuickAction qa;
+	
 	// Options de l'ImageLoader pour l'image des contacts: cache mŽmoire + cache disque
 	private static DisplayImageOptions avatarOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.ic_unknown)
 			.showImageForEmptyUri(R.drawable.ic_unknown).cacheInMemory().build();
@@ -35,6 +40,10 @@ public class ClubContactAdapter extends ClubBaseAdapter {
 		super(ctx, clubP);
 	}
 
+	public void setContactQuickAction(QuickAction qa) {
+		this.qa = qa;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,7 +61,16 @@ public class ClubContactAdapter extends ClubBaseAdapter {
 		TextView mail = (TextView) convertView.findViewById(R.id.mail);
 		TextView nom = (TextView) convertView.findViewById(R.id.nom);
 		ImageView avatar = (ImageView) convertView.findViewById(R.id.portrait);
-
+		// Le button et l'action sur ce bouton
+		Button button = (Button) convertView.findViewById(R.id.button_contact);
+		final View anchorView = convertView;
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				qa.show(anchorView);
+			}
+		});
+		// Les informations ˆ afficher
 		nom.setText(club.contact);
 		if (club.telephone != null && club.telephone.length() > 0) {
 			phone.setText(club.telephone);
