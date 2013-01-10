@@ -15,6 +15,7 @@ import android.os.Parcelable;
  */
 @Root(name="Row",strict=false)
 public class Club implements Parcelable {
+	
 	@Attribute(name="CodeClub")
 	public String code;
 	@Attribute(name="NbEquipes")

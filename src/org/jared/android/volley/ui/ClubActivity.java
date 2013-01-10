@@ -9,6 +9,7 @@ import java.util.List;
 import org.jared.android.volley.R;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Club;
+import org.jared.android.volley.model.ClubContactAdapter;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.repository.ClubDAO;
@@ -20,7 +21,8 @@ import org.jared.android.volley.ui.action.MailAction;
 import org.jared.android.volley.ui.action.PhoneAction;
 import org.jared.android.volley.ui.action.ShareAction;
 import org.jared.android.volley.ui.action.SmsAction;
-import org.jared.android.volley.ui.adapter.ClubContactAdapter;
+import org.jared.android.volley.ui.adapter.CollapsableAdapter;
+import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.ClubEquipeAdapter;
 import org.jared.android.volley.ui.adapter.ClubInformationAdapter;
 import org.jared.android.volley.ui.adapter.SectionAdapter;
@@ -132,13 +134,20 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 
 	@AfterViews
 	public void afterViews() {
-		ClubContactAdapter contactAdapter = new ClubContactAdapter(this, currentClub);
-		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this, currentClub);
-		equipeAdapter = new ClubEquipeAdapter(this);
 		sectionAdapter = new SectionAdapter(this, R.layout.list_header);
+
+		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this, currentClub);
 		sectionAdapter.addSection("INFORMATIONS", informationAdapter);
-		sectionAdapter.addSection("CONTACT", contactAdapter);
-		sectionAdapter.addSection("EQUIPES", equipeAdapter);
+
+		ContactAdapter contactAdapter = new ContactAdapter(this);
+		contactAdapter.setContact(new ClubContactAdapter(currentClub));
+		CollapsableAdapter collapseContact = new CollapsableAdapter(this, contactAdapter, sectionAdapter);
+		sectionAdapter.addSection("CONTACT", collapseContact);
+		
+		equipeAdapter = new ClubEquipeAdapter(this);
+		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this, equipeAdapter, sectionAdapter);
+		sectionAdapter.addSection("EQUIPES", collapseEquipe);
+		
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
 		int[] colors = { 0, 0xFF777777, 0 };

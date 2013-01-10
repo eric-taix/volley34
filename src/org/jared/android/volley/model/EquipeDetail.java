@@ -15,18 +15,21 @@ import android.os.Parcelable;
 @Root(name="Row",strict=false)
 public class EquipeDetail implements Parcelable {
 	
-
+	public String codeEquipe;
 	public ContactEquipe contactRespChampionnat;
 	public ContactEquipe contactSupplChampionnat;
 	public ContactEquipe contactRespCoupe;
 	public ContactEquipe contactSupplCoupe;
 
+	public Gymnase gymnaseChampionnat;
+	public Gymnase gymnaseCoupe;
 
 //			
 //			GPSGymnaseCoupe="" 
 //			TelGymnaseCoupe="" 
 //			VilleGymnaseCoupe="" 
 //			QuartierGymnaseCoupe="" 
+	
 //			CPGymnaseCoupe="" 
 //			AdresseGymnaseCoupe="" 
 //			NomCompletGymnaseCoupe="" 

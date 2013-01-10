@@ -3,7 +3,7 @@
  */
 package org.jared.android.volley.model;
 
-import org.jared.android.volley.model.converter.EquipeDetailConverter;
+import org.jared.android.volley.http.converter.EquipeDetailConverter;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.convert.Convert;

@@ -14,6 +14,7 @@ import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.MajDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.adapter.ClubInformationAdapter;
+import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.SectionAdapter;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 import org.jared.android.volley.ui.widget.quickaction.ActionItem;
@@ -115,12 +116,17 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this);
 		sectionAdapter = new SectionAdapter(this, R.layout.list_header);
 		sectionAdapter.addSection("CLUB", informationAdapter);
-		sectionAdapter.addSection("CONTACTS", informationAdapter);
+		ContactAdapter contactAdapter = new ContactAdapter(this);
+		sectionAdapter.addSection("CONTACTS", contactAdapter);
+		ContactAdapter contactAdapter2 = new ContactAdapter(this);
+		sectionAdapter.addSection("ADRESSE", contactAdapter2);
+		ContactAdapter contactAdapter3 = new ContactAdapter(this);
+		sectionAdapter.addSection("CALENDRIER", contactAdapter3);
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
-		listView.setDividerHeight(1);
+		listView.setDividerHeight(0);
 		listView.setAdapter(sectionAdapter);
 		// On fixe les infos
 		title.setText(currentEquipe.nomEquipe);
