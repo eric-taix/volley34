@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Volley34 : Restez connecté au site www.volley34.fr" />
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Volley34 by eric-taix</title>
+    <title>Volley34</title>
   </head>
 
   <body>
-    <header>
-      <div class="inner">
-        <h1>Volley34</h1>
-        <h2>Restez connecté au site www.volley34.fr</h2>
-        <a href="https://github.com/eric-taix/volley34" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>Bienvenue</h3>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/eric-taix/volley34">View on GitHub</a>
+
+          <h1 id="project_title">Volley34</h1>
+          <h2 id="project_tagline">Restez connecté au site www.volley34.fr</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/eric-taix/volley34/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/eric-taix/volley34/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Bienvenue</h3>
 
 <p>Bienvenue sur la page de l'application android pour le site <a href="http://www.volley34.fr">www.volley34.fr</a><br>
-Cette application permet de restez connecté aux différentes informations présentes sur le site de la FSGT34 de volley-ball.</p>
+Cette application permet de rester connecté aux différentes informations présentes sur le site de la FSGT34 de volley-ball.</p>
 
 <blockquote>
 <p>Cette application est disponible gratuitement et publiée en open-source sous licence GPL.<br>
@@ -40,60 +43,76 @@ Si vous souhaitez utiliser ce code, merci de respecter les conditions de la lice
 
 <h3>Fonctionnalités</h3>
 
-<p>Les fonctionnalités suivantes sont ou seront prochainement implémentées:<br>
+<p>Les fonctionnalités seront dans le désordre les suivantes - sous réserve de faisabilité:<br>
 1. Visualisation des clubs (nom, logo, coordonnées du président)<br>
-2. Envoi de mail, appel du président d'un club<br>
+2. Envoi de mail, appel, sms au président d'un club<br>
 3. Visualisation des équipes d'un club<br>
 4. Visualisation de la liste des équipes<br>
 5. Visualisation du calendrier d'une équipe<br>
 6. Saisie de résultat d'un match<br>
 7. Tableau de marque d'un match<br>
 8. Localisation du gymnase sur une carte et calcul d'itinéraire<br>
-9. Partage sur les réseaux sociaux du résultat d'un match<br>
+9. Partage sur les réseaux sociaux du résultat d'un match, d'un classement 
 10. Visualisation du résultat des matchs<br>
 11. Visualisation du classement<br>
-12. Et toutes vos idées intéressantes...  </p>
+12. Visualisation du calendrier d'un club<br>
+13. Rappel automatique d'un événement du calendrier X jours avant<br>
+14. Ajout d'un événement dans le calendrier du téléphone<br>
+15. Visualisation du site Web d'un club<br>
+16. Gestion des favoris (championnats, clubs, équipes, coupes)  </p>
+
+<p>Et toutes vos idées intéressantes...  </p>
+
+<h3>Copies d'écran</h3>
+
+<p>Cette section regroupe des copies d'écran au fur et à mesure de l'avancement de l'application (et quand j'ai le temps de les poster).  </p>
+
+<p><strong>Le menu général</strong><br><img src="https://github.com/eric-taix/volley34/blob/master/github-pages/menu.png" alt="menu"></p>
+
+<p><strong>La liste des clubs</strong>
+<img src="https://github.com/eric-taix/volley34/blob/master/github-pages/clubs.png" alt="liste des clubs"></p>
+
+<p><strong>Le détail d'un club</strong>
+<img src="https://github.com/eric-taix/volley34/blob/master/github-pages/club.png" alt="un club"></p>
 
 <h3>Contribuer</h3>
 
 <p>Vous êtes développeur Android et vous souhaitez contribuer à ce projet ?<br>
 Suivez les instructions pour forker ce projet et commencez par étudier son fonctionnement.<br>
-Proposer vos idées grâce aux gestionnaires de bug. Si votre idée est acceptée, codez la et effectuez des pullrequest.  </p>
+Proposer vos idées grâce aux gestionnaires de bug. Si votre idée est acceptée, codez la et effectuez des pull request.  </p>
 
-<p>Vous n'êtes pas développeur Android mais vous avez des idées. Bienvenue à vous ! Exprimez votre idée grâce au gestionnaire de bug (issue) et soumettez là. Si elle est acceptée, elle sera développée par l'un des contributeurs du projet.  </p>
+<p>Vous n'êtes pas développeur Android mais vous avez des idées. Bienvenue à vous ! Exprimez votre idée et soumettez là moi. Si elle est acceptée, elle sera développée par l'un des contributeurs du projet.  </p>
 
 <h3>Auteur et contributeur</h3>
 
-<p>Développeur depuis 20 ans, je suis un passionné de Java et de son écosystème. Je contribue régulièrement à des projets opensource comme celui là afin de partager ma passion. </p>
+<p><strong>Eric Taix</strong><br>
+Développeur depuis plus de 20 ans, je suis un passionné de Java et de son écosystème. Je contribue régulièrement à des projets open-source comme celui-çi afin de partager mes connaissances. Je suis bien sûr passionné par Android sur lequel j'ai créé plusieurs applications <a href="https://play.google.com/store/apps/details?id=org.jared.synodroid.ds">Synodroid</a>, <a href="https://play.google.com/store/apps/details?id=com.jared.android.keepit">Keep-it</a> et <a href="https://github.com/Jug-Montpellier/jugdroid">JugDroid</a>.</p>
 
 <p>Je suis aussi un des JUG (Java User Group) Leader de Montpellier.<br>
 Le Java User Group est une association qui organise régulièrement des conférences gratuites sur Java et son ecosystème. Ces conférences permettent d'échanger et de partager nos expériences dans un esprit professionnel mais détendu. Cette association fonctionne grâce à l'aide financière de nos sponsors qui nous soutiennent.  </p>
 
 <p>Vous voulez en savoir plus ? <a href="http://www.jug-montpellier.org">www.jug-montpellier.org</a>  </p>
 
+<p>Mais bien sûr si j'ai décidé de développer cette application c'est que je suis (aussi) un joueur de Volley au club de Vailhauquès (club conviviale et sympathique, où les apéros sont toujours les bienvenus à la fin des matchs).  </p>
+
 <h3>Support et contact</h3>
 
 <p>Vous avez des problèmes avec l'application ? Créez un bug.<br>
-Vous pouvez aussi me contacter via twitter @etaix, sur Google plus +etaix ou par mail eric.taix chez gmail.com</p>
-        </section>
+Vous pouvez aussi me contacter via twitter @etaix, sur Google plus +etaix ou par mail eric.taix chez gmail.com  </p>
 
-        <aside id="sidebar">
-          <a href="https://github.com/eric-taix/volley34/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/eric-taix/volley34/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/eric-taix/volley34"></a> is maintained by <a href="https://github.com/eric-taix">eric-taix</a>.</p>
-
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
+<p>Vous souhaitez la même application pour votre iPhone ? Désolé je ne peux rien pour vous pour l'instant !</p>
+      </section>
     </div>
 
-  
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Volley34 maintained by <a href="https://github.com/eric-taix">eric-taix</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
   </body>
 </html>
