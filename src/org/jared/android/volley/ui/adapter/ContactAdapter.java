@@ -56,11 +56,6 @@ public class ContactAdapter extends BaseAdapter {
 	public void setContact(Contact contact) {
 		List<Contact> cs = new ArrayList<Contact>();
 		cs.add(contact);
-		cs.add(contact);
-		cs.add(contact);
-		cs.add(contact);
-		cs.add(contact);
-		cs.add(contact);
 		setContact(cs);
 	}
 
