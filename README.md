@@ -1,1 +1,2 @@
-Application android pour le site www.volley34.fr
+Pour plus d'informations sur ce projet, reportez-vous ˆ l'adresse http://eric-taix.github.com/volley34/
+=======================================================================================================
