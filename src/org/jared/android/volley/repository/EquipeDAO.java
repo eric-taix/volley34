@@ -30,6 +30,33 @@ public class EquipeDAO {
 	public static final String TABLE_CREATE = "create table " + TABLE + "(" + CODE_EQUIPE + " text primary key, " + NOM_EQUIPE + " text, " + NOM_CLUB_COURT
 			+ " text, " + NOM_CLUB + " text, " + CODE_CLUB + " text, " + FAVORITE + " boolean);";
 
+	
+	/**
+	 * Retourne une équipe à partir de son code équipe
+	 * @param dbHelper
+	 * @param codeEquipe
+	 * @return
+	 */
+	public static Equipe getByCode(SQLiteOpenHelper dbHelper, String codeEquipe) {
+		SQLiteDatabase db = null;
+		try {
+			db = dbHelper.getReadableDatabase();
+			if (codeEquipe != null) {
+				String selectQuery = "SELECT * FROM " + TABLE + " WHERE " + CODE_EQUIPE + "=?";
+				Cursor cursor = db.rawQuery(selectQuery, new String[] { codeEquipe });
+				if (cursor.moveToFirst()) {
+					return(getEquipe(cursor));
+				}
+			}
+		}
+		finally {
+			if (db != null) {
+				db.close();
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Sauvegarde
 	 */
@@ -137,7 +164,7 @@ public class EquipeDAO {
 		}
 		return equipeList;
 	}
-
+	
 	/**
 	 * Tranforme un résultat de requête en Equipe
 	 * 

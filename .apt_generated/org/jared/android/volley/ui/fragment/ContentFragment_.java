@@ -36,10 +36,10 @@ public final class ContentFragment_
     }
 
     private void afterSetContentView_() {
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
         afterViews();
     }
 

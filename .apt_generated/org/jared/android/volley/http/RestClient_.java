@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.jared.android.volley.model.ClubListResponse;
 import org.jared.android.volley.model.EquipeDetailResponse;
 import org.jared.android.volley.model.EquipesClubResponse;
+import org.jared.android.volley.model.EventsResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -66,6 +67,16 @@ public class RestClient_
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
         return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetClub"), HttpMethod.GET, requestEntity, ClubListResponse.class).getBody();
+    }
+
+    @Override
+    public EventsResponse getClubCalendar(String codeClub) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("codeClub", codeClub);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}"), HttpMethod.GET, requestEntity, EventsResponse.class, urlVariables).getBody();
     }
 
 }

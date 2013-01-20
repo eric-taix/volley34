@@ -1,12 +1,13 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.adapter;
+package org.jared.android.volley.ui.adapter.commons;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -21,24 +22,34 @@ public class SectionAdapter extends BaseAdapter {
 	public final Map<String, Adapter> sections = new LinkedHashMap<String, Adapter>();
 	public final HeaderAdapter headers;
 	public final static int TYPE_SECTION_HEADER = 0;
+	private DataSetObserver observer;
 
 	public SectionAdapter(Context context, int headerLayout) {
 		headers = new HeaderAdapter(context, headerLayout);
+		observer = new DataSetObserver() {
+			@Override
+			public void onChanged() {
+				notifyDataSetChanged();
+			}
+		};
 	}
 
 	public void addSection(String section, Adapter adapter) {
 		this.headers.add(section);
 		this.sections.put(section, adapter);
+		adapter.registerDataSetObserver(observer);
 	}
 
 	public void insertSection(String section,  Adapter adapter, int position) {
 		this.headers.insert(section, position);
 		this.sections.put(section, adapter);
+		adapter.registerDataSetObserver(observer);
 	}
 
 	public void removeSection(String section) {
 		this.headers.remove(section);
-		this.sections.remove(section);
+		Adapter adapter = this.sections.remove(section);
+		adapter.unregisterDataSetObserver(observer);
 	}
 	
 	public Object getItem(int position) {
@@ -73,20 +84,28 @@ public class SectionAdapter extends BaseAdapter {
 	}
 
 	public int getItemViewType(int position) {
+		int result = -1;
 		int type = 1;
 		for (Object section : this.sections.keySet()) {
 			Adapter adapter = sections.get(section);
 			int size = adapter.getCount() + 1;
 
 			// VŽrifie si la position est dans la section
-			if (position == 0) return TYPE_SECTION_HEADER;
-			if (position < size) return type + adapter.getItemViewType(position - 1);
+			if (position == 0) {
+				result = TYPE_SECTION_HEADER;
+				break;
+			}
+			if (position < size) {
+				result = type + adapter.getItemViewType(position - 1);
+				System.out.println("==>"+adapter+" getVT="+result);
+				break;
+			}
 
 			// Sinon on passe ˆ la prochaine section
 			position -= size;
 			type += adapter.getViewTypeCount();
 		}
-		return -1;
+		return result;
 	}
 
 	public boolean areAllItemsSelectable() {

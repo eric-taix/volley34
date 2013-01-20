@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.adapter;
+package org.jared.android.volley.ui.adapter.commons;
 
 import java.util.ArrayList;
 import java.util.List;

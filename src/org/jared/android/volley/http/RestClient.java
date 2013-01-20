@@ -3,6 +3,7 @@ package org.jared.android.volley.http;
 import org.jared.android.volley.model.ClubListResponse;
 import org.jared.android.volley.model.EquipeDetailResponse;
 import org.jared.android.volley.model.EquipesClubResponse;
+import org.jared.android.volley.model.EventsResponse;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,12 +16,22 @@ import com.googlecode.androidannotations.api.rest.MediaType;
 @Accept(MediaType.APPLICATION_XML)
 public interface RestClient {
 
+	// Liste des clubs
 	@Get("/wsEquipes.asmx/GetClub")
 	ClubListResponse getClubs();
+	
+	// Liste des Žquipes d'un clib
 	@Get("/wsEquipes.asmx/GetEquipesClub?CodeClub={codeClub}")
 	EquipesClubResponse getEquipes(String codeClub);
+	
+	// DŽtail d'une Žquipe
 	@Get("/wsEquipes.asmx/GetEquipeInfo?CodeEquipe={codeEquipe}")
 	EquipeDetailResponse getEquipeDetail(String codeEquipe);
+	
+	// Calendrier futur d'un club
+	@Get("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}")
+	EventsResponse getClubCalendar(String codeClub);
+	
 	
 	//----------------------------
 	RestTemplate getRestTemplate();

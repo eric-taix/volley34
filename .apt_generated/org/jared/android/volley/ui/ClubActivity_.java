@@ -43,12 +43,12 @@ public final class ClubActivity_
     }
 
     private void afterSetContentView_() {
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -139,14 +139,14 @@ public final class ClubActivity_
     }
 
     @Override
-    public void executeAction(final Action action) {
+    public void updateClub(final Club clubToUpdate) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.executeAction(action);
+                    ClubActivity_.super.updateClub(clubToUpdate);
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -157,14 +157,14 @@ public final class ClubActivity_
     }
 
     @Override
-    public void updateClub(final Club clubToUpdate) {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.updateClub(clubToUpdate);
+                    ClubActivity_.super.executeAction(action);
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

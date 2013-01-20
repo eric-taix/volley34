@@ -6,7 +6,7 @@ package org.jared.android.volley.ui.adapter;
 import java.util.List;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.model.Club;
+import org.jared.android.volley.model.Equipe;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,11 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Adpater permettant de gérer les items des clubs<br/>
+ * Adpater permettant de gérer une liste d'équipes<br/>
  * 
  * @author eric.taix@gmail.com
  */
-public class ClubAdapter extends BaseAdapter {
+public class MenuEquipesAdapter extends BaseAdapter {
 
 	// ============== Inner Class ==============
 
@@ -30,41 +30,38 @@ public class ClubAdapter extends BaseAdapter {
 	 * 
 	 * @author eric.taix@gmail.com
 	 */
-	class ClubHolder {
-		private TextView titleCourt;
+	class EquipeHolder {
+		private TextView nomEquipe;
 		private TextView title;
-		private TextView nbEquipes;
 		private ImageView favoriteImg;
 
-		public ClubHolder(View view) {
-			titleCourt = (TextView) view.findViewById(R.id.title_court);
+		public EquipeHolder(View view) {
+			nomEquipe = (TextView) view.findViewById(R.id.nom_club);
 			title = (TextView) view.findViewById(R.id.title);
-			nbEquipes = (TextView) view.findViewById(R.id.nb);
 			favoriteImg = (ImageView) view.findViewById(R.id.favorite);
 			view.setTag(this);
 		}
 
-		public void update(Club club) {
-			titleCourt.setText(club.nomCourt);
-			title.setText(club.nom);
-			nbEquipes.setText("" + club.nbEquipes);
-			favoriteImg.setVisibility((club.favorite ? View.VISIBLE : View.INVISIBLE));
+		public void update(Equipe equipe) {
+			nomEquipe.setText(equipe.nomClub);
+			title.setText(equipe.nomEquipe);
+			favoriteImg.setVisibility((equipe.favorite ? View.VISIBLE : View.INVISIBLE));
 		}
 
 	}
 
 	// =========================================
 
-	private List<Club> clubs;
+	private List<Equipe> equipes;
 	private Context ctx;
 
-	public ClubAdapter(Context ctx) {
+	public MenuEquipesAdapter(Context ctx) {
 		this.ctx = ctx;
 	}
 
-	public ClubAdapter(Context ctx, List<Club> clubsP) {
+	public MenuEquipesAdapter(Context ctx, List<Equipe> equipesP) {
 		this.ctx = ctx;
-		setClubs(clubsP);
+		setEquipes(equipesP);
 	}
 
 	/**
@@ -72,8 +69,8 @@ public class ClubAdapter extends BaseAdapter {
 	 * 
 	 * @param menusP
 	 */
-	public void setClubs(List<Club> clubsP) {
-		clubs = clubsP;
+	public void setEquipes(List<Equipe> equipesP) {
+		equipes = equipesP;
 		notifyDataSetChanged();
 	}
 
@@ -84,8 +81,8 @@ public class ClubAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		if (clubs != null) {
-			return clubs.size();
+		if (equipes != null) {
+			return equipes.size();
 		}
 		return 0;
 	}
@@ -97,8 +94,8 @@ public class ClubAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		if (clubs != null && position < clubs.size()) {
-			return clubs.get(position);
+		if (equipes != null && position < equipes.size()) {
+			return equipes.get(position);
 		}
 		return null;
 	}
@@ -120,17 +117,19 @@ public class ClubAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ClubHolder holder = null;
+		EquipeHolder holder = null;
 		if (convertView == null) {
 			LayoutInflater li = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = li.inflate(R.layout.club_item, parent, false);
-			holder = new ClubHolder(convertView);
+			convertView = li.inflate(R.layout.equipe_item, parent, false);
+			holder = new EquipeHolder(convertView);
 		}
 		else {
-			holder = (ClubHolder)convertView.getTag();
+			holder = (EquipeHolder) convertView.getTag();
 		}
-		Club club = (Club) getItem(position);
-		holder.update(club);
+		Equipe equipe = (Equipe) getItem(position);
+		if (equipe != null) {
+			holder.update(equipe);
+		}
 		return convertView;
 	}
 }

@@ -3,8 +3,8 @@ package org.jared.android.volley.ui.fragment;
 import org.jared.android.volley.R;
 import org.jared.android.volley.model.Menu;
 import org.jared.android.volley.ui.MenuActivity;
-import org.jared.android.volley.ui.adapter.MenuAdapter;
-import org.jared.android.volley.ui.adapter.SectionAdapter;
+import org.jared.android.volley.ui.adapter.commons.MenuAdapter;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;

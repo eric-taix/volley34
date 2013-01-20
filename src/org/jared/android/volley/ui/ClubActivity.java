@@ -9,7 +9,7 @@ import java.util.List;
 import org.jared.android.volley.R;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Club;
-import org.jared.android.volley.model.ClubContactAdapter;
+import org.jared.android.volley.model.ContactClub;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.repository.ClubDAO;
@@ -21,11 +21,11 @@ import org.jared.android.volley.ui.action.MailAction;
 import org.jared.android.volley.ui.action.PhoneAction;
 import org.jared.android.volley.ui.action.ShareAction;
 import org.jared.android.volley.ui.action.SmsAction;
-import org.jared.android.volley.ui.adapter.CollapsableAdapter;
-import org.jared.android.volley.ui.adapter.ContactAdapter;
-import org.jared.android.volley.ui.adapter.ClubEquipeAdapter;
 import org.jared.android.volley.ui.adapter.ClubInformationAdapter;
-import org.jared.android.volley.ui.adapter.SectionAdapter;
+import org.jared.android.volley.ui.adapter.ContactAdapter;
+import org.jared.android.volley.ui.adapter.SimpleEquipesAdapter;
+import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 import org.jared.android.volley.ui.widget.quickaction.ActionItem;
 import org.jared.android.volley.ui.widget.quickaction.QuickAction;
@@ -100,7 +100,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 
 	private QuickAction quickAction;
 	// Adpater qui affiche la liste des Žquipes
-	private ClubEquipeAdapter equipeAdapter;
+	private SimpleEquipesAdapter equipeAdapter;
 	// Adapter qui contient les autres adapters
 	private SectionAdapter sectionAdapter;
 
@@ -140,11 +140,11 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		sectionAdapter.addSection("INFORMATIONS", informationAdapter);
 
 		ContactAdapter contactAdapter = new ContactAdapter(this);
-		contactAdapter.setContact(new ClubContactAdapter(currentClub));
+		contactAdapter.addContact(new ContactClub(currentClub)); 
 		CollapsableAdapter collapseContact = new CollapsableAdapter(this, contactAdapter, sectionAdapter);
 		sectionAdapter.addSection("CONTACT", collapseContact);
 		
-		equipeAdapter = new ClubEquipeAdapter(this);
+		equipeAdapter = new SimpleEquipesAdapter(this);
 		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this, equipeAdapter, sectionAdapter);
 		sectionAdapter.addSection("EQUIPES", collapseEquipe);
 		

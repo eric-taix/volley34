@@ -13,58 +13,73 @@ public class ContactEquipe implements Contact {
 	private String mobile;
 	private String telephone;
 	private String nom;
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.model.Contact#getMail()
 	 */
 	@Override
 	public String getMail() {
 		return mail;
 	}
+
 	/**
 	 * @param mail the mail to set
 	 */
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.model.Contact#getMobile()
 	 */
 	@Override
 	public String getMobile() {
 		return mobile;
 	}
+
 	/**
 	 * @param mobile the mobile to set
 	 */
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.model.Contact#getTelephone()
 	 */
 	@Override
 	public String getTelephone() {
 		return telephone;
 	}
+
 	/**
 	 * @param telephone the telephone to set
 	 */
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.model.Contact#getNom()
 	 */
 	@Override
 	public String getNom() {
 		return nom;
 	}
+
 	/**
 	 * @param nom the nom to set
 	 */
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+	
+	public boolean isEmpty() {
+		return (nom == null || nom.length() == 0);
 	}
 
 }

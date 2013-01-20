@@ -7,7 +7,7 @@ package org.jared.android.volley.model;
  * Adapteur entre un club et l'interface contact 
  * @author eric.taix@gmail.com
  */
-public class ClubContactAdapter implements Contact {
+public class ContactClub implements Contact {
 
 	private Club club;
 	
@@ -15,7 +15,7 @@ public class ClubContactAdapter implements Contact {
 	 * Constructeur
 	 * @param clubP
 	 */
-	public ClubContactAdapter(Club clubP) {
+	public ContactClub(Club clubP) {
 		club = clubP;
 	}
 	

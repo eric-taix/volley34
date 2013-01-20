@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.adapter;
+package org.jared.android.volley.ui.adapter.commons;
 
 import org.jared.android.volley.R;
 
@@ -21,6 +21,9 @@ import android.widget.TextView;
  */
 public class CollapsableAdapter extends BaseAdapter {
 
+	private static final String DEFAULT_COLLAPSE  ="Réduire";
+	private static final String DEFAULT_EXPAND = "Tout afficher";
+	
 	private static final int DEFAULT_MAX_ITEMS = 3;
 	// Le contexte d'éxécution 
 	private Context ctx;
@@ -32,6 +35,9 @@ public class CollapsableAdapter extends BaseAdapter {
 	private int maxItems;
 	// L'état du mode
 	private boolean collapsed = true;
+	// Les textes à afficher
+	private String expandText = DEFAULT_EXPAND;
+	private String collapseText = DEFAULT_COLLAPSE;
 
 	/**
 	 * Constructeur permettant d'initialiser le nb max d'items à la valeur par défaut
@@ -54,6 +60,16 @@ public class CollapsableAdapter extends BaseAdapter {
 	}
 
 	/**
+	 * Fixe les textes à afficher 
+	 * @param expandText
+	 * @param collapseText
+	 */
+	public void setTexts(String expandText, String collapseText) {
+		this.expandText = expandText;
+		this.collapseText = collapseText;
+	}
+	
+	/**
 	 * Constructeur permettant d'initialiser le nb max d'items
 	 * 
 	 * @param ctx
@@ -68,12 +84,12 @@ public class CollapsableAdapter extends BaseAdapter {
 		this.childAdapter.registerDataSetObserver(new DataSetObserver() {
 			@Override
 			public void onChanged() {
-				dataSetChanged();
+				childDataSetChanged();
 			}
 		});
 	}
 
-	private void dataSetChanged() {
+	private void childDataSetChanged() {
 		notifyDataSetChanged();
 		if (parentAdapter != null) {
 			parentAdapter.notifyDataSetChanged();
@@ -85,7 +101,7 @@ public class CollapsableAdapter extends BaseAdapter {
 	 */
 	public void expand() {
 		collapsed = false;
-		dataSetChanged();
+		childDataSetChanged();
 	}
 
 	/**
@@ -93,7 +109,7 @@ public class CollapsableAdapter extends BaseAdapter {
 	 */
 	public void collapse() {
 		collapsed = true;
-		dataSetChanged();
+		childDataSetChanged();
 	}
 	
 	/*
@@ -152,18 +168,19 @@ public class CollapsableAdapter extends BaseAdapter {
 				LayoutInflater li = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = li.inflate(R.layout.list_control_layout, parent, false);
 				final TextView tv = (TextView) convertView.findViewById(R.id.expand_title);
+				tv.setText(expandText);
 				final ImageView im = (ImageView) convertView.findViewById(R.id.id_arrow);
 				convertView.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						if (CollapsableAdapter.this.collapsed) {
 							CollapsableAdapter.this.expand();
-							tv.setText("Réduire");
+							tv.setText(collapseText);
 							im.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_top_arrow));
 						}
 						else {
 							CollapsableAdapter.this.collapse();
-							tv.setText("Tout afficher");
+							tv.setText(expandText);
 							im.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_bottom_arrow));
 						}
 					}

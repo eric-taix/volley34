@@ -26,7 +26,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 @EActivity(R.layout.activity_main)
 public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
 	private Fragment mContent;
-	private boolean landScape = false;
+	private boolean landScape = false; 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) { 
-			mContent = new ContentFragment_(); 
+			mContent = new ContentFragment_();
 			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
 			Bundle args = new Bundle();
 			mContent.setArguments(args); 

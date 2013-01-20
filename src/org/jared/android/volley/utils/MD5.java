@@ -23,7 +23,7 @@ public class MD5 {
 	            byte b = messageDigest[i];
 	            String hex = Integer.toHexString((int) 0x00FF & b);
 	            if (hex.length() == 1) {
-	                sb.append("0");
+	                sb.append("0"); 
 	            }
 	            sb.append(hex);
 	        }

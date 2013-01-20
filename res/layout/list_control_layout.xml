@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:gravity="right"
     android:orientation="horizontal"
-    android:padding="8dp" >
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp" >
 
     <TextView
         android:id="@+id/expand_title"

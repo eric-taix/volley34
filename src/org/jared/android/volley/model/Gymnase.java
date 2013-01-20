@@ -18,4 +18,8 @@ public class Gymnase {
 	public String ville;
 	public String heure;
 	public String jour;
+	
+	public boolean isEmpty() {
+		return (nom == null || nom.trim().length() == 0);
+	}
 }

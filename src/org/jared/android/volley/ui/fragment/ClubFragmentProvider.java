@@ -14,8 +14,8 @@ import org.jared.android.volley.repository.ClubDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.ClubActivity;
 import org.jared.android.volley.ui.ClubActivity_;
-import org.jared.android.volley.ui.adapter.ClubAdapter;
-import org.jared.android.volley.ui.adapter.SectionAdapter;
+import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
 import android.content.Intent;
 import android.view.View;
@@ -31,8 +31,8 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 	private static final int SHOW_CLUB = 0;
 	
 	private SectionAdapter sectionAdapter;
-	private ClubAdapter allAdapter;
-	private ClubAdapter favoriteAdapter;
+	private MenuClubsAdapter allAdapter;
+	private MenuClubsAdapter favoriteAdapter;
 	
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getCode()
@@ -66,8 +66,8 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 	@Override
 	public ListAdapter getListAdapter() {
 		sectionAdapter = new SectionAdapter(fragment.getActivity(),  R.layout.list_header);
-		allAdapter = new ClubAdapter(fragment.getActivity());
-		favoriteAdapter = new ClubAdapter(fragment.getActivity());
+		allAdapter = new MenuClubsAdapter(fragment.getActivity());
+		favoriteAdapter = new MenuClubsAdapter(fragment.getActivity());
 		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
 		sectionAdapter.addSection("TOUS", allAdapter);
 		return sectionAdapter;

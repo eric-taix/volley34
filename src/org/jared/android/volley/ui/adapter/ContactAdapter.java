@@ -26,6 +26,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
+ * Gère un contact: son nom, son tél, son email et propose via un bouton de pouvoir le contacter
  * @author eric.taix@gmail.com
  */
 public class ContactAdapter extends BaseAdapter {
@@ -53,10 +54,12 @@ public class ContactAdapter extends BaseAdapter {
 	 * 
 	 * @param contacts
 	 */
-	public void setContact(Contact contact) {
-		List<Contact> cs = new ArrayList<Contact>();
-		cs.add(contact);
-		setContact(cs);
+	public void addContact(Contact contact) {
+		if (this.contacts == null) {
+			this.contacts = new ArrayList<Contact>();
+		}
+		this.contacts.add(contact);
+		notifyDataSetChanged();
 	}
 
 	/**

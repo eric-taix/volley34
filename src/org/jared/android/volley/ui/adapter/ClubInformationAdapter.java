@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
+ * Gère les informations d'un club tel que son nom, le site et propose un bouton pour naviguer vers le site le cas échéant
  * @author eric.taix@gmail.com
  */
 @SuppressLint("DefaultLocale")

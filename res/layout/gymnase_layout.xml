@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="25dp"
+    android:paddingTop="10dp" >
+
+    <TextView
+        android:id="@+id/id_nom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Salle Polyvalente (Vailhauquès)"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/id_quartier"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/id_nom"
+        android:text="Quartier des jeux"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/id_adresse"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/id_quartier"
+        android:text="Adresse du gymnase"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/id_cp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/id_adresse"
+        android:text="34570"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/id_ville"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/id_cp"
+        android:layout_alignBottom="@+id/id_cp"
+        android:layout_toRightOf="@+id/id_cp"
+        android:paddingLeft="10dp"
+        android:text="Vailhauquès"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+    
+</RelativeLayout>

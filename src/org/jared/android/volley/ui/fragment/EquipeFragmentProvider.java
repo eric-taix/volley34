@@ -12,12 +12,10 @@ import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
-import org.jared.android.volley.ui.EquipeActivity;
 import org.jared.android.volley.ui.EquipeActivity_;
-import org.jared.android.volley.ui.adapter.EquipeAdapter;
-import org.jared.android.volley.ui.adapter.SectionAdapter;
+import org.jared.android.volley.ui.adapter.MenuEquipesAdapter;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
@@ -31,8 +29,8 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	private static final int SHOW_EQUIPE = 0;
 	
 	private SectionAdapter sectionAdapter;
-	private EquipeAdapter allAdapter;
-	private EquipeAdapter favoriteAdapter;
+	private MenuEquipesAdapter allAdapter;
+	private MenuEquipesAdapter favoriteAdapter;
 	
 
 	/* (non-Javadoc)
@@ -56,9 +54,8 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-		Intent intent = new Intent(fragment.getActivity(), EquipeActivity_.class);
-		intent.putExtra(EquipeActivity.EXTRA_EQUIPE, (Equipe) sectionAdapter.getItem(position));
-		fragment.startActivityForResult(intent, SHOW_EQUIPE);
+		Equipe eq = (Equipe) sectionAdapter.getItem(position);
+		EquipeActivity_.startActivityForResult(fragment, eq.codeEquipe, SHOW_EQUIPE);
 	}
 
 	/* (non-Javadoc)
@@ -67,8 +64,8 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	@Override
 	public ListAdapter getListAdapter() {
 		sectionAdapter = new SectionAdapter(fragment.getActivity(),  R.layout.list_header);
-		allAdapter = new EquipeAdapter(fragment.getActivity());
-		favoriteAdapter = new EquipeAdapter(fragment.getActivity());
+		allAdapter = new MenuEquipesAdapter(fragment.getActivity());
+		favoriteAdapter = new MenuEquipesAdapter(fragment.getActivity());
 		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
 		sectionAdapter.addSection("TOUS", allAdapter);
 		return sectionAdapter;

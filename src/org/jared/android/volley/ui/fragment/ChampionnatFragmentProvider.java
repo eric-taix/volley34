@@ -6,8 +6,8 @@ package org.jared.android.volley.ui.fragment;
 import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.repository.VolleyDatabase;
-import org.jared.android.volley.ui.adapter.ClubAdapter;
-import org.jared.android.volley.ui.adapter.SectionAdapter;
+import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,8 +48,8 @@ public class ChampionnatFragmentProvider extends BaseFragmentProvider {
 	@Override
 	public ListAdapter getListAdapter() {
 		SectionAdapter sectionAdapter = new SectionAdapter(fragment.getActivity(),  R.layout.list_header);
-		ClubAdapter allAdapter = new ClubAdapter(fragment.getActivity());
-		ClubAdapter favoriteAdapter = new ClubAdapter(fragment.getActivity());
+		MenuClubsAdapter allAdapter = new MenuClubsAdapter(fragment.getActivity());
+		MenuClubsAdapter favoriteAdapter = new MenuClubsAdapter(fragment.getActivity());
 		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
 		sectionAdapter.addSection("TOUS", allAdapter);
 		return sectionAdapter;
