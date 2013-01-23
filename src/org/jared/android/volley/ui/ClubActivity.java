@@ -12,6 +12,8 @@ import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ContactClub;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
+import org.jared.android.volley.model.Event;
+import org.jared.android.volley.model.EventsResponse;
 import org.jared.android.volley.repository.ClubDAO;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.MajDAO;
@@ -23,6 +25,7 @@ import org.jared.android.volley.ui.action.ShareAction;
 import org.jared.android.volley.ui.action.SmsAction;
 import org.jared.android.volley.ui.adapter.ClubInformationAdapter;
 import org.jared.android.volley.ui.adapter.ContactAdapter;
+import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.SimpleEquipesAdapter;
 import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
@@ -31,10 +34,8 @@ import org.jared.android.volley.ui.widget.quickaction.ActionItem;
 import org.jared.android.volley.ui.widget.quickaction.QuickAction;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.format.DateUtils;
@@ -103,10 +104,11 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	private SimpleEquipesAdapter equipeAdapter;
 	// Adapter qui contient les autres adapters
 	private SectionAdapter sectionAdapter;
+	// Adapteur pour les événements
+	private EventAdapter eventAdapter;
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -140,14 +142,20 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		sectionAdapter.addSection("INFORMATIONS", informationAdapter);
 
 		ContactAdapter contactAdapter = new ContactAdapter(this);
-		contactAdapter.addContact(new ContactClub(currentClub)); 
+		contactAdapter.addContact(new ContactClub(currentClub));
 		CollapsableAdapter collapseContact = new CollapsableAdapter(this, contactAdapter, sectionAdapter);
 		sectionAdapter.addSection("CONTACT", collapseContact);
-		
+
 		equipeAdapter = new SimpleEquipesAdapter(this);
 		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this, equipeAdapter, sectionAdapter);
+		collapseEquipe.setTexts("Toutes les équipes", "Réduire");
 		sectionAdapter.addSection("EQUIPES", collapseEquipe);
-		
+
+		eventAdapter = new EventAdapter(this);
+		CollapsableAdapter collapseEvent = new CollapsableAdapter(this, eventAdapter, sectionAdapter);
+		collapseEvent.setTexts("Tous les évènements", "Réduire");
+		sectionAdapter.addSection("CALENDRIER", collapseEvent);
+
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
 		int[] colors = { 0, 0xFF777777, 0 };
@@ -167,6 +175,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		}
 		favorite.setImageDrawable(currentClub.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
 				R.drawable.ic_star_disabled));
+		// On répond au click de la liste
 		listView.setOnItemClickListener(this);
 		// Création du menu pour le contact
 		quickAction = new QuickAction(this);
@@ -200,7 +209,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 				executeAction(action);
 			}
 		});
-		updateUI();
+		updateEquipesUI();
 		// En tâche de fond on interroge le serveur
 		progressBar.setVisibility(View.VISIBLE);
 		updateEquipesFromNetwork();
@@ -232,17 +241,18 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	/**
 	 * Met à jour l'interface graphique en fonction des données contenues dans la BD
 	 */
-	void updateUI() {
+	void updateEquipesUI() {
 		VolleyDatabase db = new VolleyDatabase(this);
 		// Date de maj
 		Date dateMaj = MajDAO.getMaj(db, "EQUIPES-CLUB-" + currentClub.code);
 		if (dateMaj != null) {
-			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_NUMERIC_DATE));
+			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
+					DateUtils.FORMAT_NUMERIC_DATE));
 		}
 		else {
 			maj.setText("");
 		}
-		List<Equipe> equipes = EquipeDAO.getAllEquipes(db, currentClub.code);
+		List<Equipe> equipes = EquipeDAO.getAll(db, currentClub.code);
 		if (equipes != null) {
 			equipeAdapter.setEquipes(equipes);
 			sectionAdapter.notifyDataSetChanged();
@@ -268,7 +278,31 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 
 	@UiThread
 	void updateEquipesFromDB() {
-		updateUI();
+		updateEquipesUI();
+		updateCalendarFromNetwork(currentClub.code);
+	}
+
+	/**
+	 * Récupère le calendrier de l'équipe depuis le serveur
+	 */
+	@Background
+	public void updateCalendarFromNetwork(String codeClub) {
+		try {
+			EventsResponse er = application.restClient.getClubCalendar(codeClub);
+			updateCalendarUI(er.events);
+
+			// VolleyDatabase db = new VolleyDatabase(this);
+			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
+			// MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+		}
+		finally {
+			// updateEquipesFromDB();
+		}
+	}
+
+	@UiThread
+	public void updateCalendarUI(List<Event> events) {
+		eventAdapter.setEvents(events);
 	}
 
 	@Background
@@ -280,30 +314,14 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// Le site Web
-		if (position == 1) {
-			if (currentClub.urlSiteWeb != null && currentClub.urlSiteWeb.length() > 0) {
-				String url = currentClub.urlSiteWeb;
-				if (!url.toLowerCase().startsWith("http://") || !url.toLowerCase().startsWith("https://")) {
-					url = "http://" + url;
-				}
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse(url));
-				startActivity(intent);
-			}
-		}
-		// Le contact
-		else if (position == 3) {
-			quickAction.show(view);
-		}
-		// Une des équipes
-		if (position > 5) {
-
+		Object obj = parent.getAdapter().getItem(position);
+		// On affiche le détail d'une équipe
+		if (obj instanceof Equipe) {
+			EquipeActivity_.startActivityForResult(this, ((Equipe) obj).codeEquipe, 0);
 		}
 	}
 

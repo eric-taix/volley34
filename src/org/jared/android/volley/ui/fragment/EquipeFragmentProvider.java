@@ -75,7 +75,7 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public void doUpdateUI(VolleyDatabase db) {
-		List<Equipe> equipes = EquipeDAO.getAllEquipes(db, null);
+		List<Equipe> equipes = EquipeDAO.getAll(db, null);
 		if (equipes != null) {
 			allAdapter.setEquipes(equipes);
 			List<Equipe> favEquipes= getFavoriteEquipes(equipes);

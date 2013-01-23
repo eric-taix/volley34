@@ -32,6 +32,9 @@ public interface RestClient {
 	@Get("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}")
 	EventsResponse getClubCalendar(String codeClub);
 	
+	// Calendrier futur d'une Žquipe
+	@Get("/wsCalendriers.asmx/GetCalendrier?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&equipeCode={codeEquipe}")
+	EventsResponse getCalendar(String codeEquipe);
 	
 	//----------------------------
 	RestTemplate getRestTemplate();

@@ -40,7 +40,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		if (mContent == null) { 
 			mContent = new ContentFragment_();
 			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
-			Bundle args = new Bundle();
+			Bundle args = new Bundle(); 
 			mContent.setArguments(args); 
 		}
 		 

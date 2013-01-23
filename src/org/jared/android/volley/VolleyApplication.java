@@ -13,6 +13,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.SimpleXmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 
 import com.googlecode.androidannotations.annotations.EApplication;
@@ -34,6 +35,7 @@ public class VolleyApplication extends Application {
 	/**
 	 * Creation de l'application
 	 */
+	@SuppressLint("SimpleDateFormat")
 	public void onCreate() { 
 		super.onCreate();
 		// On initialise l'ImageLoader
@@ -41,6 +43,7 @@ public class VolleyApplication extends Application {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).
 				defaultDisplayImageOptions(DisplayImageOptions.createSimple()).build();
 		imageLoader.init(config);
+		
 		// Init du template REST afin de prendre en compte la stratégie d'annotation
 		// ATTENTION: l'instance du RestClient est partagée et doit l'être !!! 
 		// Donc il ne faut pas instancier un autre RestClient

@@ -5,6 +5,7 @@
 
 package org.jared.android.volley.ui;
 
+import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipeDetail;
+import org.jared.android.volley.model.Event;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
 public final class EquipeActivity_
@@ -44,10 +46,10 @@ public final class EquipeActivity_
     }
 
     private void afterSetContentView_() {
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
@@ -103,14 +105,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateUI(final Equipe equipe) {
+    public void updateDetailUI(final EquipeDetail ed) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateUI(equipe);
+                    EquipeActivity_.super.updateDetailUI(ed);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -121,14 +123,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateEquipe(final EquipeDetail ed) {
+    public void updateCalendarUI(final List<Event> events) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateEquipe(ed);
+                    EquipeActivity_.super.updateCalendarUI(events);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -139,14 +141,32 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void executeAction(final Action action) {
+    public void updateEquipeUI(final Equipe equipe) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    EquipeActivity_.super.updateEquipeUI(equipe);
+                } catch (RuntimeException e) {
+                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateCalendarFromNetwork(final String codeEquipe) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.executeAction(action);
+                    EquipeActivity_.super.updateCalendarFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -193,14 +213,32 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void retrieveDetailFromNetwork() {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.retrieveDetailFromNetwork();
+                    EquipeActivity_.super.executeAction(action);
+                } catch (RuntimeException e) {
+                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateDetailFromNetwork(final String codeEquipe) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    EquipeActivity_.super.updateDetailFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

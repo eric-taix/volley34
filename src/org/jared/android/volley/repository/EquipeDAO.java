@@ -60,7 +60,7 @@ public class EquipeDAO {
 	/**
 	 * Sauvegarde
 	 */
-	public static void saveEquipe(SQLiteOpenHelper dbHelper, Equipe equipe) {
+	public static void insert(SQLiteOpenHelper dbHelper, Equipe equipe) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getWritableDatabase();
@@ -77,7 +77,7 @@ public class EquipeDAO {
 	/**
 	 * Met ˆ jour
 	 */
-	public static void updateEquipe(SQLiteOpenHelper dbHelper, Equipe equipe) {
+	public static void update(SQLiteOpenHelper dbHelper, Equipe equipe) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getWritableDatabase();
@@ -132,7 +132,7 @@ public class EquipeDAO {
 	/**
 	 * Retourne tous
 	 */
-	public static List<Equipe> getAllEquipes(SQLiteOpenHelper dbHelper, String code) {
+	public static List<Equipe> getAll(SQLiteOpenHelper dbHelper, String code) {
 		SQLiteDatabase db = null;
 		try {
 			db = dbHelper.getReadableDatabase();

@@ -5,6 +5,7 @@
 
 package org.jared.android.volley.ui;
 
+import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.googlecode.androidannotations.api.BackgroundExecutor;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Club;
+import org.jared.android.volley.model.Event;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
 public final class ClubActivity_
@@ -43,11 +45,11 @@ public final class ClubActivity_
     }
 
     private void afterSetContentView_() {
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
@@ -121,14 +123,14 @@ public final class ClubActivity_
     }
 
     @Override
-    public void updateEquipesFromNetwork() {
-        BackgroundExecutor.execute(new Runnable() {
+    public void updateCalendarUI(final List<Event> events) {
+        handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.updateEquipesFromNetwork();
+                    ClubActivity_.super.updateCalendarUI(events);
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -165,6 +167,42 @@ public final class ClubActivity_
             public void run() {
                 try {
                     ClubActivity_.super.executeAction(action);
+                } catch (RuntimeException e) {
+                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateCalendarFromNetwork(final String codeClub) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    ClubActivity_.super.updateCalendarFromNetwork(codeClub);
+                } catch (RuntimeException e) {
+                    Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateEquipesFromNetwork() {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    ClubActivity_.super.updateEquipesFromNetwork();
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

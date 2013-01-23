@@ -97,7 +97,6 @@ public class SectionAdapter extends BaseAdapter {
 			}
 			if (position < size) {
 				result = type + adapter.getItemViewType(position - 1);
-				System.out.println("==>"+adapter+" getVT="+result);
 				break;
 			}
 

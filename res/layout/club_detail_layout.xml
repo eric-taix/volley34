@@ -32,6 +32,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_marginTop="80dp"
+        android:fastScrollEnabled="false"
         android:paddingTop="20dp" >
 
     </ListView>

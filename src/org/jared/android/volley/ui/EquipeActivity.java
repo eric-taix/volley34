@@ -12,10 +12,13 @@ import org.jared.android.volley.model.ClubInformation;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipeDetail;
 import org.jared.android.volley.model.EquipeDetailResponse;
+import org.jared.android.volley.model.Event;
+import org.jared.android.volley.model.EventsResponse;
 import org.jared.android.volley.repository.EquipeDAO;
 import org.jared.android.volley.repository.MajDAO;
 import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.adapter.ContactAdapter;
+import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.GymnaseAdapter;
 import org.jared.android.volley.ui.adapter.SimpleClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
@@ -97,9 +100,13 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	// Adapteur pour les contacts (championnat + coupe)
 	private ContactAdapter contactChampionnatAdapter;
 	private ContactAdapter contactCoupeAdapter;
+	// Adapteurs pour les gymnases
 	private GymnaseAdapter gymnaseChampionnatAdapter;
 	private GymnaseAdapter gymnaseCoupeAdapter;
+	// Adapteur pour le club
 	private SimpleClubsAdapter clubAdapter;
+	// Adapteur pour les événements
+	private EventAdapter eventAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -141,14 +148,14 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		gymnaseCoupeAdapter = new GymnaseAdapter(this);
 		sectionAdapter.addSection(SECTION_ADRESSE_COUPE, gymnaseCoupeAdapter);
 
-		ContactAdapter contactAdapter3 = new ContactAdapter(this);
-		sectionAdapter.addSection("CALENDRIER", contactAdapter3);
+		eventAdapter = new EventAdapter(this);
+		sectionAdapter.addSection("CALENDRIER", eventAdapter);
 		
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
-		int[] colors = { 0, 0xFF777777, 0 };
+		int[] colors = { 0, getResources().getColor(R.color.emphasis), 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
-		listView.setDividerHeight(0);
+		listView.setDividerHeight(1);
 		listView.setAdapter(sectionAdapter);
 		listView.setOnItemClickListener(this);
 		// Création du menu pour le contact
@@ -215,11 +222,14 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	void updateEquipeFromDB(String code) {
 		VolleyDatabase db = new VolleyDatabase(this);
 		Equipe equipe = EquipeDAO.getByCode(db, code);
-		updateUI(equipe);
+		updateEquipeUI(equipe);
+		// On lance les autres demandes
+		updateDetailFromNetwork(equipe.codeEquipe);
+		updateCalendarFromNetwork(equipe.codeEquipe);
 	}
 
 	@UiThread
-	void updateUI(Equipe equipe) {
+	void updateEquipeUI(Equipe equipe) {
 		currentEquipe = equipe;
 		ClubInformation ci = new ClubInformation();
 		ci.nom = currentEquipe.nomClub;
@@ -229,19 +239,35 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		title.setText(currentEquipe.nomEquipe);
 		favorite.setImageDrawable(currentEquipe.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
 				R.drawable.ic_star_disabled));
-		// On lance la demande de détail
-		retrieveDetailFromNetwork();
 	}
 
 	/**
-	 * Récupère (si possible) le détail de l'équipe
+	 * Récupère le détail de l'équipe depuis le serveur
 	 */
 	@Background
-	public void retrieveDetailFromNetwork() {
+	public void updateDetailFromNetwork(String codeEquipe) {
 		try {
-			EquipeDetailResponse edr = application.restClient.getEquipeDetail(currentEquipe.codeEquipe);
+			EquipeDetailResponse edr = application.restClient.getEquipeDetail(codeEquipe);
 			EquipeDetail ed = edr.getEquipeDetail();
-			updateEquipe(ed);
+			updateDetailUI(ed);
+
+			// VolleyDatabase db = new VolleyDatabase(this);
+			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
+			// MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+		}
+		finally {
+			// updateEquipesFromDB();
+		}
+	}
+	
+	/**
+	 * Récupère le calendrier de l'équipe depuis le serveur
+	 */
+	@Background
+	public void updateCalendarFromNetwork(String codeEquipe) {
+		try {
+			EventsResponse er = application.restClient.getCalendar(codeEquipe);
+			updateCalendarUI(er.events);
 
 			// VolleyDatabase db = new VolleyDatabase(this);
 			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
@@ -253,7 +279,12 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	}
 
 	@UiThread
-	public void updateEquipe(EquipeDetail ed) {
+	public void updateCalendarUI(List<Event> events) {
+		eventAdapter.setEvents(events);
+	}
+	
+	@UiThread
+	public void updateDetailUI(EquipeDetail ed) {
 		if (!ed.contactRespChampionnat.isEmpty()) {
 			contactChampionnatAdapter.addContact(ed.contactRespChampionnat);
 		}
@@ -292,7 +323,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	void updateEquipe(Equipe equipeToUpdate) {
 		try {
 			VolleyDatabase db = new VolleyDatabase(this);
-			EquipeDAO.updateEquipe(db, equipeToUpdate);
+			EquipeDAO.update(db, equipeToUpdate);
 		}
 		finally {
 		}
@@ -312,7 +343,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		else {
 			maj.setText("");
 		}
-		List<Equipe> equipes = EquipeDAO.getAllEquipes(db, currentEquipe.codeEquipe);
+		List<Equipe> equipes = EquipeDAO.getAll(db, currentEquipe.codeEquipe);
 		if (equipes != null) {
 			sectionAdapter.notifyDataSetChanged();
 		}

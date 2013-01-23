@@ -79,4 +79,14 @@ public class RestClient_
         return restTemplate.exchange(rootUrl.concat("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}"), HttpMethod.GET, requestEntity, EventsResponse.class, urlVariables).getBody();
     }
 
+    @Override
+    public EventsResponse getCalendar(String codeEquipe) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("codeEquipe", codeEquipe);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/wsCalendriers.asmx/GetCalendrier?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&equipeCode={codeEquipe}"), HttpMethod.GET, requestEntity, EventsResponse.class, urlVariables).getBody();
+    }
+
 }
