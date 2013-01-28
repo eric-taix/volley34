@@ -256,7 +256,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 				updateCalendarUI(codeEquipe);
 			}
 		}
-		catch (SQLException e) {
+		catch (Exception e) {
 			Log.e("Volley34", "Error while retrieving team from DB", e);
 		}
 	}
@@ -354,6 +354,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		// Launch background updates for details and calendar
 		updateDetailFromNetwork(codeEquipe);
 		updateCalendarFromNetwork(codeEquipe);
+		updateUI(codeEquipe);
 	}
 
 	/**

@@ -20,27 +20,31 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_below="@+id/id_nom"
         android:text="Quartier des jeux"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/id_adresse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_below="@+id/id_quartier"
         android:text="Adresse du gymnase"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/id_cp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_below="@+id/id_adresse"
+        android:paddingRight="10dp"
         android:text="34570"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -48,10 +52,10 @@
         android:id="@+id/id_ville"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/id_cp"
         android:layout_alignBottom="@+id/id_cp"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/id_adresse"
         android:layout_toRightOf="@+id/id_cp"
-        android:paddingLeft="10dp"
         android:text="Vailhauquès"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

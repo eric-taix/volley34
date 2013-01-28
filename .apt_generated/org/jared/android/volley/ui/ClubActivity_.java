@@ -51,12 +51,12 @@ public final class ClubActivity_
         application = ((VolleyApplication) this.getApplication());
         connectionSource_ = OpenHelperManager.getHelper(this, VolleyDatabaseHelper.class).getConnectionSource();
         try {
-            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("ClubActivity_", "Could not create DAO", e);
         }
         try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
         } catch (SQLException e) {
             Log.e("ClubActivity_", "Could not create DAO", e);
         }
@@ -73,12 +73,12 @@ public final class ClubActivity_
     }
 
     private void afterSetContentView_() {
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -169,14 +169,14 @@ public final class ClubActivity_
     }
 
     @Override
-    public void updateClub(final Club clubToUpdate) {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.updateClub(clubToUpdate);
+                    ClubActivity_.super.executeAction(action);
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -187,14 +187,14 @@ public final class ClubActivity_
     }
 
     @Override
-    public void executeAction(final Action action) {
+    public void updateClub(final Club clubToUpdate) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubActivity_.super.executeAction(action);
+                    ClubActivity_.super.updateClub(clubToUpdate);
                 } catch (RuntimeException e) {
                     Log.e("ClubActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

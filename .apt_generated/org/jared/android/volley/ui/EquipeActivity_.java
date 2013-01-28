@@ -51,7 +51,7 @@ public final class EquipeActivity_
         application = ((VolleyApplication) this.getApplication());
         connectionSource_ = OpenHelperManager.getHelper(this, VolleyDatabaseHelper.class).getConnectionSource();
         try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
         } catch (SQLException e) {
             Log.e("EquipeActivity_", "Could not create DAO", e);
         }
@@ -61,23 +61,23 @@ public final class EquipeActivity_
             Log.e("EquipeActivity_", "Could not create DAO", e);
         }
         try {
-            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
             Log.e("EquipeActivity_", "Could not create DAO", e);
         }
         try {
-            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("EquipeActivity_", "Could not create DAO", e);
         }
     }
 
     private void afterSetContentView_() {
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -150,14 +150,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateFromNetwork(final String codeEquipe) {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateFromNetwork(codeEquipe);
+                    EquipeActivity_.super.executeAction(action);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -168,14 +168,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void executeAction(final Action action) {
+    public void updateFromNetwork(final String codeEquipe) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.executeAction(action);
+                    EquipeActivity_.super.updateFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

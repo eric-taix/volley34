@@ -40,7 +40,7 @@ public class SectionAdapter extends BaseAdapter {
 		adapter.registerDataSetObserver(observer);
 	}
 
-	public void insertSection(String section,  Adapter adapter, int position) {
+	public void insertSection(String section, Adapter adapter, int position) {
 		this.headers.insert(section, position);
 		this.sections.put(section, adapter);
 		adapter.registerDataSetObserver(observer);
@@ -49,9 +49,11 @@ public class SectionAdapter extends BaseAdapter {
 	public void removeSection(String section) {
 		this.headers.remove(section);
 		Adapter adapter = this.sections.remove(section);
-		adapter.unregisterDataSetObserver(observer);
+		if (adapter != null) {
+			adapter.unregisterDataSetObserver(observer);
+		}
 	}
-	
+
 	public Object getItem(int position) {
 		for (String header : headers.getHeaders()) {
 			Adapter adapter = sections.get(header);
@@ -123,7 +125,7 @@ public class SectionAdapter extends BaseAdapter {
 			if (position == 0) return false;
 			if (position < size) {
 				if (adapter instanceof BaseAdapter) {
-					return ((BaseAdapter)adapter).isEnabled(position - 1);
+					return ((BaseAdapter) adapter).isEnabled(position - 1);
 				}
 				return true;
 			}
@@ -138,7 +140,7 @@ public class SectionAdapter extends BaseAdapter {
 		int sectionnum = 0;
 		for (String header : headers.getHeaders()) {
 			Adapter adapter = sections.get(header);
-			
+
 			int size = adapter.getCount() + 1;
 
 			// VŽrifie si la position est dans la section
