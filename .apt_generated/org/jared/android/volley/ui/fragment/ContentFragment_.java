@@ -5,6 +5,7 @@
 
 package org.jared.android.volley.ui.fragment;
 
+import java.sql.SQLException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,18 +16,30 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
+import org.jared.android.volley.model.Update;
+import org.jared.android.volley.repository.VolleyDatabaseHelper;
 
 public final class ContentFragment_
     extends ContentFragment
 {
 
     private View contentView_;
+    private ConnectionSource connectionSource_;
     private Handler handler_ = new Handler();
 
     private void init_(Bundle savedInstanceState) {
         application = ((VolleyApplication) getActivity().getApplication());
+        connectionSource_ = OpenHelperManager.getHelper(getActivity(), VolleyDatabaseHelper.class).getConnectionSource();
+        try {
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+        } catch (SQLException e) {
+            Log.e("ContentFragment_", "Could not create DAO", e);
+        }
     }
 
     @Override
@@ -37,9 +50,9 @@ public final class ContentFragment_
 
     private void afterSetContentView_() {
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         afterViews();
     }
 
@@ -65,14 +78,14 @@ public final class ContentFragment_
     }
 
     @Override
-    public void updateFromDB() {
+    public void updateUI() {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ContentFragment_.super.updateFromDB();
+                    ContentFragment_.super.updateUI();
                 } catch (RuntimeException e) {
                     Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

@@ -3,6 +3,7 @@
  */
 package org.jared.android.volley.ui;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -14,9 +15,8 @@ import org.jared.android.volley.model.EquipeDetail;
 import org.jared.android.volley.model.EquipeDetailResponse;
 import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.EventsResponse;
-import org.jared.android.volley.repository.EquipeDAO;
-import org.jared.android.volley.repository.MajDAO;
-import org.jared.android.volley.repository.VolleyDatabase;
+import org.jared.android.volley.model.Update;
+import org.jared.android.volley.repository.VolleyDatabaseHelper;
 import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.GymnaseAdapter;
@@ -35,6 +35,7 @@ import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -52,8 +53,11 @@ import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 
 /**
  * Activité permettant d'afficher un club
@@ -89,6 +93,15 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	TextView maj;
 	@ViewById(R.id.progressBar)
 	ProgressBar progressBar;
+
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Update.class)
+	Dao<Update, String> updateDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Equipe.class)
+	Dao<Equipe, String> equipeDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = EquipeDetail.class)
+	Dao<EquipeDetail, String> equipeDetailDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Event.class)
+	Dao<Event, String> eventDao;
 
 	// L'équipe courante
 	private Equipe currentEquipe;
@@ -130,7 +143,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	@AfterViews
 	public void afterViews() {
 		sectionAdapter = new SectionAdapter(this, R.layout.list_header);
-		
+
 		clubAdapter = new SimpleClubsAdapter(this);
 		sectionAdapter.addSection("CLUB", clubAdapter);
 
@@ -150,7 +163,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 
 		eventAdapter = new EventAdapter(this);
 		sectionAdapter.addSection("CALENDRIER", eventAdapter);
-		
+
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
 		int[] colors = { 0, getResources().getColor(R.color.emphasis), 0 };
@@ -180,7 +193,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		// quickAction.addActionItem(shareAction);
 		// }
 
-		// Mise en place du listener sur le quick action
+		// Add the listener for the quick action
 		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
 			@Override
 			public void onItemClick(QuickAction quickAction, int pos, int actionId) {
@@ -190,152 +203,135 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 			}
 		});
 
-		// En tâche de fond on interroge le serveur
-		progressBar.setVisibility(View.VISIBLE);
-		
-		// Si l'activité est lancée avec des extras (ce qui devrait être le cas systématiquement)
+		// If the activity has been laucnhed with an extra containing the team code (It SHOULD be)
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			String codeEquipe = extras.getString(EXTRA_CODE_EQUIPE);
 			if (codeEquipe != null) {
-				updateEquipeFromDB(codeEquipe);
+				updateUI(codeEquipe);
+				// En tâche de fond on interroge le serveur
+				progressBar.setVisibility(View.VISIBLE);
+				updateFromNetwork(codeEquipe);
 			}
 		}
 	}
 
 	/**
-	 * Click sur le bouton favorite
+	 * The favorite button has been clicked
 	 */
 	@Click(R.id.favorite)
 	public void favoriteClicked() {
 		int id_favorite = currentEquipe.favorite ? R.drawable.ic_star_disabled : R.drawable.ic_star_enabled;
 		favorite.setImageDrawable(getResources().getDrawable(id_favorite));
 		currentEquipe.favorite = !currentEquipe.favorite;
-		updateEquipe(currentEquipe);
-		String msg = currentEquipe.favorite ? currentEquipe.nomEquipe + " a été ajouté aux favoris" : currentEquipe.nomEquipe + " a été supprimé des favoris";
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		try {
+			equipeDao.createOrUpdate(currentEquipe);
+			String msg = currentEquipe.favorite ? currentEquipe.nomEquipe + " a été ajouté aux favoris" : currentEquipe.nomEquipe
+					+ " a été supprimé des favoris";
+			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while updating the team", e);
+		}
 	}
 
-	// ---------------------- Les différents mises à jour DB + Network
-
-	@Background
-	void updateEquipeFromDB(String code) {
-		VolleyDatabase db = new VolleyDatabase(this);
-		Equipe equipe = EquipeDAO.getByCode(db, code);
-		updateEquipeUI(equipe);
-		// On lance les autres demandes
-		updateDetailFromNetwork(equipe.codeEquipe);
-		updateCalendarFromNetwork(equipe.codeEquipe);
-	}
+	// ---------------------- Update UI from the DB --------------------------
 
 	@UiThread
-	void updateEquipeUI(Equipe equipe) {
-		currentEquipe = equipe;
-		ClubInformation ci = new ClubInformation();
-		ci.nom = currentEquipe.nomClub;
-		ci.code = currentEquipe.codeClub;
-		clubAdapter.setClub(ci);
-		// On fixe les infos
-		title.setText(currentEquipe.nomEquipe);
-		favorite.setImageDrawable(currentEquipe.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
-				R.drawable.ic_star_disabled));
+	void updateUI(String codeEquipe) {
+		try {
+			currentEquipe = equipeDao.queryForId(codeEquipe);
+			if (currentEquipe != null) {
+				ClubInformation ci = new ClubInformation();
+				ci.nom = currentEquipe.nomClub;
+				ci.code = currentEquipe.codeClub;
+				clubAdapter.setClub(ci);
+				// Set team informations
+				title.setText(currentEquipe.nomEquipe);
+				favorite.setImageDrawable(currentEquipe.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
+						R.drawable.ic_star_disabled));
+				// Update details from the DB
+				updateDetailUI(currentEquipe.codeEquipe);
+				// Update events from the DB
+				updateCalendarUI(codeEquipe);
+			}
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving team from DB", e);
+		}
 	}
 
 	/**
-	 * Récupère le détail de l'équipe depuis le serveur
+	 * Update the detail of a team (contacts and locations)
+	 * @param codeEquipe
 	 */
-	@Background
-	public void updateDetailFromNetwork(String codeEquipe) {
+	private void updateDetailUI(String codeEquipe) {
+		// Get current datas from DB and delete
+		EquipeDetail ed;
 		try {
-			EquipeDetailResponse edr = application.restClient.getEquipeDetail(codeEquipe);
-			EquipeDetail ed = edr.getEquipeDetail();
-			updateDetailUI(ed);
+			ed = equipeDetailDao.queryForId(codeEquipe);
+			if (ed != null) {
+				if (!ed.contactRespChampionnat.isEmpty()) {
+					contactChampionnatAdapter.addContact(ed.contactRespChampionnat);
+				}
+				if (!ed.contactSupplChampionnat.isEmpty()) {
+					contactChampionnatAdapter.addContact(ed.contactSupplChampionnat);
+				}
+				if (!ed.contactRespCoupe.isEmpty()) {
+					contactCoupeAdapter.addContact(ed.contactRespCoupe);
+				}
+				if (!ed.contactSupplCoupe.isEmpty()) {
+					contactCoupeAdapter.addContact(ed.contactSupplCoupe);
+				}
+				if (!ed.gymnaseChampionnat.isEmpty()) {
+					gymnaseChampionnatAdapter.setGymnase(ed.gymnaseChampionnat);
+				}
+				if (!ed.gymnaseCoupe.isEmpty()) {
+					gymnaseCoupeAdapter.setGymnase(ed.gymnaseCoupe);
+				}
 
-			// VolleyDatabase db = new VolleyDatabase(this);
-			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
-			// MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+				// On fait le ménage dans les sections ne servant pas
+				if (contactChampionnatAdapter.getCount() == 0) {
+					sectionAdapter.removeSection(SECTION_CONTACTS_CHAMPIONNAT);
+				}
+				if (contactCoupeAdapter.getCount() == 0) {
+					sectionAdapter.removeSection(SECTION_CONTACTS_COUPE);
+				}
+				if (gymnaseChampionnatAdapter.getCount() == 0) {
+					sectionAdapter.removeSection(SECTION_ADRESSE_CHAMPIONNAT);
+				}
+				if (gymnaseCoupeAdapter.getCount() == 0) {
+					sectionAdapter.removeSection(SECTION_ADRESSE_COUPE);
+				}
+			}
 		}
-		finally {
-			// updateEquipesFromDB();
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving detail for team " + codeEquipe, e);
 		}
 	}
-	
+
 	/**
-	 * Récupère le calendrier de l'équipe depuis le serveur
+	 * Update team events fromt the DB
+	 * @param codeEquipe
 	 */
-	@Background
-	public void updateCalendarFromNetwork(String codeEquipe) {
+	public void updateCalendarUI(String codeEquipe) {
+		List<Event> events;
 		try {
-			EventsResponse er = application.restClient.getCalendar(codeEquipe);
-			updateCalendarUI(er.events);
-
-			// VolleyDatabase db = new VolleyDatabase(this);
-			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
-			// MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+			events = eventDao.queryForEq("code", "TEAM-" + codeEquipe);
+			if (events != null) {
+				eventAdapter.setEvents(events);
+			}
 		}
-		finally {
-			// updateEquipesFromDB();
-		}
-	}
-
-	@UiThread
-	public void updateCalendarUI(List<Event> events) {
-		eventAdapter.setEvents(events);
-	}
-	
-	@UiThread
-	public void updateDetailUI(EquipeDetail ed) {
-		if (!ed.contactRespChampionnat.isEmpty()) {
-			contactChampionnatAdapter.addContact(ed.contactRespChampionnat);
-		}
-		if (!ed.contactSupplChampionnat.isEmpty()) {
-			contactChampionnatAdapter.addContact(ed.contactSupplChampionnat);
-		}
-		if (!ed.contactRespCoupe.isEmpty()) {
-			contactCoupeAdapter.addContact(ed.contactRespCoupe);
-		}
-		if (!ed.contactSupplCoupe.isEmpty()) {
-			contactCoupeAdapter.addContact(ed.contactSupplCoupe);
-		}
-		if (!ed.gymnaseChampionnat.isEmpty()) {
-			gymnaseChampionnatAdapter.setGymnase(ed.gymnaseChampionnat);
-		}
-		if (!ed.gymnaseCoupe.isEmpty()) {
-			gymnaseCoupeAdapter.setGymnase(ed.gymnaseCoupe);
-		}
-
-		// On fait le ménage dans les sections ne servant pas
-		if (contactChampionnatAdapter.getCount() == 0) {
-			sectionAdapter.removeSection(SECTION_CONTACTS_CHAMPIONNAT);
-		}
-		if (contactCoupeAdapter.getCount() == 0) {
-			sectionAdapter.removeSection(SECTION_CONTACTS_COUPE);
-		}
-		if (gymnaseChampionnatAdapter.getCount() == 0) {
-			sectionAdapter.removeSection(SECTION_ADRESSE_CHAMPIONNAT);
-		}
-		if (gymnaseCoupeAdapter.getCount() == 0) {
-			sectionAdapter.removeSection(SECTION_ADRESSE_COUPE);
-		}
-	}
-
-	@Background
-	void updateEquipe(Equipe equipeToUpdate) {
-		try {
-			VolleyDatabase db = new VolleyDatabase(this);
-			EquipeDAO.update(db, equipeToUpdate);
-		}
-		finally {
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving events from DB for team " + codeEquipe, e);
 		}
 	}
 
 	/**
-	 * Met à jour l'interface graphique en fonction des données contenues dans la BD
+	 * Update the UI according to the datas stored in the DB
 	 */
 	void updateUI() {
-		VolleyDatabase db = new VolleyDatabase(this);
-		// Date de maj
-		Date dateMaj = MajDAO.getMaj(db, "EQUIPE-" + currentEquipe.codeEquipe);
+		Date dateMaj = VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPE-" + currentEquipe.codeEquipe);
 		if (dateMaj != null) {
 			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
 					DateUtils.FORMAT_NUMERIC_DATE));
@@ -343,12 +339,66 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		else {
 			maj.setText("");
 		}
-		List<Equipe> equipes = EquipeDAO.getAll(db, currentEquipe.codeEquipe);
-		if (equipes != null) {
-			sectionAdapter.notifyDataSetChanged();
-		}
+
 		progressBar.setVisibility(View.GONE);
 	}
+
+	// ----------------------------- Network updates ----------------------------
+
+	/**
+	 * Retrieve team informations and launch other background process
+	 * @param codeEquipe
+	 */
+	@Background
+	void updateFromNetwork(String codeEquipe) {
+		// Launch background updates for details and calendar
+		updateDetailFromNetwork(codeEquipe);
+		updateCalendarFromNetwork(codeEquipe);
+	}
+
+	/**
+	 * Retrieve team details from network
+	 */
+	public void updateDetailFromNetwork(String codeEquipe) {
+		try {
+			EquipeDetailResponse edr = application.restClient.getEquipeDetail(codeEquipe);
+			EquipeDetail ed = edr.getEquipeDetail();
+
+			// Get current datas from DB and delete
+			EquipeDetail equipeDetail = equipeDetailDao.queryForId(codeEquipe);
+			equipeDetailDao.delete(equipeDetail);
+
+			// Add new informations
+			equipeDetailDao.createOrUpdate(ed);
+		}
+		catch (Exception e) {
+			Log.e("Volley34", "Error while retreiving details of team " + codeEquipe, e);
+		}
+	}
+
+	/**
+	 * Retrieve team events from network
+	 */
+	public void updateCalendarFromNetwork(String codeEquipe) {
+		try {
+			EventsResponse er = application.restClient.getCalendar(codeEquipe);
+			// First delete all events which are connected to this club
+			List<Event> oldEvents = eventDao.queryForEq("code", "TEAM-" + codeEquipe);
+			eventDao.delete(oldEvents);
+			// The insert new datas
+			List<Event> events = er.events;
+			for (Event event : events) {
+				event.code = "TEAM-" + codeEquipe;
+				CreateOrUpdateStatus status = eventDao.createOrUpdate(event);
+				Log.d("Volley34", "Nb of changed lines: " + status.getNumLinesChanged());
+			}
+		}
+		catch (Exception e) {
+			Log.e("Volley34", "Error while retrieving (from network) events list for team " + codeEquipe);
+		}
+	}
+
+	// --------------------------------------------------------------
 
 	@Background
 	public void executeAction(Action action) {

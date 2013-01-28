@@ -3,6 +3,7 @@
  */
 package org.jared.android.volley.ui.fragment;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,31 +11,33 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ClubListResponse;
-import org.jared.android.volley.repository.ClubDAO;
-import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.ClubActivity;
 import org.jared.android.volley.ui.ClubActivity_;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
+import com.j256.ormlite.dao.Dao;
+
 /**
- * Fragment pour les favoris
+ * Fragment for the clubs list
  * @author eric.taix@gmail.com
  */
 public class ClubFragmentProvider extends BaseFragmentProvider {
 
 	private static final int SHOW_CLUB = 0;
-	
+
 	private SectionAdapter sectionAdapter;
 	private MenuClubsAdapter allAdapter;
 	private MenuClubsAdapter favoriteAdapter;
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getCode()
 	 */
 	@Override
@@ -42,7 +45,8 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 		return "CLUBS";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getTitle()
 	 */
 	@Override
@@ -50,7 +54,8 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 		return "Clubs";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
 	 */
 	@Override
@@ -60,12 +65,13 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 		fragment.startActivityForResult(intent, SHOW_CLUB);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.ContentFragmentProvider#getListAdapter()
 	 */
 	@Override
 	public ListAdapter getListAdapter() {
-		sectionAdapter = new SectionAdapter(fragment.getActivity(),  R.layout.list_header);
+		sectionAdapter = new SectionAdapter(fragment.getActivity(), R.layout.list_header);
 		allAdapter = new MenuClubsAdapter(fragment.getActivity());
 		favoriteAdapter = new MenuClubsAdapter(fragment.getActivity());
 		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
@@ -73,21 +79,29 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 		return sectionAdapter;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doUpdateUI(org.jared.android.volley.repository.VolleyDatabase)
 	 */
 	@Override
-	public void doUpdateUI(VolleyDatabase db) {
-		List<Club> clubs = ClubDAO.getAllClubs(db);
-		if (clubs != null) {
-			allAdapter.setClubs(clubs);
-			List<Club> favClubs = getFavoriteClubs(clubs);
-			favoriteAdapter.setClubs(favClubs);
-			sectionAdapter.notifyDataSetChanged();
-		} 
+	public void doUpdateUI() {
+		try {
+			Dao<Club, String> clubDao = getHelper().getDao(Club.class);
+			List<Club> clubs = clubDao.queryForAll();
+			if (clubs != null) {
+				allAdapter.setClubs(clubs);
+				List<Club> favClubs = getFavoriteClubs(clubs);
+				favoriteAdapter.setClubs(favClubs);
+				sectionAdapter.notifyDataSetChanged();
+			}
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving clubs from DB", e);
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doGetFromNetwork(org.jared.android.volley.http.RestClient)
 	 */
 	@Override
@@ -96,17 +110,36 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 		return clubList.clubs;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doSaveToDatabase(java.lang.Object, org.jared.android.volley.repository.VolleyDatabase)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void doSaveToDatabase(Object object, VolleyDatabase db) {
-		ClubDAO.saveAll(db, (List<Club>)object);
+	public void doSaveToDatabase(Object object) {
+		try {
+			Dao<Club, Integer> clubDao = getHelper().getDao(Club.class);
+			List<Club> oldClubs = clubDao.queryForAll();
+			List<Club> newClubs = (List<Club>) object;
+			// Delete all old clubs
+			clubDao.delete(oldClubs);
+			// Set the favorite flag (which does not exist in the REST response)
+			for (Club club : newClubs) {
+				int index = oldClubs.indexOf(club);
+				if (index != -1) {
+					Club oldClub = oldClubs.get(index);
+					club.favorite = oldClub.favorite;
+				}
+				clubDao.create(club);
+			}
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while saving clubs to DB", e);
+		}
 	}
-	
+
 	/**
-	 * Retourne uniquement la liste des clubs en favoris
+	 * Return the list of clubs which are our favorites
 	 * 
 	 * @param allClubs
 	 * @return

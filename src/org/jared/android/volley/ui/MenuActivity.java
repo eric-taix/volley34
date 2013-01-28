@@ -32,15 +32,12 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.main_title);
-		// Si une instance du contenu a été sauvegardé on l'affiche
-		if (savedInstanceState != null) {
-			mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-		}
+		
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
 		if (mContent == null) { 
-			mContent = new ContentFragment_();
+			mContent = new ContentFragment_(); 
 			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
-			Bundle args = new Bundle(); 
+			Bundle args = new Bundle();
 			mContent.setArguments(args); 
 		}
 		 

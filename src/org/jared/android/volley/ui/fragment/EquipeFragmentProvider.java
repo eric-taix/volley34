@@ -3,6 +3,7 @@
  */
 package org.jared.android.volley.ui.fragment;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +11,16 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
-import org.jared.android.volley.repository.EquipeDAO;
-import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.EquipeActivity_;
 import org.jared.android.volley.ui.adapter.MenuEquipesAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
+
+import com.j256.ormlite.dao.Dao;
 
 /**
  * Fragment pour les favoris
@@ -70,18 +72,25 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 		sectionAdapter.addSection("TOUS", allAdapter);
 		return sectionAdapter;
 	}
+	
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doUpdateUI(org.jared.android.volley.repository.VolleyDatabase)
 	 */
 	@Override
-	public void doUpdateUI(VolleyDatabase db) {
-		List<Equipe> equipes = EquipeDAO.getAll(db, null);
-		if (equipes != null) {
-			allAdapter.setEquipes(equipes);
-			List<Equipe> favEquipes= getFavoriteEquipes(equipes);
-			favoriteAdapter.setEquipes(favEquipes);
-			sectionAdapter.notifyDataSetChanged();
-		} 
+	public void doUpdateUI() {
+		try {
+			Dao<Equipe, String> equipeDao = getHelper().getDao(Equipe.class);
+			List<Equipe> equipes = equipeDao.queryForAll();
+			if (equipes != null) {
+				allAdapter.setEquipes(equipes);
+				List<Equipe> favEquipes= getFavoriteEquipes(equipes);
+				favoriteAdapter.setEquipes(favEquipes);
+				sectionAdapter.notifyDataSetChanged();
+			}
+		}
+		catch (SQLException e) {
+		Log.e("Volley34", "Error while retreiving team list");
+		}
 	}
 
 	/* (non-Javadoc)
@@ -98,8 +107,26 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void doSaveToDatabase(Object object, VolleyDatabase db) {
-		EquipeDAO.saveAll(db, (List<Equipe>)object, null);
+	public void doSaveToDatabase(Object object) {
+		try {
+			Dao<Equipe, String> equipeDao = getHelper().getDao(Equipe.class);
+			List<Equipe> oldEquipes = equipeDao.queryForAll();
+			List<Equipe> newEquipes = (List<Equipe>)object;
+			// Delete all old teams
+			equipeDao.delete(oldEquipes);
+			// Set the favorite flag (which does not exist in the REST response)
+			for (Equipe equipe : newEquipes) {
+				int index = oldEquipes.indexOf(equipe);
+				if (index != -1) {
+					Equipe oldEquipe = oldEquipes.get(index);
+					equipe.favorite = oldEquipe.favorite;
+				}
+				equipeDao.create(equipe);
+			}
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retreiving team list");
+		}
 	}
 	
 	/**

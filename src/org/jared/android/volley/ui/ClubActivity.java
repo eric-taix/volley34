@@ -3,6 +3,7 @@
  */
 package org.jared.android.volley.ui;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -14,10 +15,8 @@ import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.EventsResponse;
-import org.jared.android.volley.repository.ClubDAO;
-import org.jared.android.volley.repository.EquipeDAO;
-import org.jared.android.volley.repository.MajDAO;
-import org.jared.android.volley.repository.VolleyDatabase;
+import org.jared.android.volley.model.Update;
+import org.jared.android.volley.repository.VolleyDatabaseHelper;
 import org.jared.android.volley.ui.action.ContactAction;
 import org.jared.android.volley.ui.action.MailAction;
 import org.jared.android.volley.ui.action.PhoneAction;
@@ -39,6 +38,7 @@ import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -56,8 +56,11 @@ import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -77,6 +80,15 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	public static final int ID_SMS = 2;
 	public static final int ID_CONTACT = 3;
 	public static final int ID_SHARE = 4;
+
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Update.class)
+	Dao<Update, String> updateDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Club.class)
+	Dao<Club, String> clubDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Equipe.class)
+	Dao<Equipe, String> equipeDao;
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Event.class)
+	Dao<Event, String> eventDao;
 
 	@App
 	VolleyApplication application;
@@ -209,10 +221,10 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 				executeAction(action);
 			}
 		});
-		updateEquipesUI();
+		updateUI();
 		// En tâche de fond on interroge le serveur
 		progressBar.setVisibility(View.VISIBLE);
-		updateEquipesFromNetwork();
+		updateFromNetwork();
 	}
 
 	/**
@@ -231,78 +243,109 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	@Background
 	void updateClub(Club clubToUpdate) {
 		try {
-			VolleyDatabase db = new VolleyDatabase(this);
-			ClubDAO.updateClub(db, clubToUpdate);
+			clubDao.update(clubToUpdate);
 		}
-		finally {
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while updating club informations into the database");
 		}
 	}
 
 	/**
 	 * Met à jour l'interface graphique en fonction des données contenues dans la BD
 	 */
-	void updateEquipesUI() {
-		VolleyDatabase db = new VolleyDatabase(this);
-		// Date de maj
-		Date dateMaj = MajDAO.getMaj(db, "EQUIPES-CLUB-" + currentClub.code);
-		if (dateMaj != null) {
-			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
+	@UiThread
+	void updateUI() {
+		Date datetime = VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPES-CLUB-" + currentClub.code);
+		if (datetime != null) {
+			maj.setText(DateUtils.getRelativeTimeSpanString(datetime.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
 					DateUtils.FORMAT_NUMERIC_DATE));
 		}
 		else {
 			maj.setText("");
 		}
-		List<Equipe> equipes = EquipeDAO.getAll(db, currentClub.code);
-		if (equipes != null) {
-			equipeAdapter.setEquipes(equipes);
-			sectionAdapter.notifyDataSetChanged();
+		
+		// Update the teams list for the current club (from the Database)
+		try {
+			List<Equipe> equipes = equipeDao.queryForEq("code_club", currentClub.code);
+			if (equipes != null) {
+				equipeAdapter.setEquipes(equipes);
+				sectionAdapter.notifyDataSetChanged();
+			}
 		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving teams list for club "+currentClub.code);
+		}
+		
+		// Update calendars (from the DB)
+		try {
+			List<Event> events = eventDao.queryForEq("code", "CLUB-"+currentClub.code);
+			eventAdapter.setEvents(events);
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while retrieving events list for club "+currentClub.code);
+		}
+		
 		progressBar.setVisibility(View.GONE);
 	}
 
 	/**
-	 * Récupère (si possible) la liste des équipes et met à jour la base de données
+	 * Update informations from the network and save datas to DB
 	 */
 	@Background
-	public void updateEquipesFromNetwork() {
+	public void updateFromNetwork() {
 		try {
 			EquipesClubResponse ecl = application.restClient.getEquipes(currentClub.code);
-			VolleyDatabase db = new VolleyDatabase(this);
-			EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
-			MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+			List<Equipe> newEquipes = ecl.equipes;
+			// Update the favorites flag (which does not exist in the REST response)
+			List<Equipe> oldEquipes = equipeDao.queryForEq("code_club", currentClub.code);
+			for (Equipe newEquipe : newEquipes) {
+				int index = oldEquipes.indexOf(newEquipe);
+				if (index != -1) {
+					Equipe oldEquipe = oldEquipes.get(index);
+					newEquipe.favorite = oldEquipe.favorite;
+				}
+			}
+			// Remove all all teams
+			equipeDao.delete(oldEquipes);
+			// Save all new teams
+			for (Equipe newEquipe : newEquipes) {
+				equipeDao.create(newEquipe);
+			}
+			
+			// Update calendars
+			updateCalendarFromNetwork(currentClub.code);
+			
+			// Set the last update information
+			VolleyDatabaseHelper.updateLastUpdate(updateDao, "EQUIPES-CLUB-" + currentClub.code);
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while updating last update of teams for club " + currentClub, e);
 		}
 		finally {
-			updateEquipesFromDB();
+			updateUI();
 		}
-	}
-
-	@UiThread
-	void updateEquipesFromDB() {
-		updateEquipesUI();
-		updateCalendarFromNetwork(currentClub.code);
 	}
 
 	/**
-	 * Récupère le calendrier de l'équipe depuis le serveur
+	 * Update calendars from network and save data to DB
 	 */
-	@Background
 	public void updateCalendarFromNetwork(String codeClub) {
 		try {
 			EventsResponse er = application.restClient.getClubCalendar(codeClub);
-			updateCalendarUI(er.events);
-
-			// VolleyDatabase db = new VolleyDatabase(this);
-			// EquipeDAO.saveAll(db, ecl.equipes, currentClub.code);
-			// MajDAO.udateMaj(db, "EQUIPES-CLUB-" + currentClub.code);
+			// First delete all events which are connected to this club
+			List<Event> oldEvents = eventDao.queryForEq("code","CLUB-"+codeClub);
+			eventDao.delete(oldEvents);
+			// The insert new datas
+			List<Event> events = er.events;
+			for (Event event : events) {
+				event.code = "CLUB-"+codeClub;
+				CreateOrUpdateStatus status = eventDao.createOrUpdate(event);
+				Log.d("Volley34","Nb of changed lines: "+status.getNumLinesChanged());
+			}
 		}
-		finally {
-			// updateEquipesFromDB();
+		catch (Exception e) {
+			Log.e("Volley34","Error while retrieving (from network) events list for club "+codeClub);
 		}
-	}
-
-	@UiThread
-	public void updateCalendarUI(List<Event> events) {
-		eventAdapter.setEvents(events);
 	}
 
 	@Background

@@ -5,7 +5,7 @@
 
 package org.jared.android.volley.ui;
 
-import java.util.List;
+import java.sql.SQLException;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +21,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.view.MenuItem;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipeDetail;
 import org.jared.android.volley.model.Event;
+import org.jared.android.volley.model.Update;
+import org.jared.android.volley.repository.VolleyDatabaseHelper;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
 public final class EquipeActivity_
     extends EquipeActivity
 {
 
+    private ConnectionSource connectionSource_;
     private Handler handler_ = new Handler();
 
     @Override
@@ -43,14 +49,35 @@ public final class EquipeActivity_
 
     private void init_(Bundle savedInstanceState) {
         application = ((VolleyApplication) this.getApplication());
+        connectionSource_ = OpenHelperManager.getHelper(this, VolleyDatabaseHelper.class).getConnectionSource();
+        try {
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+        } catch (SQLException e) {
+            Log.e("EquipeActivity_", "Could not create DAO", e);
+        }
+        try {
+            equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
+        } catch (SQLException e) {
+            Log.e("EquipeActivity_", "Could not create DAO", e);
+        }
+        try {
+            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
+        } catch (SQLException e) {
+            Log.e("EquipeActivity_", "Could not create DAO", e);
+        }
+        try {
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+        } catch (SQLException e) {
+            Log.e("EquipeActivity_", "Could not create DAO", e);
+        }
     }
 
     private void afterSetContentView_() {
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -105,14 +132,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateDetailUI(final EquipeDetail ed) {
+    public void updateUI(final String codeEquipe) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateDetailUI(ed);
+                    EquipeActivity_.super.updateUI(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -123,86 +150,14 @@ public final class EquipeActivity_
     }
 
     @Override
-    public void updateCalendarUI(final List<Event> events) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    EquipeActivity_.super.updateCalendarUI(events);
-                } catch (RuntimeException e) {
-                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateEquipeUI(final Equipe equipe) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    EquipeActivity_.super.updateEquipeUI(equipe);
-                } catch (RuntimeException e) {
-                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateCalendarFromNetwork(final String codeEquipe) {
+    public void updateFromNetwork(final String codeEquipe) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeActivity_.super.updateCalendarFromNetwork(codeEquipe);
-                } catch (RuntimeException e) {
-                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateEquipeFromDB(final String code) {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    EquipeActivity_.super.updateEquipeFromDB(code);
-                } catch (RuntimeException e) {
-                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateEquipe(final Equipe equipeToUpdate) {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    EquipeActivity_.super.updateEquipe(equipeToUpdate);
+                    EquipeActivity_.super.updateFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -221,24 +176,6 @@ public final class EquipeActivity_
             public void run() {
                 try {
                     EquipeActivity_.super.executeAction(action);
-                } catch (RuntimeException e) {
-                    Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void updateDetailFromNetwork(final String codeEquipe) {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    EquipeActivity_.super.updateDetailFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeActivity_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

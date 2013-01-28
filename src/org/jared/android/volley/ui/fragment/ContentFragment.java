@@ -3,18 +3,20 @@
  */
 package org.jared.android.volley.ui.fragment;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.jared.android.volley.R;
 import org.jared.android.volley.VolleyApplication;
-import org.jared.android.volley.repository.MajDAO;
-import org.jared.android.volley.repository.VolleyDatabase;
+import org.jared.android.volley.model.Update;
+import org.jared.android.volley.repository.VolleyDatabaseHelper;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -24,8 +26,10 @@ import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.EFragment;
+import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.dao.Dao;
 
 /**
  * Fragment permettant d'afficher le fait qu'une fonctionnalité n'existe pas
@@ -47,6 +51,9 @@ public class ContentFragment extends Fragment {
 	VolleyApplication application;
 	private ContentFragmentProvider provider;
 
+	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Update.class)
+	Dao<Update, String> updateDao;
+
 	@AfterViews
 	public void afterViews() {
 		this.provider.init(this);
@@ -67,14 +74,15 @@ public class ContentFragment extends Fragment {
 		updateFromNetWork();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onActivityResult(int, int, android.content.Intent)
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		updateFromDB();
+		updateUI();
 	}
-	
+
 	/**
 	 * Constructeur
 	 * 
@@ -90,40 +98,50 @@ public class ContentFragment extends Fragment {
 	@Background
 	void updateFromNetWork() {
 		try {
-			VolleyDatabase db = new VolleyDatabase(getActivity());
 			Object result = provider.doGetFromNetwork(application.restClient);
-			provider.doSaveToDatabase(result, db);
-			MajDAO.udateMaj(db, provider.getCode());
+			provider.doSaveToDatabase(result);
+			Update update = updateDao.queryForId(provider.getCode());
+			if (update == null) {
+				update = new Update();
+			}
+			update.dateTime = new Date();
+			updateDao.createOrUpdate(update);
+			updateUI();
+		}
+		catch (Exception e) {
+			Log.e("Volley34","Error while updating values from network",e);
 		}
 		finally {
-			updateFromDB();
+			updateUI();	
 		}
-	}
-
-	@UiThread
-	void updateFromDB() {
-		updateUI();
 	}
 
 	/**
-	 * Met à jour l'interface graphique
+	 * Update the UI: datas are retreived from the DB
 	 * 
 	 * @param clubs
 	 */
+	@UiThread
 	void updateUI() {
-		VolleyDatabase db = new VolleyDatabase(getActivity());
-		// Date de maj
-		Date dateMaj = MajDAO.getMaj(db, provider.getCode());
-		if (dateMaj != null) {
-			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-					DateUtils.FORMAT_NUMERIC_DATE));
+		Update update;
+		try {
+			update = updateDao.queryForId(provider.getCode());
+			if (update != null && update.dateTime != null) {
+				maj.setText(DateUtils.getRelativeTimeSpanString(update.dateTime.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
+						DateUtils.FORMAT_NUMERIC_DATE));
+			}
+			else {
+				maj.setText("");
+			}
+			// Udpate concrete ui
+			provider.doUpdateUI();
 		}
-		else {
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while updating last update informations from DB", e);
 			maj.setText("");
 		}
-		// Les données en elle-même
-		provider.doUpdateUI(db);
-
-		progressBar.setVisibility(View.GONE);
+		finally {
+			progressBar.setVisibility(View.GONE);
+		}
 	}
 }

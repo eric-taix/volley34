@@ -6,6 +6,9 @@ package org.jared.android.volley.model;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,27 +17,37 @@ import android.os.Parcelable;
  * @author eric.taix@gmail.com
  */
 @Root(name="Row",strict=false)
+@DatabaseTable(tableName="club")
 public class Club implements Parcelable {
 	
+	@DatabaseField(columnName="code_club", id=true)
 	@Attribute(name="CodeClub")
 	public String code;
+	@DatabaseField(columnName="nb_equipes")
 	@Attribute(name="NbEquipes")
 	public int nbEquipes;
+	@DatabaseField(columnName="url_logo_club")
 	@Attribute(name="URLLogoClub")
 	public String urlLogo;
+	@DatabaseField(columnName="mail_club")
 	@Attribute(name="MailClub")
 	public String mail;
+	@DatabaseField(columnName="url_club")
 	@Attribute(name="URLClub")
 	public String urlSiteWeb;
+	@DatabaseField(columnName="telephone_club")
 	@Attribute(name="TelephoneClub")
 	public String telephone;
+	@DatabaseField(columnName="contact_club")
 	@Attribute(name="ContactClub")
 	public String contact;
+	@DatabaseField(columnName="nom_club")
 	@Attribute(name="NomClub")
 	public String nom;
+	@DatabaseField(columnName="nom_court")
 	@Attribute(name="NomClubCourt")
 	public String nomCourt;
-	
+	@DatabaseField(columnName="favorite")
 	public boolean favorite = false;
 	
 

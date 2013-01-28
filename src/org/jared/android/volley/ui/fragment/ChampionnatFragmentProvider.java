@@ -5,7 +5,6 @@ package org.jared.android.volley.ui.fragment;
 
 import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
-import org.jared.android.volley.repository.VolleyDatabase;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 
@@ -59,7 +58,7 @@ public class ChampionnatFragmentProvider extends BaseFragmentProvider {
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doUpdateUI(org.jared.android.volley.repository.VolleyDatabase)
 	 */
 	@Override
-	public void doUpdateUI(VolleyDatabase db) {
+	public void doUpdateUI() {
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +73,7 @@ public class ChampionnatFragmentProvider extends BaseFragmentProvider {
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doSaveToDatabase(java.lang.Object, org.jared.android.volley.repository.VolleyDatabase)
 	 */
 	@Override
-	public void doSaveToDatabase(Object oject, VolleyDatabase db) {
+	public void doSaveToDatabase(Object oject) {
 	}
 
 }

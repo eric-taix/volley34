@@ -1,7 +1,6 @@
 package org.jared.android.volley.ui.fragment;
 
 import org.jared.android.volley.http.RestClient;
-import org.jared.android.volley.repository.VolleyDatabase;
 
 import android.support.v4.app.Fragment;
 import android.widget.AdapterView.OnItemClickListener;
@@ -41,7 +40,7 @@ public interface ContentFragmentProvider extends OnItemClickListener {
 	 * Met à jour l'interface graphique à partir des données de la base
 	 * @param db
 	 */
-	public abstract void doUpdateUI(VolleyDatabase db);
+	public abstract void doUpdateUI();
 	
 	/**
 	 * Récupère les données à partir du serveur.
@@ -55,6 +54,6 @@ public interface ContentFragmentProvider extends OnItemClickListener {
 	 * @param oject
 	 * @param db
 	 */
-	public abstract void doSaveToDatabase(Object oject, VolleyDatabase db);
+	public abstract void doSaveToDatabase(Object oject);
 	
 }

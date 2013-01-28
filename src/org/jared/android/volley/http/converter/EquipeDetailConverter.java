@@ -12,6 +12,7 @@ public class EquipeDetailConverter implements Converter<EquipeDetail> {
 	public EquipeDetail read(InputNode node) {
 		EquipeDetail result = new EquipeDetail();
 		try {
+			result.codeEquipe = node.getAttribute("EquipeCode").getValue();
 			// Les contacts
 			result.contactRespChampionnat = new ContactEquipe();
 			result.contactRespChampionnat.setNom(node.getAttribute("NomResp").getValue());

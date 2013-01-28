@@ -3,16 +3,26 @@
  */
 package org.jared.android.volley.model;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * Contact d'une Žquipe
  * @author eric.taix@gmail.com
  */
+@DatabaseTable(tableName="contact_equipe")
 public class ContactEquipe implements Contact {
 
-	private String mail;
-	private String mobile;
-	private String telephone;
+	@DatabaseField(columnName="id", generatedId=true)
+	public int id;
+	@DatabaseField(useGetSet=true, columnName="nom")
 	private String nom;
+	@DatabaseField(useGetSet=true, columnName="mail")
+	private String mail;
+	@DatabaseField(useGetSet=true, columnName="mobile")
+	private String mobile;
+	@DatabaseField(useGetSet=true, columnName="telephone")
+	private String telephone;
 
 	/*
 	 * (non-Javadoc)

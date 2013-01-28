@@ -5,6 +5,9 @@ package org.jared.android.volley.model;
 
 import org.simpleframework.xml.Root;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,62 +16,23 @@ import android.os.Parcelable;
  * @author eric.taix@gmail.com
  */
 @Root(name="Row",strict=false)
+@DatabaseTable(tableName="equipe_detail")
 public class EquipeDetail implements Parcelable {
 	
+	@DatabaseField(id=true, columnName="code_equipe")
 	public String codeEquipe;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="contact_resp_champ")
 	public ContactEquipe contactRespChampionnat;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="contact_suppl_champ")
 	public ContactEquipe contactSupplChampionnat;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="contact_resp_coupe")
 	public ContactEquipe contactRespCoupe;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="contact_suppl_coupe")
 	public ContactEquipe contactSupplCoupe;
-
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="gymnase_champ")
 	public Gymnase gymnaseChampionnat;
+	@DatabaseField(foreign=true, foreignAutoRefresh=true, foreignAutoCreate=true, columnName="gymnase-coupe")
 	public Gymnase gymnaseCoupe;
-
-//			
-//			GPSGymnaseCoupe="" 
-//			TelGymnaseCoupe="" 
-//			VilleGymnaseCoupe="" 
-//			QuartierGymnaseCoupe="" 
-	
-//			CPGymnaseCoupe="" 
-//			AdresseGymnaseCoupe="" 
-//			NomCompletGymnaseCoupe="" 
-//			NomGymnaseCoupe="" 
-//			
-//			HeureCoupe="" 
-//			JourSemaineCoupe="" 
-//			NomEquipeCoupe="" 
-//			
-//			---------------
-//			
-
-//			
-//			GPSGymnase="43.669099|3.717802" 
-//			TelGymnase="" 
-//			VilleGymnase="Vailhauqus" 
-//			QuartierGymnase="" 
-//			CPGymnase="34570" 
-//			AdresseGymnase="" 
-//			NomCompletGymnase="Salle Polyvalente (Vailhauqus)" 
-//			NomGymnase="Salle Polyvalente" 
-//			Heure="01/09/2011 20:30:00" 
-//			JourSemaine="Mardi" 
-//			
-//			NomClubCourt="FR Vailhauques" 
-//			URLLogoClub="" 
-//			SigleClub="" 
-//			MailClub="delphine.coutrot@gmail.com " 
-//			URLClub="http://vailhauquesvb.free.fr/" 
-//			TelephoneClub="" 
-//			ContactClub="Delphine COUTROT" 
-//			NomClub="Foyer Rural Vailhauques" 
-//			CodeClub="VAILHAUQUES" 
-//			Nom="Les Aspics (Vailhauques)" 
-//			
-//			NomEquipe="Les Aspics (Vailhauques)" 
-//			
-//			EquipeCode="VAILHAUQUES2"/>
-	
 
 	/**
 	 * Constructeur par dfait
