@@ -28,24 +28,24 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 @EActivity(R.layout.activity_main)
 public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
 	private Fragment mContent;
-	private boolean landScape = false; 
+	private boolean landScape = false;
 	@ViewById(R.id.content_frame)
 	View content;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.main_title);
-		
+
 		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
-		if (mContent == null) { 
-			mContent = new ContentFragment_(); 
-			((ContentFragment_)mContent).setProvider(new ChampionnatFragmentProvider());
+		if (mContent == null) {
+			mContent = new ContentFragment_();
+			((ContentFragment_) mContent).setProvider(new ChampionnatFragmentProvider());
 			Bundle args = new Bundle();
-			mContent.setArguments(args); 
+			mContent.setArguments(args);
 		}
-		 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 
 	@AfterViews
@@ -57,7 +57,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 			getSlidingMenu().setSlidingEnabled(true);
 			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 			// On affiche l'icon up qui servira à ouvrir le menu
-	 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		else {
 			landScape = true;
@@ -71,11 +71,11 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mContent).commit();
 		// On affiche le menu
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment_()).commit();
- 
-		// Customisation du SlindingMenu 
+
+		// Customisation du SlindingMenu
 		SlidingMenu sm = getSlidingMenu();
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		sm.setShadowWidthRes(R.dimen.shadow_width); 
+		sm.setShadowWidthRes(R.dimen.shadow_width);
 		sm.setShadowDrawable(R.drawable.shadow);
 		sm.setBehindScrollScale(0.5f);
 		sm.setFadeDegree(0.5f);
@@ -87,25 +87,25 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-	    	if (!landScape) {
+	    	if (!landScape && getSupportFragmentManager().getBackStackEntryCount() == 0) {
 				if (!getSlidingMenu().isMenuShowing()) {
 					getSlidingMenu().showMenu(true);
 					return true; 
 				}
 			}
-	    	finish();
-	    	return true;
+	    	 return super.onKeyUp(keyCode, event);
 	    }
 	    return super.onKeyUp(keyCode, event);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			toggle();
-		} 
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -123,25 +123,26 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	public void showIndeterminate(boolean visible) {
 		setSupportProgressBarIndeterminateVisibility(visible);
 	}
-	 
+
 	/**
 	 * Replace any existing fragment with this one inside the frame
 	 * @param fragment
 	 */
 	public void switchContent(View source, final Fragment fragment) {
 		mContent = fragment;
-		//Animation.fadeOut(content, 200);
-		// Execute the transaction, 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out,android.R.anim.fade_in,android.R.anim.fade_out);
-//        ft.setCustomAnimations(
-//                R.anim.card_flip_right_in, R.anim.card_flip_right_out,
-//                R.anim.card_flip_left_in, R.anim.card_flip_left_out);
-        ft.replace(R.id.content_frame, fragment);
-        ft.commit();
-		//Animation.fadeIn(content, 1000); 
-        
+		// Animation.fadeOut(content, 200);
+		// Execute the transaction,
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		// ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
+		// ft.setCustomAnimations(
+		// R.anim.card_flip_right_in, R.anim.card_flip_right_out,
+		// R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+		ft.replace(R.id.content_frame, fragment);
+		ft.addToBackStack("");
+		ft.commit();
+		// Animation.fadeIn(content, 1000);
+
 		Handler h = new Handler();
 		h.postDelayed(new Runnable() {
 			public void run() {

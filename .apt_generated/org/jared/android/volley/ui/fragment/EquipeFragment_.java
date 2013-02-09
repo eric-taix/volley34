@@ -52,12 +52,12 @@ public final class EquipeFragment_
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
-            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
@@ -71,10 +71,10 @@ public final class EquipeFragment_
 
     private void afterSetContentView_() {
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -133,14 +133,14 @@ public final class EquipeFragment_
     }
 
     @Override
-    public void executeAction(final Action action) {
+    public void updateFromNetwork(final String codeEquipe) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeFragment_.super.executeAction(action);
+                    EquipeFragment_.super.updateFromNetwork(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -151,14 +151,14 @@ public final class EquipeFragment_
     }
 
     @Override
-    public void updateFromNetwork(final String codeEquipe) {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeFragment_.super.updateFromNetwork(codeEquipe);
+                    EquipeFragment_.super.executeAction(action);
                 } catch (RuntimeException e) {
                     Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
