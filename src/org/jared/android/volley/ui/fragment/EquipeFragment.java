@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui;
+package org.jared.android.volley.ui.fragment;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -17,6 +17,7 @@ import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.EventsResponse;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
+import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.GymnaseAdapter;
@@ -28,8 +29,6 @@ import org.jared.android.volley.ui.widget.quickaction.ActionItem;
 import org.jared.android.volley.ui.widget.quickaction.QuickAction;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
@@ -45,14 +44,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
-import com.googlecode.androidannotations.annotations.EActivity;
-import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
@@ -65,8 +61,8 @@ import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
  * @author eric.taix@gmail.com
  */
 @SuppressLint("DefaultLocale")
-@EActivity(value = R.layout.equipe_detail_layout)
-public class EquipeActivity extends SherlockActivity implements OnItemClickListener {
+@EFragment(value = R.layout.equipe_detail_layout)
+public class EquipeFragment extends Fragment implements OnItemClickListener {
 
 	private static final String SECTION_ADRESSE_CHAMPIONNAT = "GYMNASE  CHAMPIONNAT";
 	private static final String SECTION_ADRESSE_COUPE = "GYMNASE  COUPE";
@@ -121,47 +117,28 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	// Adapteur pour les événements
 	private EventAdapter eventAdapter;
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final ActionBar ab = getSupportActionBar();
-		ab.setDisplayUseLogoEnabled(true);
-		ab.setDisplayHomeAsUpEnabled(true);
-		setTitle("Equipe");
-	}
-
-	@OptionsItem(android.R.id.home)
-	boolean backHome() {
-		finish();
-		return true;
-	}
-
 	@AfterViews
 	public void afterViews() {
-		sectionAdapter = new SectionAdapter(this, R.layout.list_header);
+		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
 
-		clubAdapter = new SimpleClubsAdapter(this);
+		clubAdapter = new SimpleClubsAdapter(this.getActivity());
 		sectionAdapter.addSection("CLUB", clubAdapter);
 
-		contactChampionnatAdapter = new ContactAdapter(this);
-		CollapsableAdapter collapseChampionnatContact = new CollapsableAdapter(this, contactChampionnatAdapter, sectionAdapter, 1);
+		contactChampionnatAdapter = new ContactAdapter(this.getActivity());
+		CollapsableAdapter collapseChampionnatContact = new CollapsableAdapter(this.getActivity(), contactChampionnatAdapter, sectionAdapter, 1);
 		collapseChampionnatContact.setTexts("Tous les contacts", "Réduire");
 		sectionAdapter.addSection(SECTION_CONTACTS_CHAMPIONNAT, collapseChampionnatContact);
-		contactCoupeAdapter = new ContactAdapter(this);
-		CollapsableAdapter collapseCoupeContact = new CollapsableAdapter(this, contactCoupeAdapter, sectionAdapter, 1);
+		contactCoupeAdapter = new ContactAdapter(this.getActivity());
+		CollapsableAdapter collapseCoupeContact = new CollapsableAdapter(this.getActivity(), contactCoupeAdapter, sectionAdapter, 1);
 		collapseCoupeContact.setTexts("Tous les contacts", "Réduire");
 		sectionAdapter.addSection(SECTION_CONTACTS_COUPE, collapseCoupeContact);
 
-		gymnaseChampionnatAdapter = new GymnaseAdapter(this);
+		gymnaseChampionnatAdapter = new GymnaseAdapter(this.getActivity());
 		sectionAdapter.addSection(SECTION_ADRESSE_CHAMPIONNAT, gymnaseChampionnatAdapter);
-		gymnaseCoupeAdapter = new GymnaseAdapter(this);
+		gymnaseCoupeAdapter = new GymnaseAdapter(this.getActivity());
 		sectionAdapter.addSection(SECTION_ADRESSE_COUPE, gymnaseCoupeAdapter);
 
-		eventAdapter = new EventAdapter(this);
+		eventAdapter = new EventAdapter(this.getActivity());
 		sectionAdapter.addSection("CALENDRIER", eventAdapter);
 
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
@@ -172,7 +149,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		listView.setAdapter(sectionAdapter);
 		listView.setOnItemClickListener(this);
 		// Création du menu pour le contact
-		quickAction = new QuickAction(this);
+		quickAction = new QuickAction(this.getActivity());
 		// if (currentClub.mail != null && currentClub.mail.length() > 0) {
 		// ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail), new MailAction(
 		// currentClub.mail, currentClub.nom));
@@ -204,7 +181,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 		});
 
 		// If the activity has been laucnhed with an extra containing the team code (It SHOULD be)
-		Bundle extras = getIntent().getExtras();
+		Bundle extras = getArguments();
 		if (extras != null) {
 			String codeEquipe = extras.getString(EXTRA_CODE_EQUIPE);
 			if (codeEquipe != null) {
@@ -228,7 +205,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 			equipeDao.createOrUpdate(currentEquipe);
 			String msg = currentEquipe.favorite ? currentEquipe.nomEquipe + " a été ajouté aux favoris" : currentEquipe.nomEquipe
 					+ " a été supprimé des favoris";
-			Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+			Toast.makeText(this.getActivity(), msg, Toast.LENGTH_LONG).show();
 		}
 		catch (SQLException e) {
 			Log.e("Volley34", "Error while updating the team", e);
@@ -404,7 +381,7 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	@Background
 	public void executeAction(Action action) {
 		if (action != null) {
-			action.execute(EquipeActivity.this);
+			action.execute(EquipeFragment.this.getActivity());
 		}
 	}
 
@@ -428,26 +405,19 @@ public class EquipeActivity extends SherlockActivity implements OnItemClickListe
 	}
 
 	/**
-	 * Méthode utilitaire permettant de lancer l'activité de détail d'une équipe depuis une activité
+	 * Utility method to launch the fragment details of a team
 	 * @param currentActivity
 	 * @param codeEquipe
 	 * @param requestCode
 	 */
-	public static void startActivityForResult(Activity currentActivity, String codeEquipe, int requestCode) {
-		Intent intent = new Intent(currentActivity, EquipeActivity_.class);
-		intent.putExtra(EquipeActivity.EXTRA_CODE_EQUIPE, codeEquipe);
-		currentActivity.startActivityForResult(intent, requestCode);
-	}
-
-	/**
-	 * Méthode utilitaire permettant de lancer l'activité de détail d'une équipe depuis un fragment
-	 * @param currentActivity
-	 * @param codeEquipe
-	 * @param requestCode
-	 */
-	public static void startActivityForResult(Fragment currentFragment, String codeEquipe, int requestCode) {
-		Intent intent = new Intent(currentFragment.getActivity(), EquipeActivity_.class);
-		intent.putExtra(EquipeActivity.EXTRA_CODE_EQUIPE, codeEquipe);
-		currentFragment.startActivityForResult(intent, requestCode);
+	public static void showEquipe(Fragment currentFragment, String codeEquipe, int requestCode) {
+		MenuActivity activity = (MenuActivity)currentFragment.getActivity();
+		// Set the argument
+		Bundle extras = new Bundle();
+		extras.putString(EquipeFragment.EXTRA_CODE_EQUIPE, codeEquipe);
+		// Create the fragment the switch the current content
+		EquipeFragment_ fragment = new EquipeFragment_();
+		fragment.setArguments(extras);
+		activity.switchContent(null, fragment);
 	}
 }

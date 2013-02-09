@@ -42,6 +42,24 @@ public class RestClient_
     }
 
     @Override
+    public EventsResponse getClubCalendar(String codeClub) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("codeClub", codeClub);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}"), HttpMethod.GET, requestEntity, EventsResponse.class, urlVariables).getBody();
+    }
+
+    @Override
+    public ClubListResponse getClubs() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetClub"), HttpMethod.GET, requestEntity, ClubListResponse.class).getBody();
+    }
+
+    @Override
     public EventsResponse getCalendar(String codeEquipe) {
         HashMap<String, Object> urlVariables = new HashMap<String, Object>();
         urlVariables.put("codeEquipe", codeEquipe);
@@ -62,16 +80,6 @@ public class RestClient_
     }
 
     @Override
-    public EventsResponse getClubCalendar(String codeClub) {
-        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
-        urlVariables.put("codeClub", codeClub);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
-        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/wsCalendriers.asmx/GetCalendrierClub?match=true&tournoi=true&federaux=true&reunion=true&autre=true&datesFutures=true&clubCode={codeClub}"), HttpMethod.GET, requestEntity, EventsResponse.class, urlVariables).getBody();
-    }
-
-    @Override
     public EquipeDetailResponse getEquipeDetail(String codeEquipe) {
         HashMap<String, Object> urlVariables = new HashMap<String, Object>();
         urlVariables.put("codeEquipe", codeEquipe);
@@ -79,14 +87,6 @@ public class RestClient_
         httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
         return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetEquipeInfo?CodeEquipe={codeEquipe}"), HttpMethod.GET, requestEntity, EquipeDetailResponse.class, urlVariables).getBody();
-    }
-
-    @Override
-    public ClubListResponse getClubs() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("application/xml")));
-        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/wsEquipes.asmx/GetClub"), HttpMethod.GET, requestEntity, ClubListResponse.class).getBody();
     }
 
 }

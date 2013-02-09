@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment;
+package org.jared.android.volley.ui.fragment.provider;
 
 import org.jared.android.volley.http.RestClient;
 
@@ -13,14 +13,14 @@ import android.widget.ListAdapter;
  * Fragment pour les favoris
  * @author eric.taix@gmail.com
  */
-public class DefaultFragmentProvider extends BaseFragmentProvider {
+public class FavorisFragmentProvider extends BaseFragmentProvider {
 
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getCode()
 	 */
 	@Override
 	public String getCode() {
-		return "DEFAULTS";
+		return "FAVORIS";
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +28,7 @@ public class DefaultFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public String getTitle() {
-		return "Non disponible";
+		return "Favoris";
 	}
 	
 	/* (non-Javadoc)

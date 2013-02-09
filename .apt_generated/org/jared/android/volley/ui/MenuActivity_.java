@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import com.googlecode.androidannotations.api.SdkVersionHelper;
+import org.jared.android.volley.R.id;
 import org.jared.android.volley.R.layout;
 
 public final class MenuActivity_
@@ -31,6 +32,7 @@ public final class MenuActivity_
     }
 
     private void afterSetContentView_() {
+        content = ((View) findViewById(id.content_frame));
         afterViews();
     }
 

@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,11 +23,15 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
+import org.jared.android.volley.model.Equipe;
+import org.jared.android.volley.model.EquipeDetail;
+import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
+import org.jared.android.volley.ui.widget.quickaction.Action;
 
-public final class ContentFragment_
-    extends ContentFragment
+public final class EquipeFragment_
+    extends EquipeFragment
 {
 
     private View contentView_;
@@ -36,9 +42,24 @@ public final class ContentFragment_
         application = ((VolleyApplication) getActivity().getApplication());
         connectionSource_ = OpenHelperManager.getHelper(getActivity(), VolleyDatabaseHelper.class).getConnectionSource();
         try {
+            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
+            equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
             updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
-            Log.e("ContentFragment_", "Could not create DAO", e);
+            Log.e("EquipeFragment_", "Could not create DAO", e);
         }
     }
 
@@ -49,10 +70,26 @@ public final class ContentFragment_
     }
 
     private void afterSetContentView_() {
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
+        {
+            View view = findViewById(org.jared.android.volley.R.id.favorite);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        EquipeFragment_.this.favoriteClicked();
+                    }
+
+                }
+                );
+            }
+        }
         afterViews();
     }
 
@@ -60,7 +97,7 @@ public final class ContentFragment_
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView_ = super.onCreateView(inflater, container, savedInstanceState);
         if (contentView_ == null) {
-            contentView_ = inflater.inflate(layout.list_layout, container, false);
+            contentView_ = inflater.inflate(layout.equipe_detail_layout, container, false);
         }
         afterSetContentView_();
         return contentView_;
@@ -73,21 +110,21 @@ public final class ContentFragment_
         return contentView_.findViewById(id);
     }
 
-    public static ContentFragment_.FragmentBuilder_ builder() {
-        return new ContentFragment_.FragmentBuilder_();
+    public static EquipeFragment_.FragmentBuilder_ builder() {
+        return new EquipeFragment_.FragmentBuilder_();
     }
 
     @Override
-    public void updateUI() {
+    public void updateUI(final String codeEquipe) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ContentFragment_.super.updateUI();
+                    EquipeFragment_.super.updateUI(codeEquipe);
                 } catch (RuntimeException e) {
-                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -96,16 +133,34 @@ public final class ContentFragment_
     }
 
     @Override
-    public void updateFromNetWork() {
+    public void executeAction(final Action action) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ContentFragment_.super.updateFromNetWork();
+                    EquipeFragment_.super.executeAction(action);
                 } catch (RuntimeException e) {
-                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void updateFromNetwork(final String codeEquipe) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    EquipeFragment_.super.updateFromNetwork(codeEquipe);
+                } catch (RuntimeException e) {
+                    Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -121,8 +176,8 @@ public final class ContentFragment_
             args_ = new Bundle();
         }
 
-        public ContentFragment build() {
-            ContentFragment_ fragment_ = new ContentFragment_();
+        public EquipeFragment build() {
+            EquipeFragment_ fragment_ = new EquipeFragment_();
             fragment_.setArguments(args_);
             return fragment_;
         }

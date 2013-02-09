@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui;
+package org.jared.android.volley.ui.fragment;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -17,6 +17,7 @@ import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.EventsResponse;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
+import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.action.ContactAction;
 import org.jared.android.volley.ui.action.MailAction;
 import org.jared.android.volley.ui.action.PhoneAction;
@@ -37,6 +38,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
@@ -48,14 +50,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.App;
 import com.googlecode.androidannotations.annotations.Background;
 import com.googlecode.androidannotations.annotations.Click;
-import com.googlecode.androidannotations.annotations.EActivity;
-import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
@@ -70,8 +69,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * @author eric.taix@gmail.com
  */
 @SuppressLint("DefaultLocale")
-@EActivity(value = R.layout.club_detail_layout)
-public class ClubActivity extends SherlockActivity implements OnItemClickListener {
+@EFragment(value = R.layout.club_detail_layout)
+public class ClubFragment extends Fragment implements OnItemClickListener {
 
 	public static final String EXTRA_CLUB = "CLUB";
 
@@ -119,57 +118,41 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 	// Adapteur pour les événements
 	private EventAdapter eventAdapter;
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final ActionBar ab = getSupportActionBar();
-		ab.setDisplayUseLogoEnabled(true);
-		ab.setDisplayHomeAsUpEnabled(true);
-		setTitle("Club");
-		// Si l'activité est lancée avec des extras (ce qui devrait être le cas systématiquement)
-		Bundle extras = getIntent().getExtras();
+	@AfterViews
+	public void afterViews() {
+		// If the fragment has been launched with an extra (it SHOULD be the cas)
+		Bundle extras = getArguments();
 		if (extras != null) {
 			Parcelable clubToShow = extras.getParcelable(EXTRA_CLUB);
 			if (clubToShow != null) {
 				currentClub = (Club) clubToShow;
 			}
 		}
-	}
+		
+		// Then create all required adapters
+		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
 
-	@OptionsItem(android.R.id.home)
-	boolean backHome() {
-		finish();
-		return true;
-	}
-
-	@AfterViews
-	public void afterViews() {
-		sectionAdapter = new SectionAdapter(this, R.layout.list_header);
-
-		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this, currentClub);
+		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this.getActivity(), currentClub);
 		sectionAdapter.addSection("INFORMATIONS", informationAdapter);
 
-		ContactAdapter contactAdapter = new ContactAdapter(this);
+		ContactAdapter contactAdapter = new ContactAdapter(this.getActivity());
 		contactAdapter.addContact(new ContactClub(currentClub));
-		CollapsableAdapter collapseContact = new CollapsableAdapter(this, contactAdapter, sectionAdapter);
+		CollapsableAdapter collapseContact = new CollapsableAdapter(this.getActivity(), contactAdapter, sectionAdapter);
 		sectionAdapter.addSection("CONTACT", collapseContact);
 
-		equipeAdapter = new SimpleEquipesAdapter(this);
-		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this, equipeAdapter, sectionAdapter);
+		equipeAdapter = new SimpleEquipesAdapter(this.getActivity());
+		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this.getActivity(), equipeAdapter, sectionAdapter);
 		collapseEquipe.setTexts("Toutes les équipes", "Réduire");
 		sectionAdapter.addSection("EQUIPES", collapseEquipe);
 
-		eventAdapter = new EventAdapter(this);
-		CollapsableAdapter collapseEvent = new CollapsableAdapter(this, eventAdapter, sectionAdapter);
+		eventAdapter = new EventAdapter(this.getActivity());
+		CollapsableAdapter collapseEvent = new CollapsableAdapter(this.getActivity(), eventAdapter, sectionAdapter);
 		collapseEvent.setTexts("Tous les évènements", "Réduire");
 		sectionAdapter.addSection("CALENDRIER", collapseEvent);
 
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
-		// On positionne un divider plus "sympa"
+		
+		// Set a better L&F for the divider
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
 		listView.setDividerHeight(0);
@@ -178,7 +161,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		title.setText(currentClub.nomCourt);
 		if (currentClub.urlLogo != null && currentClub.urlLogo.length() > 0) {
 			logo.setVisibility(View.VISIBLE);
-			// On affiche le logo du club en tâche de fond
+			// Display the current club's logo
 			ImageLoader imageLoader = ImageLoader.getInstance();
 			imageLoader.displayImage(currentClub.urlLogo, logo, logoOptions);
 		}
@@ -187,10 +170,9 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		}
 		favorite.setImageDrawable(currentClub.favorite ? getResources().getDrawable(R.drawable.ic_star_enabled) : getResources().getDrawable(
 				R.drawable.ic_star_disabled));
-		// On répond au click de la liste
 		listView.setOnItemClickListener(this);
-		// Création du menu pour le contact
-		quickAction = new QuickAction(this);
+		
+		quickAction = new QuickAction(this.getActivity());
 		contactAdapter.setContactQuickAction(quickAction);
 		if (currentClub.mail != null && currentClub.mail.length() > 0) {
 			ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail), new MailAction(
@@ -211,8 +193,6 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			quickAction.addActionItem(contactAction);
 			quickAction.addActionItem(shareAction);
 		}
-
-		// Mise en place du listener sur le quick action
 		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
 			@Override
 			public void onItemClick(QuickAction quickAction, int pos, int actionId) {
@@ -222,7 +202,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			}
 		});
 		updateUI();
-		// En tâche de fond on interroge le serveur
+		// In the background request data from the network
 		progressBar.setVisibility(View.VISIBLE);
 		updateFromNetwork();
 	}
@@ -237,7 +217,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		currentClub.favorite = !currentClub.favorite;
 		updateClub(currentClub);
 		String msg = currentClub.favorite ? currentClub.nomCourt + " a été ajouté aux favoris" : currentClub.nomCourt + " a été supprimé des favoris";
-		Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+		Toast.makeText(this.getActivity(), msg, Toast.LENGTH_LONG).show();
 	}
 
 	@Background
@@ -263,7 +243,7 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		else {
 			maj.setText("");
 		}
-		
+
 		// Update the teams list for the current club (from the Database)
 		try {
 			List<Equipe> equipes = equipeDao.queryForEq("code_club", currentClub.code);
@@ -273,18 +253,18 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			}
 		}
 		catch (SQLException e) {
-			Log.e("Volley34", "Error while retrieving teams list for club "+currentClub.code);
+			Log.e("Volley34", "Error while retrieving teams list for club " + currentClub.code);
 		}
-		
+
 		// Update calendars (from the DB)
 		try {
-			List<Event> events = eventDao.queryForEq("code", "CLUB-"+currentClub.code);
+			List<Event> events = eventDao.queryForEq("code", "CLUB-" + currentClub.code);
 			eventAdapter.setEvents(events);
 		}
 		catch (SQLException e) {
-			Log.e("Volley34", "Error while retrieving events list for club "+currentClub.code);
+			Log.e("Volley34", "Error while retrieving events list for club " + currentClub.code);
 		}
-		
+
 		progressBar.setVisibility(View.GONE);
 	}
 
@@ -311,10 +291,10 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 			for (Equipe newEquipe : newEquipes) {
 				equipeDao.create(newEquipe);
 			}
-			
+
 			// Update calendars
 			updateCalendarFromNetwork(currentClub.code);
-			
+
 			// Set the last update information
 			VolleyDatabaseHelper.updateLastUpdate(updateDao, "EQUIPES-CLUB-" + currentClub.code);
 		}
@@ -333,25 +313,25 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		try {
 			EventsResponse er = application.restClient.getClubCalendar(codeClub);
 			// First delete all events which are connected to this club
-			List<Event> oldEvents = eventDao.queryForEq("code","CLUB-"+codeClub);
+			List<Event> oldEvents = eventDao.queryForEq("code", "CLUB-" + codeClub);
 			eventDao.delete(oldEvents);
 			// The insert new datas
 			List<Event> events = er.events;
 			for (Event event : events) {
-				event.code = "CLUB-"+codeClub;
+				event.code = "CLUB-" + codeClub;
 				CreateOrUpdateStatus status = eventDao.createOrUpdate(event);
-				Log.d("Volley34","Nb of changed lines: "+status.getNumLinesChanged());
+				Log.d("Volley34", "Nb of changed lines: " + status.getNumLinesChanged());
 			}
 		}
 		catch (Exception e) {
-			Log.e("Volley34","Error while retrieving (from network) events list for club "+codeClub);
+			Log.e("Volley34", "Error while retrieving (from network) events list for club " + codeClub);
 		}
 	}
 
 	@Background
 	public void executeAction(Action action) {
 		if (action != null) {
-			action.execute(ClubActivity.this);
+			action.execute(ClubFragment.this.getActivity());
 		}
 	}
 
@@ -364,8 +344,25 @@ public class ClubActivity extends SherlockActivity implements OnItemClickListene
 		Object obj = parent.getAdapter().getItem(position);
 		// On affiche le détail d'une équipe
 		if (obj instanceof Equipe) {
-			EquipeActivity_.startActivityForResult(this, ((Equipe) obj).codeEquipe, 0);
+			EquipeFragment.showEquipe(this, ((Equipe) obj).codeEquipe, 0);
 		}
+	}
+	
+	/**
+	 * Utility method to launch the fragment details of a club
+	 * @param currentActivity
+	 * @param codeEquipe
+	 * @param requestCode
+	 */
+	public static void showClub(Fragment currentFragment, String codeClub, int requestCode) {
+		MenuActivity activity = (MenuActivity)currentFragment.getActivity();
+		// Set the argument
+		Bundle extras = new Bundle();
+		extras.putString(ClubFragment.EXTRA_CLUB, codeClub);
+		// Create the fragment the switch the current content
+		ClubFragment_ fragment = new ClubFragment_();
+		fragment.setArguments(extras);
+		activity.switchContent(null, fragment);
 	}
 
 }

@@ -1,13 +1,14 @@
 package org.jared.android.volley.ui;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.ui.fragment.ChampionnatFragmentProvider;
 import org.jared.android.volley.ui.fragment.ContentFragment_;
 import org.jared.android.volley.ui.fragment.MenuFragment_;
+import org.jared.android.volley.ui.fragment.provider.ChampionnatFragmentProvider;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -15,11 +16,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.ViewById;
 import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 
 /**
- * Activité permettant d'afficher le menu ainsi que le fragment qui correspond au menu courant
+ * Main activity which manages the menu and the detail content
  * 
  * @author eric.taix@gmail.com
  */
@@ -27,6 +29,8 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
 public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
 	private Fragment mContent;
 	private boolean landScape = false; 
+	@ViewById(R.id.content_frame)
+	View content;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +91,7 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	    	if (!landScape) {
 				if (!getSlidingMenu().isMenuShowing()) {
 					getSlidingMenu().showMenu(true);
-					return true;
+					return true; 
 				}
 			}
 	    	finish();
@@ -121,13 +125,23 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	}
 	 
 	/**
-	 * Remplace le contenu courant par le fragment passé en paramètre
+	 * Replace any existing fragment with this one inside the frame
 	 * @param fragment
 	 */
 	public void switchContent(View source, final Fragment fragment) {
 		mContent = fragment;
-		getSlidingMenu().setSelectedView(source);
-		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+		//Animation.fadeOut(content, 200);
+		// Execute the transaction, 
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out,android.R.anim.fade_in,android.R.anim.fade_out);
+//        ft.setCustomAnimations(
+//                R.anim.card_flip_right_in, R.anim.card_flip_right_out,
+//                R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+        ft.replace(R.id.content_frame, fragment);
+        ft.commit();
+		//Animation.fadeIn(content, 1000); 
+        
 		Handler h = new Handler();
 		h.postDelayed(new Runnable() {
 			public void run() {
@@ -135,8 +149,4 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 			}
 		}, 50);
 	}
-
-	public void onBirdPressed(int pos) {
-	}
-
 }

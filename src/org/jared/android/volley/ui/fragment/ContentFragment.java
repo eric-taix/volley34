@@ -10,6 +10,7 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
+import org.jared.android.volley.ui.fragment.provider.ContentFragmentProvider;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -32,7 +33,8 @@ import com.googlecode.androidannotations.annotations.ViewById;
 import com.j256.ormlite.dao.Dao;
 
 /**
- * Fragment permettant d'afficher le fait qu'une fonctionnalité n'existe pas
+ * A Fragment which displays a ListView. This fragment delegates some operations (like retreiving the adapter to use, retreiving data from DB or network, ...)
+ * to a ContentProvider
  * 
  * @author eric.taix@gmail.com
  */
@@ -59,17 +61,16 @@ public class ContentFragment extends Fragment {
 		this.provider.init(this);
 		title.setText(provider.getTitle());
 
-		// On positionne un divider plus "sympa"
+		// Set a better L&F for the divider
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
 		listView.setDividerHeight(0);
 		listView.setAdapter(provider.getListAdapter());
 		listView.setOnItemClickListener(provider);
-		// On met à jour l'interface
 		progressBar.setVisibility(View.VISIBLE);
 		updateUI();
-		// En tâche de fond on interroge le serveur
+		// In the background, request the network
 		progressBar.setVisibility(View.VISIBLE);
 		updateFromNetWork();
 	}
@@ -84,7 +85,7 @@ public class ContentFragment extends Fragment {
 	}
 
 	/**
-	 * Constructeur
+	 * Set the provider
 	 * 
 	 * @param provider
 	 */
@@ -93,7 +94,7 @@ public class ContentFragment extends Fragment {
 	}
 
 	/**
-	 * Met à jour les données en interrogeant le serveur
+	 * Update datas : request the server
 	 */
 	@Background
 	void updateFromNetWork() {
@@ -109,10 +110,10 @@ public class ContentFragment extends Fragment {
 			updateUI();
 		}
 		catch (Exception e) {
-			Log.e("Volley34","Error while updating values from network",e);
+			Log.e("Volley34", "Error while updating values from network", e);
 		}
 		finally {
-			updateUI();	
+			updateUI();
 		}
 	}
 

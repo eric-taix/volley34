@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment;
+package org.jared.android.volley.ui.fragment.provider;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
-import org.jared.android.volley.ui.EquipeActivity_;
 import org.jared.android.volley.ui.adapter.MenuEquipesAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
+import org.jared.android.volley.ui.fragment.EquipeFragment;
 
 import android.util.Log;
 import android.view.View;
@@ -26,7 +26,7 @@ import com.j256.ormlite.dao.Dao;
  * Fragment pour les favoris
  * @author eric.taix@gmail.com
  */
-public class EquipeFragmentProvider extends BaseFragmentProvider {
+public class EquipesFragmentProvider extends BaseFragmentProvider {
 
 	private static final int SHOW_EQUIPE = 0;
 	
@@ -57,7 +57,7 @@ public class EquipeFragmentProvider extends BaseFragmentProvider {
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 		Equipe eq = (Equipe) sectionAdapter.getItem(position);
-		EquipeActivity_.startActivityForResult(fragment, eq.codeEquipe, SHOW_EQUIPE);
+		EquipeFragment.showEquipe(fragment, eq.codeEquipe, SHOW_EQUIPE);
 	}
 
 	/* (non-Javadoc)

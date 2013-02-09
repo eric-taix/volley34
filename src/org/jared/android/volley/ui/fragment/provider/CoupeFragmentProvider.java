@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment;
+package org.jared.android.volley.ui.fragment.provider;
 
 import org.jared.android.volley.http.RestClient;
 

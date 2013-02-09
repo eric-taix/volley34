@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment;
+package org.jared.android.volley.ui.fragment.provider;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,12 +11,13 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ClubListResponse;
-import org.jared.android.volley.ui.ClubActivity;
-import org.jared.android.volley.ui.ClubActivity_;
+import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
+import org.jared.android.volley.ui.fragment.ClubFragment;
+import org.jared.android.volley.ui.fragment.ClubFragment_;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,9 +29,7 @@ import com.j256.ormlite.dao.Dao;
  * Fragment for the clubs list
  * @author eric.taix@gmail.com
  */
-public class ClubFragmentProvider extends BaseFragmentProvider {
-
-	private static final int SHOW_CLUB = 0;
+public class ClubsFragmentProvider extends BaseFragmentProvider {
 
 	private SectionAdapter sectionAdapter;
 	private MenuClubsAdapter allAdapter;
@@ -60,9 +59,15 @@ public class ClubFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-		Intent intent = new Intent(fragment.getActivity(), ClubActivity_.class);
-		intent.putExtra(ClubActivity.EXTRA_CLUB, (Club) sectionAdapter.getItem(position));
-		fragment.startActivityForResult(intent, SHOW_CLUB);
+		MenuActivity activity = (MenuActivity)fragment.getActivity();
+		// Set the argument
+		Bundle extras = new Bundle();
+		extras.putParcelable(ClubFragment.EXTRA_CLUB, (Club) sectionAdapter.getItem(position));
+		// Create the fragment the switch the current content
+		ClubFragment_ fragment = new ClubFragment_();
+		fragment.setArguments(extras);
+		activity.switchContent(null, fragment);
+	
 	}
 
 	/*

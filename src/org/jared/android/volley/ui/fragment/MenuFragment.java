@@ -5,6 +5,12 @@ import org.jared.android.volley.model.Menu;
 import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.commons.MenuAdapter;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
+import org.jared.android.volley.ui.fragment.provider.ChampionnatFragmentProvider;
+import org.jared.android.volley.ui.fragment.provider.ClubsFragmentProvider;
+import org.jared.android.volley.ui.fragment.provider.CoupeFragmentProvider;
+import org.jared.android.volley.ui.fragment.provider.DefaultFragmentProvider;
+import org.jared.android.volley.ui.fragment.provider.EquipesFragmentProvider;
+import org.jared.android.volley.ui.fragment.provider.FavorisFragmentProvider;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
@@ -61,11 +67,11 @@ public class MenuFragment extends ListFragment {
 			break;
 		case 4:
 			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new EquipeFragmentProvider());
+			((ContentFragment)newContent).setProvider(new EquipesFragmentProvider());
 			break;
 		case 5:
 			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new ClubFragmentProvider());
+			((ContentFragment)newContent).setProvider(new ClubsFragmentProvider());
 			break;
 		case 6:
 			newContent = new ContentFragment_();
