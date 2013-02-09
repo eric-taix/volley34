@@ -26,7 +26,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
- * Gère un contact: son nom, son tél, son email et propose via un bouton de pouvoir le contacter
+ * This adapter aims to adapt a Personn contact (its name, phone number, email) and also provides a button to be in touch with (phone call, email, SMS)
  * @author eric.taix@gmail.com
  */
 public class ContactAdapter extends BaseAdapter {
@@ -35,12 +35,12 @@ public class ContactAdapter extends BaseAdapter {
 	protected Context ctx;
 	private QuickAction qa;
 
-	// Options de l'ImageLoader pour l'image des contacts: cache mémoire + cache disque
+	// Options for the ImageLoader
 	private static DisplayImageOptions avatarOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.ic_unknown)
 			.showImageForEmptyUri(R.drawable.ic_unknown).cacheInMemory().build();
 
 	/**
-	 * Constructeur permettant d'initialiser le nb max d'items à la valeur par défaut
+	 * Constructor which initialize the maximum number of items with the default value
 	 * 
 	 * @param ctx
 	 * @param maxItems
@@ -50,7 +50,16 @@ public class ContactAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * Fixe le contact
+	 * Remove all contacts
+	 */
+	public void clear() {
+		if (this.contacts != null) {
+			this.contacts.clear();
+		}
+	}
+
+	/**
+	 * Add a contact
 	 * 
 	 * @param contacts
 	 */
@@ -63,7 +72,7 @@ public class ContactAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * Fixe la liste des contacts
+	 * Set the new list of contacts
 	 * 
 	 * @param contacts
 	 */
@@ -178,7 +187,7 @@ public class ContactAdapter extends BaseAdapter {
 				mail.setText(contact.getMail());
 				mail.setVisibility(View.VISIBLE);
 				imgMail.setVisibility(View.VISIBLE);
-				// On calcule le MD5 du mail
+				// Calculate the MD5 of the email
 				String md5 = MD5.calcMD5(contact.getMail().trim().toLowerCase());
 				String url = "http://www.gravatar.com/avatar/" + md5 + "?d=mm";
 				ImageLoader imageLoader = ImageLoader.getInstance();

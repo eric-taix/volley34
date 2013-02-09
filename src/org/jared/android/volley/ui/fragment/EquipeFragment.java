@@ -4,7 +4,6 @@
 package org.jared.android.volley.ui.fragment;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.jared.android.volley.R;
@@ -33,7 +32,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -215,7 +213,14 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 	// ---------------------- Update UI from the DB --------------------------
 
 	@UiThread
+	void updateUIAsync(String codeEquipe) {
+		updateUI(codeEquipe);
+	}
+
 	void updateUI(String codeEquipe) {
+		progressBar.setVisibility(View.GONE);
+		maj.setText(VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPE-" + codeEquipe));
+		
 		try {
 			currentEquipe = equipeDao.queryForId(codeEquipe);
 			if (currentEquipe != null) {
@@ -248,12 +253,14 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 		try {
 			ed = equipeDetailDao.queryForId(codeEquipe);
 			if (ed != null) {
+				contactChampionnatAdapter.clear();
 				if (!ed.contactRespChampionnat.isEmpty()) {
 					contactChampionnatAdapter.addContact(ed.contactRespChampionnat);
 				}
 				if (!ed.contactSupplChampionnat.isEmpty()) {
 					contactChampionnatAdapter.addContact(ed.contactSupplChampionnat);
 				}
+				contactCoupeAdapter.clear();
 				if (!ed.contactRespCoupe.isEmpty()) {
 					contactCoupeAdapter.addContact(ed.contactRespCoupe);
 				}
@@ -267,7 +274,7 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 					gymnaseCoupeAdapter.setGymnase(ed.gymnaseCoupe);
 				}
 
-				// On fait le ménage dans les sections ne servant pas
+				// Remove all adapters which are not used
 				if (contactChampionnatAdapter.getCount() == 0) {
 					sectionAdapter.removeSection(SECTION_CONTACTS_CHAMPIONNAT);
 				}
@@ -304,21 +311,6 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
-	/**
-	 * Update the UI according to the datas stored in the DB
-	 */
-	void updateUI() {
-		Date dateMaj = VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPE-" + currentEquipe.codeEquipe);
-		if (dateMaj != null) {
-			maj.setText(DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-					DateUtils.FORMAT_NUMERIC_DATE));
-		}
-		else {
-			maj.setText("");
-		}
-
-		progressBar.setVisibility(View.GONE);
-	}
 
 	// ----------------------------- Network updates ----------------------------
 
@@ -329,50 +321,49 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 	@Background
 	void updateFromNetwork(String codeEquipe) {
 		// Launch background updates for details and calendar
-		updateDetailFromNetwork(codeEquipe);
-		updateCalendarFromNetwork(codeEquipe);
-		updateUI(codeEquipe);
+		try {
+			updateDetailFromNetwork(codeEquipe);
+			updateCalendarFromNetwork(codeEquipe);
+			VolleyDatabaseHelper.updateLastUpdate(updateDao, "EQUIPE-" + codeEquipe);
+			updateUIAsync(codeEquipe);
+		}
+		catch (SQLException e) {
+			Log.e("Volley34", "Error while updating informations for team " + codeEquipe, e);
+		}
+
 	}
 
 	/**
 	 * Retrieve team details from network
+	 * @throws SQLException
 	 */
-	public void updateDetailFromNetwork(String codeEquipe) {
-		try {
-			EquipeDetailResponse edr = application.restClient.getEquipeDetail(codeEquipe);
-			EquipeDetail ed = edr.getEquipeDetail();
+	public void updateDetailFromNetwork(String codeEquipe) throws SQLException {
+		EquipeDetailResponse edr = application.restClient.getEquipeDetail(codeEquipe);
+		EquipeDetail ed = edr.getEquipeDetail();
 
-			// Get current datas from DB and delete
-			EquipeDetail equipeDetail = equipeDetailDao.queryForId(codeEquipe);
-			equipeDetailDao.delete(equipeDetail);
+		// Get current datas from DB and delete
+		EquipeDetail equipeDetail = equipeDetailDao.queryForId(codeEquipe);
+		equipeDetailDao.delete(equipeDetail);
 
-			// Add new informations
-			equipeDetailDao.createOrUpdate(ed);
-		}
-		catch (Exception e) {
-			Log.e("Volley34", "Error while retreiving details of team " + codeEquipe, e);
-		}
+		// Add new informations
+		equipeDetailDao.createOrUpdate(ed);
 	}
 
 	/**
 	 * Retrieve team events from network
+	 * @throws SQLException
 	 */
-	public void updateCalendarFromNetwork(String codeEquipe) {
-		try {
-			EventsResponse er = application.restClient.getCalendar(codeEquipe);
-			// First delete all events which are connected to this club
-			List<Event> oldEvents = eventDao.queryForEq("code", "TEAM-" + codeEquipe);
-			eventDao.delete(oldEvents);
-			// The insert new datas
-			List<Event> events = er.events;
-			for (Event event : events) {
-				event.code = "TEAM-" + codeEquipe;
-				CreateOrUpdateStatus status = eventDao.createOrUpdate(event);
-				Log.d("Volley34", "Nb of changed lines: " + status.getNumLinesChanged());
-			}
-		}
-		catch (Exception e) {
-			Log.e("Volley34", "Error while retrieving (from network) events list for team " + codeEquipe);
+	public void updateCalendarFromNetwork(String codeEquipe) throws SQLException {
+		EventsResponse er = application.restClient.getCalendar(codeEquipe);
+		// First delete all events which are connected to this club
+		List<Event> oldEvents = eventDao.queryForEq("code", "TEAM-" + codeEquipe);
+		eventDao.delete(oldEvents);
+		// The insert new datas
+		List<Event> events = er.events;
+		for (Event event : events) {
+			event.code = "TEAM-" + codeEquipe;
+			CreateOrUpdateStatus status = eventDao.createOrUpdate(event);
+			Log.d("Volley34", "Nb of changed lines: " + status.getNumLinesChanged());
 		}
 	}
 
@@ -411,7 +402,7 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 	 * @param requestCode
 	 */
 	public static void showEquipe(Fragment currentFragment, String codeEquipe, int requestCode) {
-		MenuActivity activity = (MenuActivity)currentFragment.getActivity();
+		MenuActivity activity = (MenuActivity) currentFragment.getActivity();
 		// Set the argument
 		Bundle extras = new Bundle();
 		extras.putString(EquipeFragment.EXTRA_CODE_EQUIPE, codeEquipe);

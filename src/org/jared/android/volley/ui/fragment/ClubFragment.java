@@ -4,7 +4,6 @@
 package org.jared.android.volley.ui.fragment;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.jared.android.volley.R;
@@ -39,7 +38,6 @@ import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -208,7 +206,7 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 	}
 
 	/**
-	 * Click sur le bouton favorite
+	 * Click on the favorite button
 	 */
 	@Click(R.id.favorite)
 	public void favoriteClicked() {
@@ -231,18 +229,11 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 	}
 
 	/**
-	 * Met à jour l'interface graphique en fonction des données contenues dans la BD
+	 * Upddate the UI according to the datas stored in the DB
 	 */
 	@UiThread
 	void updateUI() {
-		Date datetime = VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPES-CLUB-" + currentClub.code);
-		if (datetime != null) {
-			maj.setText(DateUtils.getRelativeTimeSpanString(datetime.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-					DateUtils.FORMAT_NUMERIC_DATE));
-		}
-		else {
-			maj.setText("");
-		}
+		maj.setText(VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPES-CLUB-" + currentClub.code));
 
 		// Update the teams list for the current club (from the Database)
 		try {

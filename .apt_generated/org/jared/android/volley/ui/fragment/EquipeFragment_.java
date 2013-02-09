@@ -47,17 +47,17 @@ public final class EquipeFragment_
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
             equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
             updateDao = DaoManager.createDao(connectionSource_, Update.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
@@ -70,11 +70,11 @@ public final class EquipeFragment_
     }
 
     private void afterSetContentView_() {
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -115,14 +115,14 @@ public final class EquipeFragment_
     }
 
     @Override
-    public void updateUI(final String codeEquipe) {
+    public void updateUIAsync(final String codeEquipe) {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeFragment_.super.updateUI(codeEquipe);
+                    EquipeFragment_.super.updateUIAsync(codeEquipe);
                 } catch (RuntimeException e) {
                     Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

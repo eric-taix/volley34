@@ -13,6 +13,7 @@ import org.jared.android.volley.model.Update;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -81,10 +82,18 @@ public class VolleyDatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * @param code
 	 * @return
 	 */
-	public static Date getLastUpdate(Dao<Update, String> updateDao, String code) {
+	public static String getLastUpdate(Dao<Update, String> updateDao, String code) {
 		try {
 			Update update = updateDao.queryForId(code);
-			return (update != null && update.dateTime != null ? update.dateTime : null);
+			Date dateMaj =  (update != null && update.dateTime != null ? update.dateTime : null);
+			if (dateMaj != null) {
+				return DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
+						DateUtils.FORMAT_NUMERIC_DATE).toString();
+			}
+			else {
+				return "";
+			}
+			
 		}
 		catch (SQLException e) {
 			Log.e("Volley34", "Error while retreiving last updates for code "+code);
