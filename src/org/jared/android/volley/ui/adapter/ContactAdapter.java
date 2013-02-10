@@ -8,6 +8,12 @@ import java.util.List;
 
 import org.jared.android.volley.R;
 import org.jared.android.volley.model.Contact;
+import org.jared.android.volley.ui.action.ContactAction;
+import org.jared.android.volley.ui.action.MailAction;
+import org.jared.android.volley.ui.action.PhoneAction;
+import org.jared.android.volley.ui.action.SmsAction;
+import org.jared.android.volley.ui.widget.quickaction.Action;
+import org.jared.android.volley.ui.widget.quickaction.ActionItem;
 import org.jared.android.volley.ui.widget.quickaction.QuickAction;
 import org.jared.android.volley.utils.MD5;
 
@@ -31,9 +37,14 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 public class ContactAdapter extends BaseAdapter {
 
+	private static final int ID_MAIL = 0;
+	private static final int ID_PHONE = 1;
+	private static final int ID_SMS = 2;
+	private static final int ID_CONTACT = 3;
+	//private static final int ID_SHARE = 4;
+
 	protected List<Contact> contacts;
 	protected Context ctx;
-	private QuickAction qa;
 
 	// Options for the ImageLoader
 	private static DisplayImageOptions avatarOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.ic_unknown)
@@ -72,6 +83,51 @@ public class ContactAdapter extends BaseAdapter {
 	}
 
 	/**
+	 * Create a QuickAction instance according to the contact parameter
+	 * @param contact
+	 * @return
+	 */
+	private QuickAction createQuickAction(Contact contact) {
+		// CrŽation du menu pour le contact
+		QuickAction quickAction = new QuickAction(this.ctx);
+		if (contact.getMail() != null && contact.getMail().length() > 0) {
+			ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", ctx.getResources().getDrawable(R.drawable.ic_mail), new MailAction(
+					contact.getMail(), contact.getNom()));
+			quickAction.addActionItem(mailAction);
+		}
+		if (contact.getMobile() != null && contact.getMobile().length() > 0) {
+			ActionItem phoneAction = new ActionItem(ID_PHONE, "TŽlŽphoner", ctx.getResources().getDrawable(R.drawable.ic_phone), new PhoneAction(
+					contact.getMobile()));
+			ActionItem smsAction = new ActionItem(ID_SMS, "Envoyer un SMS", ctx.getResources().getDrawable(R.drawable.ic_sms), new SmsAction(contact.getMobile()));
+			quickAction.addActionItem(phoneAction);
+			quickAction.addActionItem(smsAction);
+		}
+		else if (contact.getTelephone() != null && contact.getTelephone().length() > 0) {
+			ActionItem phoneAction = new ActionItem(ID_PHONE, "TŽlŽphoner", ctx.getResources().getDrawable(R.drawable.ic_phone), new PhoneAction(
+					contact.getTelephone()));
+			quickAction.addActionItem(phoneAction);
+		}
+		if ((contact.getMobile() != null && contact.getMobile().length() > 0) || (contact.getMail() != null && contact.getMail().length() > 0)) {
+			ActionItem contactAction = new ActionItem(ID_CONTACT, "Ajouter aux contacts", ctx.getResources().getDrawable(R.drawable.ic_address_book),
+					new ContactAction(contact));
+			//ActionItem shareAction = new ActionItem(ID_SHARE, "Partager", ctx.getResources().getDrawable(R.drawable.ic_share), new ShareAction(contact));
+			quickAction.addActionItem(contactAction);
+			//quickAction.addActionItem(shareAction);
+		}
+		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
+			@Override
+			public void onItemClick(QuickAction quickAction, int pos, int actionId) {
+				ActionItem actionItem = quickAction.getActionItem(pos);
+				Action action = actionItem.getAction();
+				if (action != null) {
+					action.execute(ctx);
+				}
+			}
+		});
+		return quickAction;
+	}
+
+	/**
 	 * Set the new list of contacts
 	 * 
 	 * @param contacts
@@ -79,10 +135,6 @@ public class ContactAdapter extends BaseAdapter {
 	public void setContact(List<Contact> contacts) {
 		this.contacts = contacts;
 		notifyDataSetChanged();
-	}
-
-	public void setContactQuickAction(QuickAction qa) {
-		this.qa = qa;
 	}
 
 	/*
@@ -160,10 +212,11 @@ public class ContactAdapter extends BaseAdapter {
 			// Le button et l'action sur ce bouton
 			Button button = (Button) convertView.findViewById(R.id.button_contact);
 			final View anchorView = convertView;
+			final QuickAction quickAction = createQuickAction(contact);
 			button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					qa.show(anchorView);
+					quickAction.show(anchorView);
 				}
 			});
 			// Les informations ˆ afficher

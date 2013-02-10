@@ -3,7 +3,7 @@
  */
 package org.jared.android.volley.ui.action;
 
-import org.jared.android.volley.model.Club;
+import org.jared.android.volley.model.Contact;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 
 import android.content.Context;
@@ -17,10 +17,10 @@ import android.provider.ContactsContract;
  */
 public class ContactAction implements Action {
 
-	private Club club;
+	private Contact contact;
 
-	public ContactAction(Club club) {
-		this.club = club;
+	public ContactAction(Contact contact) {
+		this.contact = contact;
 	}
 
 	/*
@@ -32,14 +32,17 @@ public class ContactAction implements Action {
 	public void execute(Context context) {
 		Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
 		intent.setType(ContactsContract.Contacts.CONTENT_ITEM_TYPE);
-		intent.putExtra(ContactsContract.Intents.Insert.NAME, club.contact);
-		intent.putExtra(ContactsContract.Intents.Insert.COMPANY, club.nom);
-		if (club.telephone != null && club.telephone.length() > 0) {
-			intent.putExtra(ContactsContract.Intents.Insert.PHONE, club.telephone);
+		intent.putExtra(ContactsContract.Intents.Insert.NAME, contact.getNom());
+		if (contact.getMobile() != null && contact.getMobile().length() > 0) {
+			intent.putExtra(ContactsContract.Intents.Insert.PHONE, contact.getMobile());
 			intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
 		}
-		if (club.mail != null && club.mail.length() > 0) {
-			intent.putExtra(ContactsContract.Intents.Insert.EMAIL, club.mail);
+		if (contact.getTelephone() != null && contact.getTelephone().length() > 0) {
+			intent.putExtra(ContactsContract.Intents.Insert.PHONE, contact.getTelephone());
+			intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_HOME);
+		}
+		if (contact.getMail() != null && contact.getMail().length() > 0) {
+			intent.putExtra(ContactsContract.Intents.Insert.EMAIL, contact.getMail());
 			intent.putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, ContactsContract.CommonDataKinds.Email.TYPE_OTHER);
 		}
 		context.startActivity(intent);

@@ -17,11 +17,6 @@ import org.jared.android.volley.model.EventsResponse;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
 import org.jared.android.volley.ui.MenuActivity;
-import org.jared.android.volley.ui.action.ContactAction;
-import org.jared.android.volley.ui.action.MailAction;
-import org.jared.android.volley.ui.action.PhoneAction;
-import org.jared.android.volley.ui.action.ShareAction;
-import org.jared.android.volley.ui.action.SmsAction;
 import org.jared.android.volley.ui.adapter.ClubInformationAdapter;
 import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.EventAdapter;
@@ -29,9 +24,6 @@ import org.jared.android.volley.ui.adapter.SimpleEquipesAdapter;
 import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
 import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
-import org.jared.android.volley.ui.widget.quickaction.Action;
-import org.jared.android.volley.ui.widget.quickaction.ActionItem;
-import org.jared.android.volley.ui.widget.quickaction.QuickAction;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.GradientDrawable;
@@ -109,7 +101,6 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 	private static DisplayImageOptions logoOptions = new DisplayImageOptions.Builder().showStubImage(R.drawable.empty).showImageForEmptyUri(R.drawable.empty)
 			.cacheInMemory().build();
 
-	private QuickAction quickAction;
 	// Adpater qui affiche la liste des Žquipes
 	private SimpleEquipesAdapter equipeAdapter;
 	// Adapter qui contient les autres adapters
@@ -171,35 +162,6 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 				R.drawable.ic_star_disabled));
 		listView.setOnItemClickListener(this);
 		
-		quickAction = new QuickAction(this.getActivity());
-		contactAdapter.setContactQuickAction(quickAction);
-		if (currentClub.mail != null && currentClub.mail.length() > 0) {
-			ActionItem mailAction = new ActionItem(ID_MAIL, "Envoyer un email", getResources().getDrawable(R.drawable.ic_mail), new MailAction(
-					currentClub.mail, currentClub.nom));
-			quickAction.addActionItem(mailAction);
-		}
-		if (currentClub.telephone != null && currentClub.telephone.length() > 0) {
-			ActionItem phoneAction = new ActionItem(ID_PHONE, "TŽlŽphoner", getResources().getDrawable(R.drawable.ic_phone), new PhoneAction(
-					currentClub.telephone));
-			ActionItem smsAction = new ActionItem(ID_SMS, "Envoyer un SMS", getResources().getDrawable(R.drawable.ic_sms), new SmsAction(currentClub.telephone));
-			quickAction.addActionItem(phoneAction);
-			quickAction.addActionItem(smsAction);
-		}
-		if ((currentClub.telephone != null && currentClub.telephone.length() > 0) || (currentClub.mail != null && currentClub.mail.length() > 0)) {
-			ActionItem contactAction = new ActionItem(ID_CONTACT, "Ajouter aux contacts", getResources().getDrawable(R.drawable.ic_address_book),
-					new ContactAction(currentClub));
-			ActionItem shareAction = new ActionItem(ID_SHARE, "Partager", getResources().getDrawable(R.drawable.ic_share), new ShareAction(currentClub));
-			quickAction.addActionItem(contactAction);
-			quickAction.addActionItem(shareAction);
-		}
-		quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
-			@Override
-			public void onItemClick(QuickAction quickAction, int pos, int actionId) {
-				ActionItem actionItem = quickAction.getActionItem(pos);
-				Action action = actionItem.getAction();
-				executeAction(action);
-			}
-		});
 		updateUI();
 		// In the background request data from the network
 		progressBar.setVisibility(View.VISIBLE);
@@ -317,13 +279,6 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 		}
 		catch (Exception e) {
 			Log.e("Volley34", "Error while retrieving (from network) events list for club " + codeClub);
-		}
-	}
-
-	@Background
-	public void executeAction(Action action) {
-		if (action != null) {
-			action.execute(ClubFragment.this.getActivity());
 		}
 	}
 
