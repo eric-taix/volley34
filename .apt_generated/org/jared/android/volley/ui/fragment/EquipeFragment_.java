@@ -47,17 +47,17 @@ public final class EquipeFragment_
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
             equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
             eventDao = DaoManager.createDao(connectionSource_, Event.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
-            updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
@@ -70,11 +70,11 @@ public final class EquipeFragment_
     }
 
     private void afterSetContentView_() {
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {

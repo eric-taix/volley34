@@ -13,6 +13,7 @@ import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ClubListResponse;
 import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.fragment.ClubFragment;
 import org.jared.android.volley.ui.fragment.ClubFragment_;
@@ -79,8 +80,8 @@ public class ClubsFragmentProvider extends BaseFragmentProvider {
 		sectionAdapter = new SectionAdapter(fragment.getActivity(), R.layout.list_header);
 		allAdapter = new MenuClubsAdapter(fragment.getActivity());
 		favoriteAdapter = new MenuClubsAdapter(fragment.getActivity());
-		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
-		sectionAdapter.addSection("TOUS", allAdapter);
+		sectionAdapter.addSection(new Section(1,"FAVORIS", favoriteAdapter));
+		sectionAdapter.addSection(new Section(2,"TOUS", allAdapter));
 		return sectionAdapter;
 	}
 

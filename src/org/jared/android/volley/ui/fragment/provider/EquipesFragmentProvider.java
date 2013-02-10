@@ -12,6 +12,7 @@ import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Equipe;
 import org.jared.android.volley.model.EquipesClubResponse;
 import org.jared.android.volley.ui.adapter.MenuEquipesAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.fragment.EquipeFragment;
 
@@ -68,8 +69,8 @@ public class EquipesFragmentProvider extends BaseFragmentProvider {
 		sectionAdapter = new SectionAdapter(fragment.getActivity(),  R.layout.list_header);
 		allAdapter = new MenuEquipesAdapter(fragment.getActivity());
 		favoriteAdapter = new MenuEquipesAdapter(fragment.getActivity());
-		sectionAdapter.addSection("FAVORIS", favoriteAdapter);
-		sectionAdapter.addSection("TOUS", allAdapter);
+		sectionAdapter.addSection(new Section(1,"FAVORIS", favoriteAdapter));
+		sectionAdapter.addSection(new Section(2,"TOUS", allAdapter));
 		return sectionAdapter;
 	}
 	

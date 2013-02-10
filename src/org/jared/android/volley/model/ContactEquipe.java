@@ -92,4 +92,46 @@ public class ContactEquipe implements Contact {
 		return (nom == null || nom.length() == 0);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((mail == null) ? 0 : mail.hashCode());
+		result = prime * result + ((mobile == null) ? 0 : mobile.hashCode());
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		ContactEquipe other = (ContactEquipe) obj;
+		if (mail == null) {
+			if (other.mail != null) return false;
+		}
+		else if (!mail.equals(other.mail)) return false;
+		if (mobile == null) {
+			if (other.mobile != null) return false;
+		}
+		else if (!mobile.equals(other.mobile)) return false;
+		if (nom == null) {
+			if (other.nom != null) return false;
+		}
+		else if (!nom.equals(other.nom)) return false;
+		if (telephone == null) {
+			if (other.telephone != null) return false;
+		}
+		else if (!telephone.equals(other.telephone)) return false;
+		return true;
+	}
+
 }

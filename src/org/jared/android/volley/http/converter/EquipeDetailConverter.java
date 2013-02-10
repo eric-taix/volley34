@@ -37,7 +37,7 @@ public class EquipeDetailConverter implements Converter<EquipeDetail> {
 			result.contactSupplCoupe.setMobile(node.getAttribute("MobileSupplCoupe").getValue());
 			result.contactSupplCoupe.setTelephone(node.getAttribute("TelephoneSupplCoupe").getValue());
 			result.contactSupplCoupe.setMail(node.getAttribute("MailSupplCoupe").getValue());
-			
+
 			// Les gymnases
 			result.gymnaseChampionnat = new Gymnase();
 			result.gymnaseChampionnat.gps = node.getAttribute("GPSGymnase").getValue();
@@ -48,9 +48,10 @@ public class EquipeDetailConverter implements Converter<EquipeDetail> {
 			result.gymnaseChampionnat.adresse = node.getAttribute("AdresseGymnase").getValue();
 			result.gymnaseChampionnat.nomComplet = node.getAttribute("NomCompletGymnase").getValue();
 			result.gymnaseChampionnat.nom = node.getAttribute("NomGymnase").getValue();
-			result.gymnaseChampionnat.heure = node.getAttribute("Heure").getValue();
+			String str = node.getAttribute("Heure").getValue();
+			result.gymnaseChampionnat.heure = getHeure(str);
 			result.gymnaseChampionnat.jour = node.getAttribute("JourSemaine").getValue();
-			
+
 			result.gymnaseCoupe = new Gymnase();
 			result.gymnaseCoupe.gps = node.getAttribute("GPSGymnaseCoupe").getValue();
 			result.gymnaseCoupe.telephone = node.getAttribute("TelGymnaseCoupe").getValue();
@@ -60,10 +61,10 @@ public class EquipeDetailConverter implements Converter<EquipeDetail> {
 			result.gymnaseCoupe.adresse = node.getAttribute("AdresseGymnaseCoupe").getValue();
 			result.gymnaseCoupe.nomComplet = node.getAttribute("NomCompletGymnaseCoupe").getValue();
 			result.gymnaseCoupe.nom = node.getAttribute("NomGymnaseCoupe").getValue();
-			result.gymnaseCoupe.heure = node.getAttribute("HeureCoupe").getValue();
+			str = node.getAttribute("HeureCoupe").getValue();
+			result.gymnaseCoupe.heure = getHeure(str);
 			result.gymnaseCoupe.jour = node.getAttribute("JourSemaineCoupe").getValue();
-			
-			
+
 		}
 		catch (Exception ex) {
 		}
@@ -71,5 +72,14 @@ public class EquipeDetailConverter implements Converter<EquipeDetail> {
 	}
 
 	public void write(OutputNode node, EquipeDetail external) {
+	}
+
+	private String getHeure(String str) {
+		int index = str.indexOf(" ");
+		if (index != -1) {
+			str = str.substring(index + 1);
+			return str.trim();
+		}
+		return str;
 	}
 }

@@ -27,6 +27,7 @@ import org.jared.android.volley.ui.adapter.ContactAdapter;
 import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.SimpleEquipesAdapter;
 import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 import org.jared.android.volley.ui.widget.quickaction.ActionItem;
@@ -131,22 +132,22 @@ public class ClubFragment extends Fragment implements OnItemClickListener {
 		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
 
 		ClubInformationAdapter informationAdapter = new ClubInformationAdapter(this.getActivity(), currentClub);
-		sectionAdapter.addSection("INFORMATIONS", informationAdapter);
+		sectionAdapter.addSection(new Section(1,"INFORMATIONS", informationAdapter));
 
 		ContactAdapter contactAdapter = new ContactAdapter(this.getActivity());
 		contactAdapter.addContact(new ContactClub(currentClub));
 		CollapsableAdapter collapseContact = new CollapsableAdapter(this.getActivity(), contactAdapter, sectionAdapter);
-		sectionAdapter.addSection("CONTACT", collapseContact);
+		sectionAdapter.addSection(new Section(2,"CONTACT", collapseContact));
 
 		equipeAdapter = new SimpleEquipesAdapter(this.getActivity());
 		CollapsableAdapter collapseEquipe = new CollapsableAdapter(this.getActivity(), equipeAdapter, sectionAdapter);
 		collapseEquipe.setTexts("Toutes les 子uipes", "R仕uire");
-		sectionAdapter.addSection("EQUIPES", collapseEquipe);
+		sectionAdapter.addSection(new Section(3,"EQUIPES", collapseEquipe));
 
 		eventAdapter = new EventAdapter(this.getActivity());
 		CollapsableAdapter collapseEvent = new CollapsableAdapter(this.getActivity(), eventAdapter, sectionAdapter);
 		collapseEvent.setTexts("Tous les 思熟ements", "R仕uire");
-		sectionAdapter.addSection("CALENDRIER", collapseEvent);
+		sectionAdapter.addSection(new Section(4,"CALENDRIER", collapseEvent));
 
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		

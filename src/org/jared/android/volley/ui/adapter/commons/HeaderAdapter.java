@@ -16,13 +16,14 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 /**
+ * An adapter for headers
  * @author eric.taix@gmail.com
  */
 public class HeaderAdapter extends BaseAdapter {
 
 	Context context;
 	int layout;
-	List<String> headers = new ArrayList<String>();
+	List<Section> sections = new ArrayList<Section>();
 
 	public HeaderAdapter(Context ctx, int layoutId) {
 		context = ctx;
@@ -30,40 +31,43 @@ public class HeaderAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * Retourne la liste des headers
+	 * Return all headers
 	 * 
 	 * @return
 	 */
-	public List<String> getHeaders() {
-		return headers;
+	public List<Section> getHeaders() {
+		return sections;
 	}
 
 	/**
-	 * Ajoute un header
+	 * Add a header at the end of the list
 	 * 
 	 * @param header
 	 */
-	public void add(String header) {
-		headers.add(header);
+	public void add(Section section) {
+		sections.add(section);
+		notifyDataSetChanged();
 	}
 
 	/**
-	 * Inser un header à la position désirée
+	 * Insert a header at a specific location
 	 * 
 	 * @param header
 	 * @param position
 	 */
-	public void insert(String header, int position) {
-		headers.add(position, header);
+	public void insert(Section section, int position) {
+		sections.add(position, section);
+		notifyDataSetChanged();
 	}
 
 	/**
-	 * Supprime un header
+	 * Remove a header
 	 * 
 	 * @param header
 	 */
-	public void remove(String header) {
-		headers.remove(header);
+	public void remove(Section section) {
+		sections.remove(section);
+		notifyDataSetChanged();
 	}
 
 	/*
@@ -73,7 +77,7 @@ public class HeaderAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		return headers.size();
+		return sections.size();
 	}
 
 	/*
@@ -83,8 +87,8 @@ public class HeaderAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		if (headers != null && position < headers.size()) {
-			return headers.get(position);
+		if (sections != null && position < sections.size()) {
+			sections.get(position);
 		}
 		return null;
 	}
@@ -111,7 +115,7 @@ public class HeaderAdapter extends BaseAdapter {
 			convertView = li.inflate(layout, parent, false);
 		}
 		TextView tv = (TextView) convertView.findViewById(R.id.list_header_title);
-		tv.setText(headers.get(position));
+		tv.setText(sections.get(position).title);
 		return convertView;
 	}
 

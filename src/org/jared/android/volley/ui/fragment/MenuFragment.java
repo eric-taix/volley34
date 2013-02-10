@@ -4,6 +4,7 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.model.Menu;
 import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.commons.MenuAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.fragment.provider.ChampionnatFragmentProvider;
 import org.jared.android.volley.ui.fragment.provider.ClubsFragmentProvider;
@@ -35,10 +36,10 @@ public class MenuFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		// Crée les listes qui forment le menu
 		SectionAdapter adapter = new SectionAdapter(this.getActivity(), R.layout.menu_header);
-		adapter.addSection("MENU", new MenuAdapter(getActivity(), new Menu[] { new Menu("Favoris", R.drawable.ic_star_enabled), new Menu("Championnat", R.drawable.ic_championnat),
-				new Menu("Coupe", R.drawable.ic_coupe), new Menu("Equipes", R.drawable.ic_equipes), new Menu("Clubs", R.drawable.ic_club) }));
-		adapter.addSection("OUTILS", new MenuAdapter(getActivity(), new Menu[] { new Menu("Réglages", R.drawable.ic_reglages),
-				new Menu("A propos", R.drawable.ic_apropos) }));
+		adapter.addSection(new Section(1, "MENU", new MenuAdapter(getActivity(), new Menu[] { new Menu("Favoris", R.drawable.ic_star_enabled), new Menu("Championnat", R.drawable.ic_championnat),
+				new Menu("Coupe", R.drawable.ic_coupe), new Menu("Equipes", R.drawable.ic_equipes), new Menu("Clubs", R.drawable.ic_club) })));
+		adapter.addSection(new Section(2, "OUTILS", new MenuAdapter(getActivity(), new Menu[] { new Menu("Réglages", R.drawable.ic_reglages),
+				new Menu("A propos", R.drawable.ic_apropos) })));
 		getListView().setBackgroundColor(getResources().getColor(R.color.background_menu));
 		getListView().setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"

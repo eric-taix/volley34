@@ -14,12 +14,12 @@ import android.widget.Adapter;
 import android.widget.BaseAdapter;
 
 /**
- * Adapter permettant d'avoir des sections
+ * Adpater which aims to have sections with different kinds of adapters
  * @author eric.taix@gmail.com
  */
 public class SectionAdapter extends BaseAdapter {
 
-	public final Map<String, Adapter> sections = new LinkedHashMap<String, Adapter>();
+	public final Map<Integer, Section> sections = new LinkedHashMap<Integer, Section>();
 	public final HeaderAdapter headers;
 	public final static int TYPE_SECTION_HEADER = 0;
 	private DataSetObserver observer;
@@ -32,78 +32,97 @@ public class SectionAdapter extends BaseAdapter {
 				notifyDataSetChanged();
 			}
 		};
+		headers.registerDataSetObserver(observer);
 	}
 
-	public void addSection(String section, Adapter adapter) {
+	public void addSection(Section section) {
 		this.headers.add(section);
-		this.sections.put(section, adapter);
-		adapter.registerDataSetObserver(observer);
+		this.sections.put(section.id, section);
+		section.adapter.registerDataSetObserver(observer);
 	}
 
-	public void insertSection(String section, Adapter adapter, int position) {
+	public void insertSection(Section section, int position) {
 		this.headers.insert(section, position);
-		this.sections.put(section, adapter);
-		adapter.registerDataSetObserver(observer);
+		this.sections.put(section.id, section);
+		section.adapter.registerDataSetObserver(observer);
 	}
 
-	public void removeSection(String section) {
-		this.headers.remove(section);
-		Adapter adapter = this.sections.remove(section);
-		if (adapter != null) {
-			adapter.unregisterDataSetObserver(observer);
+	public void setSectionVisibility(int sectionId, boolean visible) {
+		Section sec = this.sections.get(sectionId);
+		if (sec != null) {
+			sec.visible = visible;
 		}
+		notifyDataSetChanged();
+	}
+
+	public void renameSection(int sectionId, String newHeader) {
+		Section section = this.sections.get(sectionId);
+		if (section != null) {
+			section.title = newHeader;
+		}
+		notifyDataSetChanged();
 	}
 
 	public Object getItem(int position) {
-		for (String header : headers.getHeaders()) {
-			Adapter adapter = sections.get(header);
-			int size = adapter.getCount() + 1;
+		for (Section section : sections.values()) {
+			if (section.visible) {
+				Adapter adapter = section.adapter;
+				int size = adapter.getCount() + 1;
 
-			// VŽrifie si la position est dans la section
-			if (position == 0) return header;
-			if (position < size) return adapter.getItem(position - 1);
+				// Verify if the position is within a section
+				if (position == 0) return section.title;
+				if (position < size) return adapter.getItem(position - 1);
 
-			// Sinon on passe ˆ la prochaine section
-			position -= size;
+				// Otherwise go to the next section
+				position -= size;
+			}
 		}
 		return null;
 	}
 
 	public int getCount() {
-		// Somme des items dans chaque section + 1 pour chaque section
+		// Add all items count for each visible sections and add one for each sections
 		int total = 0;
-		for (Adapter adapter : this.sections.values())
-			total += adapter.getCount() + 1;
+		for (Section section : sections.values()) {
+			if (section.visible) {
+				Adapter adapter = section.adapter;
+				total += adapter.getCount() + 1;
+			}
+		}
 		return total;
 	}
 
 	public int getViewTypeCount() {
-		// Les headers compte pour 1 + tous les autres types
+		// Add all adapter's view type count and add one (for all headers) even if a section is not visible
 		int total = 1;
-		for (Adapter adapter : this.sections.values())
+		for (Section section : sections.values()) {
+			Adapter adapter = section.adapter;
 			total += adapter.getViewTypeCount();
+		}
 		return total;
 	}
 
 	public int getItemViewType(int position) {
 		int result = -1;
 		int type = 1;
-		for (Object section : this.sections.keySet()) {
-			Adapter adapter = sections.get(section);
-			int size = adapter.getCount() + 1;
+		for (Section section : sections.values()) {
+			Adapter adapter = section.adapter;
+			if (section.visible) {
+				int size = adapter.getCount() + 1;
 
-			// VŽrifie si la position est dans la section
-			if (position == 0) {
-				result = TYPE_SECTION_HEADER;
-				break;
-			}
-			if (position < size) {
-				result = type + adapter.getItemViewType(position - 1);
-				break;
-			}
+				// Verify if the position is within a section
+				if (position == 0) {
+					result = TYPE_SECTION_HEADER;
+					break;
+				}
+				if (position < size) {
+					result = type + adapter.getItemViewType(position - 1);
+					break;
+				}
 
-			// Sinon on passe ˆ la prochaine section
-			position -= size;
+				// Otherwise go to the next section
+				position -= size;
+			}
 			type += adapter.getViewTypeCount();
 		}
 		return result;
@@ -117,20 +136,22 @@ public class SectionAdapter extends BaseAdapter {
 		if (getItemViewType(position) == TYPE_SECTION_HEADER) {
 			return false;
 		}
-		for (String header : headers.getHeaders()) {
-			Adapter adapter = sections.get(header);
-			int size = adapter.getCount() + 1;
+		for (Section section : sections.values()) {
+			if (section.visible) {
+				Adapter adapter = section.adapter;
+				int size = adapter.getCount() + 1;
 
-			// VŽrifie si la position est dans la section
-			if (position == 0) return false;
-			if (position < size) {
-				if (adapter instanceof BaseAdapter) {
-					return ((BaseAdapter) adapter).isEnabled(position - 1);
+				// Verify if the position is within a section
+				if (position == 0) return false;
+				if (position < size) {
+					if (adapter instanceof BaseAdapter) {
+						return ((BaseAdapter) adapter).isEnabled(position - 1);
+					}
+					return true;
 				}
-				return true;
+				// Otherwise go to the next section
+				position -= size;
 			}
-			// Sinon on passe ˆ la prochaine section
-			position -= size;
 		}
 		return true;
 	}
@@ -138,17 +159,20 @@ public class SectionAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		int sectionnum = 0;
-		for (String header : headers.getHeaders()) {
-			Adapter adapter = sections.get(header);
+		for (Section section : sections.values()) {
+			if (section.visible) {
+				Adapter adapter = section.adapter;
 
-			int size = adapter.getCount() + 1;
+				int size = adapter.getCount() + 1;
 
-			// VŽrifie si la position est dans la section
-			if (position == 0) return headers.getView(sectionnum, convertView, parent);
-			if (position < size) return adapter.getView(position - 1, convertView, parent);
+				// Verify if the position is within a section
+				if (position == 0) return headers.getView(sectionnum, convertView, parent);
+				if (position < size) return adapter.getView(position - 1, convertView, parent);
 
-			// Sinon on passe ˆ la prochaine section
-			position -= size;
+				// Otherwise go to the next section
+				position -= size;
+
+			}
 			sectionnum++;
 		}
 		return null;

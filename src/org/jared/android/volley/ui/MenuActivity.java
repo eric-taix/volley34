@@ -26,7 +26,7 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
  * @author eric.taix@gmail.com
  */
 @EActivity(R.layout.activity_main)
-public class MenuActivity extends SlidingFragmentActivity implements RefreshableActivity {
+public class MenuActivity extends SlidingFragmentActivity {
 	private Fragment mContent;
 	private boolean landScape = false;
 	@ViewById(R.id.content_frame)
@@ -44,13 +44,11 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 			Bundle args = new Bundle();
 			mContent.setArguments(args);
 		}
-
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 	}
 
 	@AfterViews
 	public void afterViews() {
-		// On vérifie si on est en mode portrait
+		// Verify if we are in portrait or landscape
 		if (findViewById(R.id.menu_frame) == null) {
 			landScape = false;
 			setBehindContentView(R.layout.menu_frame);
@@ -61,18 +59,18 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		}
 		else {
 			landScape = true;
-			// Vue bidon derrière car aucun besoin d'avoir cette vue
+			// Add a fake wiew behind because we don't need it : the sliding menu we be always visible
 			setBehindContentView(new View(this));
 			getSlidingMenu().setSlidingEnabled(false);
 			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 		}
 
-		// On affiche le contenu courant
+		// Display the current content : nothing
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mContent).commit();
-		// On affiche le menu
+		// Display the menu
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment_()).commit();
 
-		// Customisation du SlindingMenu
+		// Customize ht SlidingMenu
 		SlidingMenu sm = getSlidingMenu();
 		sm.setBehindOffsetRes(R.dimen.slidingmenu_offset);
 		sm.setShadowWidthRes(R.dimen.shadow_width);
@@ -82,12 +80,10 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 		sm.setSelectorEnabled(true);
 		sm.setSelectorDrawable(R.drawable.ic_club);
 		setSlidingActionBarEnabled(false);
-		showIndeterminate(false);
 	}
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
 	    	if (!landScape && getSupportFragmentManager().getBackStackEntryCount() == 0) {
 				if (!getSlidingMenu().isMenuShowing()) {
@@ -113,15 +109,6 @@ public class MenuActivity extends SlidingFragmentActivity implements Refreshable
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		getSupportFragmentManager().putFragment(outState, "mContent", mContent);
-	}
-
-	/**
-	 * Méthode permettant d'afficher la progression
-	 * @param visible
-	 */
-	@Override
-	public void showIndeterminate(boolean visible) {
-		setSupportProgressBarIndeterminateVisibility(visible);
 	}
 
 	/**

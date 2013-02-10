@@ -22,6 +22,7 @@ import org.jared.android.volley.ui.adapter.EventAdapter;
 import org.jared.android.volley.ui.adapter.GymnaseAdapter;
 import org.jared.android.volley.ui.adapter.SimpleClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.CollapsableAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
 import org.jared.android.volley.ui.widget.quickaction.Action;
 import org.jared.android.volley.ui.widget.quickaction.ActionItem;
@@ -62,11 +63,20 @@ import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
 @EFragment(value = R.layout.equipe_detail_layout)
 public class EquipeFragment extends Fragment implements OnItemClickListener {
 
+	private static final int ID_SECTION_ADR_CAL = 6;
+	private static final int ID_SECTION_ADR_COUPE = 5;
+	private static final int ID_SECTION_ADR_CHAMP = 4;
+	private static final int ID_SECTION_CTX_COUPE = 3;
+	private static final int ID_SECTION_CTX_CHAMP = 2;
+	private static final int ID_SECTION_CLUB = 1;
+
+	private static final String SECTION_ADRESSE = "GYMNASE";
 	private static final String SECTION_ADRESSE_CHAMPIONNAT = "GYMNASE  CHAMPIONNAT";
 	private static final String SECTION_ADRESSE_COUPE = "GYMNASE  COUPE";
 	private static final String SECTION_CONTACTS_COUPE = "CONTACTS  COUPE";
 	private static final String SECTION_CONTACTS_CHAMPIONNAT = "CONTACTS  CHAMPIONNAT";
-
+	private static final String SECTION_CONTACTS = "CONTACTS";
+	
 	private static final String EXTRA_CODE_EQUIPE = "CODE_EQUIPE";
 
 	public static final int ID_MAIL = 0;
@@ -120,24 +130,24 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
 
 		clubAdapter = new SimpleClubsAdapter(this.getActivity());
-		sectionAdapter.addSection("CLUB", clubAdapter);
+		sectionAdapter.addSection(new Section(ID_SECTION_CLUB, "CLUB", clubAdapter));
 
 		contactChampionnatAdapter = new ContactAdapter(this.getActivity());
 		CollapsableAdapter collapseChampionnatContact = new CollapsableAdapter(this.getActivity(), contactChampionnatAdapter, sectionAdapter, 1);
 		collapseChampionnatContact.setTexts("Tous les contacts", "RŽduire");
-		sectionAdapter.addSection(SECTION_CONTACTS_CHAMPIONNAT, collapseChampionnatContact);
+		sectionAdapter.addSection(new Section(ID_SECTION_CTX_CHAMP, SECTION_CONTACTS_CHAMPIONNAT, collapseChampionnatContact));
 		contactCoupeAdapter = new ContactAdapter(this.getActivity());
 		CollapsableAdapter collapseCoupeContact = new CollapsableAdapter(this.getActivity(), contactCoupeAdapter, sectionAdapter, 1);
 		collapseCoupeContact.setTexts("Tous les contacts", "RŽduire");
-		sectionAdapter.addSection(SECTION_CONTACTS_COUPE, collapseCoupeContact);
+		sectionAdapter.addSection(new Section(ID_SECTION_CTX_COUPE, SECTION_CONTACTS_COUPE, collapseCoupeContact));
 
 		gymnaseChampionnatAdapter = new GymnaseAdapter(this.getActivity());
-		sectionAdapter.addSection(SECTION_ADRESSE_CHAMPIONNAT, gymnaseChampionnatAdapter);
+		sectionAdapter.addSection(new Section(ID_SECTION_ADR_CHAMP, SECTION_ADRESSE_CHAMPIONNAT, gymnaseChampionnatAdapter));
 		gymnaseCoupeAdapter = new GymnaseAdapter(this.getActivity());
-		sectionAdapter.addSection(SECTION_ADRESSE_COUPE, gymnaseCoupeAdapter);
+		sectionAdapter.addSection(new Section(ID_SECTION_ADR_COUPE, SECTION_ADRESSE_COUPE, gymnaseCoupeAdapter));
 
 		eventAdapter = new EventAdapter(this.getActivity());
-		sectionAdapter.addSection("CALENDRIER", eventAdapter);
+		sectionAdapter.addSection(new Section(ID_SECTION_ADR_CAL, "CALENDRIER", eventAdapter));
 
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		// On positionne un divider plus "sympa"
@@ -220,7 +230,7 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 	void updateUI(String codeEquipe) {
 		progressBar.setVisibility(View.GONE);
 		maj.setText(VolleyDatabaseHelper.getLastUpdate(updateDao, "EQUIPE-" + codeEquipe));
-		
+
 		try {
 			currentEquipe = equipeDao.queryForId(codeEquipe);
 			if (currentEquipe != null) {
@@ -253,39 +263,66 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 		try {
 			ed = equipeDetailDao.queryForId(codeEquipe);
 			if (ed != null) {
+				//-------- Contacts
+				boolean showContactChamp = false;
 				contactChampionnatAdapter.clear();
 				if (!ed.contactRespChampionnat.isEmpty()) {
 					contactChampionnatAdapter.addContact(ed.contactRespChampionnat);
+					showContactChamp = true;
 				}
 				if (!ed.contactSupplChampionnat.isEmpty()) {
 					contactChampionnatAdapter.addContact(ed.contactSupplChampionnat);
+					showContactChamp = true;
 				}
+				boolean showContactCoupe = false;
 				contactCoupeAdapter.clear();
 				if (!ed.contactRespCoupe.isEmpty()) {
 					contactCoupeAdapter.addContact(ed.contactRespCoupe);
+					showContactCoupe = true;
 				}
 				if (!ed.contactSupplCoupe.isEmpty()) {
 					contactCoupeAdapter.addContact(ed.contactSupplCoupe);
+					showContactCoupe = true;
 				}
+				// If both contacts between championship and the cup are equals then change the title and hide one
+				String title = SECTION_CONTACTS_CHAMPIONNAT;
+				if (ed.contactRespChampionnat.equals(ed.contactRespCoupe) && ed.contactSupplChampionnat.equals(ed.contactSupplCoupe)) {
+					title = SECTION_CONTACTS;
+					showContactCoupe = false;
+				}
+				
+				sectionAdapter.renameSection(ID_SECTION_CTX_CHAMP, title);
+				sectionAdapter.setSectionVisibility(ID_SECTION_CTX_CHAMP, showContactChamp);
+				sectionAdapter.setSectionVisibility(ID_SECTION_CTX_COUPE, showContactCoupe);
+
+
+				//---------- Gymnasium
+				
 				if (!ed.gymnaseChampionnat.isEmpty()) {
 					gymnaseChampionnatAdapter.setGymnase(ed.gymnaseChampionnat);
+
 				}
 				if (!ed.gymnaseCoupe.isEmpty()) {
 					gymnaseCoupeAdapter.setGymnase(ed.gymnaseCoupe);
+
+				}
+
+				// If both gymnasium are equal then only display one and change its title
+				if (ed.gymnaseChampionnat.equals(ed.gymnaseCoupe)) {
+					sectionAdapter.renameSection(ID_SECTION_ADR_CHAMP, SECTION_ADRESSE);
+					sectionAdapter.setSectionVisibility(ID_SECTION_ADR_COUPE, false);
+				}
+				else {
+					sectionAdapter.renameSection(ID_SECTION_ADR_CHAMP, SECTION_ADRESSE_CHAMPIONNAT);
+					sectionAdapter.setSectionVisibility(ID_SECTION_ADR_COUPE, true);
 				}
 
 				// Remove all adapters which are not used
-				if (contactChampionnatAdapter.getCount() == 0) {
-					sectionAdapter.removeSection(SECTION_CONTACTS_CHAMPIONNAT);
-				}
-				if (contactCoupeAdapter.getCount() == 0) {
-					sectionAdapter.removeSection(SECTION_CONTACTS_COUPE);
-				}
 				if (gymnaseChampionnatAdapter.getCount() == 0) {
-					sectionAdapter.removeSection(SECTION_ADRESSE_CHAMPIONNAT);
+					sectionAdapter.setSectionVisibility(ID_SECTION_ADR_CHAMP, false);
 				}
 				if (gymnaseCoupeAdapter.getCount() == 0) {
-					sectionAdapter.removeSection(SECTION_ADRESSE_COUPE);
+					sectionAdapter.setSectionVisibility(ID_SECTION_ADR_COUPE, false);
 				}
 			}
 		}
@@ -310,7 +347,6 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 			Log.e("Volley34", "Error while retrieving events from DB for team " + codeEquipe, e);
 		}
 	}
-
 
 	// ----------------------------- Network updates ----------------------------
 
