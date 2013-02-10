@@ -11,13 +11,10 @@ import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Club;
 import org.jared.android.volley.model.ClubListResponse;
-import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
-import org.jared.android.volley.ui.fragment.ClubFragment_;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,15 +58,7 @@ public class ClubsFragment extends ContentFragment {
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-		MenuActivity activity = (MenuActivity)this.getActivity();
-		// Set the argument
-		Bundle extras = new Bundle();
-		extras.putParcelable(ClubFragment.EXTRA_CLUB, (Club) sectionAdapter.getItem(position));
-		// Create the fragment the switch the current content
-		ClubFragment_ fragment = new ClubFragment_();
-		fragment.setArguments(extras);
-		activity.switchContent(null, fragment);
-	
+		ClubFragment.showClub(this, ((Club) sectionAdapter.getItem(position)).code, 0);
 	}
 
 	/*

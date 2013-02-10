@@ -41,22 +41,22 @@ public final class EquipeFragment_
         application = ((VolleyApplication) getActivity().getApplication());
         connectionSource_ = OpenHelperManager.getHelper(getActivity(), VolleyDatabaseHelper.class).getConnectionSource();
         try {
-            updateDao = DaoManager.createDao(connectionSource_, Update.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
             eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
-            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
+            equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
         try {
-            equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+        } catch (SQLException e) {
+            Log.e("EquipeFragment_", "Could not create DAO", e);
+        }
+        try {
+            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
         } catch (SQLException e) {
             Log.e("EquipeFragment_", "Could not create DAO", e);
         }
@@ -70,8 +70,8 @@ public final class EquipeFragment_
 
     private void afterSetContentView_() {
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         {

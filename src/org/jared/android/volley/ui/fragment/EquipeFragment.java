@@ -375,15 +375,10 @@ public class EquipeFragment extends Fragment implements OnItemClickListener {
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// Le site Web
-		if (position == 1) {
-		}
-		// Le contact
-		else if (position == 3) {
-		}
-		// Une des Žquipes
-		else {
-
+		Object obj = parent.getAdapter().getItem(position);
+		// Show the detail of a team
+		if (obj instanceof ClubInformation) {
+			ClubFragment.showClub(this, ((ClubInformation) obj).code, 0);
 		}
 	}
 
