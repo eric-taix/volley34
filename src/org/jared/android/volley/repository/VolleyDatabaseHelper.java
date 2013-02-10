@@ -88,7 +88,7 @@ public class VolleyDatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Date dateMaj =  (update != null && update.dateTime != null ? update.dateTime : null);
 			if (dateMaj != null) {
 				return DateUtils.getRelativeTimeSpanString(dateMaj.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-						DateUtils.FORMAT_NUMERIC_DATE).toString();
+						DateUtils.FORMAT_ABBREV_RELATIVE).toString();
 			}
 			else {
 				return "";
@@ -97,7 +97,7 @@ public class VolleyDatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		catch (SQLException e) {
 			Log.e("Volley34", "Error while retreiving last updates for code "+code);
-			return null;
+			return "";
 		}
 	}
 	

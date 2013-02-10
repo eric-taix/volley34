@@ -24,8 +24,8 @@ import org.jared.android.volley.VolleyApplication;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
 
-public final class ContentFragment_
-    extends ContentFragment
+public final class DefaultFragment_
+    extends DefaultFragment
 {
 
     private View contentView_;
@@ -38,7 +38,7 @@ public final class ContentFragment_
         try {
             updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
-            Log.e("ContentFragment_", "Could not create DAO", e);
+            Log.e("DefaultFragment_", "Could not create DAO", e);
         }
     }
 
@@ -49,10 +49,10 @@ public final class ContentFragment_
     }
 
     private void afterSetContentView_() {
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
-        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
+        title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
         afterViews();
     }
 
@@ -73,21 +73,21 @@ public final class ContentFragment_
         return contentView_.findViewById(id);
     }
 
-    public static ContentFragment_.FragmentBuilder_ builder() {
-        return new ContentFragment_.FragmentBuilder_();
+    public static DefaultFragment_.FragmentBuilder_ builder() {
+        return new DefaultFragment_.FragmentBuilder_();
     }
 
     @Override
-    public void updateUI() {
+    public void updateUIAsync() {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ContentFragment_.super.updateUI();
+                    DefaultFragment_.super.updateUIAsync();
                 } catch (RuntimeException e) {
-                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("DefaultFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -103,9 +103,9 @@ public final class ContentFragment_
             @Override
             public void run() {
                 try {
-                    ContentFragment_.super.updateFromNetWork();
+                    DefaultFragment_.super.updateFromNetWork();
                 } catch (RuntimeException e) {
-                    Log.e("ContentFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("DefaultFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -121,8 +121,8 @@ public final class ContentFragment_
             args_ = new Bundle();
         }
 
-        public ContentFragment build() {
-            ContentFragment_ fragment_ = new ContentFragment_();
+        public DefaultFragment build() {
+            DefaultFragment_ fragment_ = new DefaultFragment_();
             fragment_.setArguments(args_);
             return fragment_;
         }

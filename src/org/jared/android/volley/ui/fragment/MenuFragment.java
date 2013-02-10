@@ -6,12 +6,6 @@ import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.commons.MenuAdapter;
 import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
-import org.jared.android.volley.ui.fragment.provider.ChampionnatFragmentProvider;
-import org.jared.android.volley.ui.fragment.provider.ClubsFragmentProvider;
-import org.jared.android.volley.ui.fragment.provider.CoupeFragmentProvider;
-import org.jared.android.volley.ui.fragment.provider.DefaultFragmentProvider;
-import org.jared.android.volley.ui.fragment.provider.EquipesFragmentProvider;
-import org.jared.android.volley.ui.fragment.provider.FavorisFragmentProvider;
 
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
@@ -55,36 +49,28 @@ public class MenuFragment extends ListFragment {
 		Bundle args = new Bundle();
 		switch(position) {
 		case 1:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new FavorisFragmentProvider());
+			newContent = new FavorisFragment_();
 			break;
 		case 2:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new ChampionnatFragmentProvider());
+			newContent = new ChampionnatFragment_();
 			break;
 		case 3:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new CoupeFragmentProvider());
+			newContent = new CoupeFragment_();
 			break;
 		case 4:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new EquipesFragmentProvider());
+			newContent = new EquipesFragment_();
 			break;
 		case 5:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new ClubsFragmentProvider());
+			newContent = new ClubsFragment_();
 			break;
 		case 6:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
+			newContent = new DefaultFragment_();
 			break;
 		case 7:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
+			newContent = new DefaultFragment_();
 			break;
-		default:
-			newContent = new ContentFragment_();
-			((ContentFragment)newContent).setProvider(new DefaultFragmentProvider());
+		default: 
+			newContent = new DefaultFragment_();
 		}
 		newContent.setArguments(args);
 		if (newContent != null) switchFragment(v, newContent);

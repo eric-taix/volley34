@@ -41,12 +41,12 @@ public final class ClubFragment_
         application = ((VolleyApplication) getActivity().getApplication());
         connectionSource_ = OpenHelperManager.getHelper(getActivity(), VolleyDatabaseHelper.class).getConnectionSource();
         try {
-            clubDao = DaoManager.createDao(connectionSource_, Club.class);
+            updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
             Log.e("ClubFragment_", "Could not create DAO", e);
         }
         try {
-            updateDao = DaoManager.createDao(connectionSource_, Update.class);
+            eventDao = DaoManager.createDao(connectionSource_, Event.class);
         } catch (SQLException e) {
             Log.e("ClubFragment_", "Could not create DAO", e);
         }
@@ -56,7 +56,7 @@ public final class ClubFragment_
             Log.e("ClubFragment_", "Could not create DAO", e);
         }
         try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
+            clubDao = DaoManager.createDao(connectionSource_, Club.class);
         } catch (SQLException e) {
             Log.e("ClubFragment_", "Could not create DAO", e);
         }
@@ -69,12 +69,12 @@ public final class ClubFragment_
     }
 
     private void afterSetContentView_() {
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
         progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
-        logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
-        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
+        maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
+        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
+        logo = ((ImageView) findViewById(org.jared.android.volley.R.id.logo));
         {
             View view = findViewById(org.jared.android.volley.R.id.favorite);
             if (view!= null) {
@@ -133,14 +133,14 @@ public final class ClubFragment_
     }
 
     @Override
-    public void updateClub(final Club clubToUpdate) {
+    public void updateFromNetwork() {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubFragment_.super.updateClub(clubToUpdate);
+                    ClubFragment_.super.updateFromNetwork();
                 } catch (RuntimeException e) {
                     Log.e("ClubFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -151,14 +151,14 @@ public final class ClubFragment_
     }
 
     @Override
-    public void updateFromNetwork() {
+    public void updateClub(final Club clubToUpdate) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ClubFragment_.super.updateFromNetwork();
+                    ClubFragment_.super.updateClub(clubToUpdate);
                 } catch (RuntimeException e) {
                     Log.e("ClubFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

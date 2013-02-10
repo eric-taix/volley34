@@ -11,9 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,14 +21,11 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import org.jared.android.volley.R.layout;
 import org.jared.android.volley.VolleyApplication;
-import org.jared.android.volley.model.Equipe;
-import org.jared.android.volley.model.EquipeDetail;
-import org.jared.android.volley.model.Event;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
 
-public final class EquipeFragment_
-    extends EquipeFragment
+public final class ChampionnatFragment_
+    extends ChampionnatFragment
 {
 
     private View contentView_;
@@ -43,22 +38,7 @@ public final class EquipeFragment_
         try {
             updateDao = DaoManager.createDao(connectionSource_, Update.class);
         } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
-            eventDao = DaoManager.createDao(connectionSource_, Event.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
-            equipeDao = DaoManager.createDao(connectionSource_, Equipe.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
-        }
-        try {
-            equipeDetailDao = DaoManager.createDao(connectionSource_, EquipeDetail.class);
-        } catch (SQLException e) {
-            Log.e("EquipeFragment_", "Could not create DAO", e);
+            Log.e("ChampionnatFragment_", "Could not create DAO", e);
         }
     }
 
@@ -70,25 +50,9 @@ public final class EquipeFragment_
 
     private void afterSetContentView_() {
         maj = ((TextView) findViewById(org.jared.android.volley.R.id.maj));
-        favorite = ((ImageView) findViewById(org.jared.android.volley.R.id.favorite));
-        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
         title = ((TextView) findViewById(org.jared.android.volley.R.id.title));
-        listView = ((ListView) findViewById(org.jared.android.volley.R.id.listView));
-        {
-            View view = findViewById(org.jared.android.volley.R.id.favorite);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        EquipeFragment_.this.favoriteClicked();
-                    }
-
-                }
-                );
-            }
-        }
+        progressBar = ((ProgressBar) findViewById(org.jared.android.volley.R.id.progressBar));
+        listView = ((ListView) findViewById(org.jared.android.volley.R.id.list));
         afterViews();
     }
 
@@ -96,7 +60,7 @@ public final class EquipeFragment_
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView_ = super.onCreateView(inflater, container, savedInstanceState);
         if (contentView_ == null) {
-            contentView_ = inflater.inflate(layout.equipe_detail_layout, container, false);
+            contentView_ = inflater.inflate(layout.list_layout, container, false);
         }
         afterSetContentView_();
         return contentView_;
@@ -109,21 +73,21 @@ public final class EquipeFragment_
         return contentView_.findViewById(id);
     }
 
-    public static EquipeFragment_.FragmentBuilder_ builder() {
-        return new EquipeFragment_.FragmentBuilder_();
+    public static ChampionnatFragment_.FragmentBuilder_ builder() {
+        return new ChampionnatFragment_.FragmentBuilder_();
     }
 
     @Override
-    public void updateUIAsync(final String codeEquipe) {
+    public void updateUIAsync() {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeFragment_.super.updateUIAsync(codeEquipe);
+                    ChampionnatFragment_.super.updateUIAsync();
                 } catch (RuntimeException e) {
-                    Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("ChampionnatFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -132,16 +96,16 @@ public final class EquipeFragment_
     }
 
     @Override
-    public void updateFromNetwork(final String codeEquipe) {
+    public void updateFromNetWork() {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    EquipeFragment_.super.updateFromNetwork(codeEquipe);
+                    ChampionnatFragment_.super.updateFromNetWork();
                 } catch (RuntimeException e) {
-                    Log.e("EquipeFragment_", "A runtime exception was thrown while executing code in a runnable", e);
+                    Log.e("ChampionnatFragment_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
             }
 
@@ -157,8 +121,8 @@ public final class EquipeFragment_
             args_ = new Bundle();
         }
 
-        public EquipeFragment build() {
-            EquipeFragment_ fragment_ = new EquipeFragment_();
+        public ChampionnatFragment build() {
+            ChampionnatFragment_ fragment_ = new ChampionnatFragment_();
             fragment_.setArguments(args_);
             return fragment_;
         }

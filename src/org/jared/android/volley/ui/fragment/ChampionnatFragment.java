@@ -1,9 +1,15 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment.provider;
+package org.jared.android.volley.ui.fragment;
 
+import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
+import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
+import org.jared.android.volley.ui.adapter.commons.Section;
+import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
+
+import com.googlecode.androidannotations.annotations.EFragment;
 
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,14 +19,15 @@ import android.widget.ListAdapter;
  * Fragment pour les favoris
  * @author eric.taix@gmail.com
  */
-public class FavorisFragmentProvider extends BaseFragmentProvider {
+@EFragment(R.layout.list_layout)
+public class ChampionnatFragment extends ContentFragment {
 
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getCode()
 	 */
 	@Override
 	public String getCode() {
-		return "FAVORIS";
+		return "CHAMPIONNAT";
 	}
 
 	/* (non-Javadoc)
@@ -28,9 +35,9 @@ public class FavorisFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public String getTitle() {
-		return "Favoris";
+		return "Championnat";
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
 	 */
@@ -43,8 +50,14 @@ public class FavorisFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public ListAdapter getListAdapter() {
-		return null;
+		SectionAdapter sectionAdapter = new SectionAdapter(this.getActivity(),  R.layout.list_header);
+		MenuClubsAdapter allAdapter = new MenuClubsAdapter(this.getActivity());
+		MenuClubsAdapter favoriteAdapter = new MenuClubsAdapter(this.getActivity());
+		sectionAdapter.addSection(new Section(1,"FAVORIS", favoriteAdapter));
+		sectionAdapter.addSection(new Section(2,"TOUS", allAdapter));
+		return sectionAdapter;
 	}
+
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#doUpdateUI(org.jared.android.volley.repository.VolleyDatabase)
 	 */

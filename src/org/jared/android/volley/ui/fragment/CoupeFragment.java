@@ -1,9 +1,12 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment.provider;
+package org.jared.android.volley.ui.fragment;
 
+import org.jared.android.volley.R;
 import org.jared.android.volley.http.RestClient;
+
+import com.googlecode.androidannotations.annotations.EFragment;
 
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,14 +16,15 @@ import android.widget.ListAdapter;
  * Fragment pour les favoris
  * @author eric.taix@gmail.com
  */
-public class DefaultFragmentProvider extends BaseFragmentProvider {
+@EFragment(R.layout.list_layout)
+public class CoupeFragment extends ContentFragment {
 
 	/* (non-Javadoc)
 	 * @see org.jared.android.volley.ui.fragment.MenuBaseFragment#getCode()
 	 */
 	@Override
 	public String getCode() {
-		return "DEFAULTS";
+		return "COUPE";
 	}
 
 	/* (non-Javadoc)
@@ -28,7 +32,7 @@ public class DefaultFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public String getTitle() {
-		return "Non disponible";
+		return "Coupe";
 	}
 	
 	/* (non-Javadoc)

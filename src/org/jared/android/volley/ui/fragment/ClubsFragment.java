@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.jared.android.volley.ui.fragment.provider;
+package org.jared.android.volley.ui.fragment;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +15,6 @@ import org.jared.android.volley.ui.MenuActivity;
 import org.jared.android.volley.ui.adapter.MenuClubsAdapter;
 import org.jared.android.volley.ui.adapter.commons.Section;
 import org.jared.android.volley.ui.adapter.commons.SectionAdapter;
-import org.jared.android.volley.ui.fragment.ClubFragment;
 import org.jared.android.volley.ui.fragment.ClubFragment_;
 
 import android.os.Bundle;
@@ -24,13 +23,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
+import com.googlecode.androidannotations.annotations.EFragment;
 import com.j256.ormlite.dao.Dao;
 
 /**
  * Fragment for the clubs list
  * @author eric.taix@gmail.com
  */
-public class ClubsFragmentProvider extends BaseFragmentProvider {
+@EFragment(R.layout.list_layout)
+public class ClubsFragment extends ContentFragment {
 
 	private SectionAdapter sectionAdapter;
 	private MenuClubsAdapter allAdapter;
@@ -60,7 +61,7 @@ public class ClubsFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-		MenuActivity activity = (MenuActivity)fragment.getActivity();
+		MenuActivity activity = (MenuActivity)this.getActivity();
 		// Set the argument
 		Bundle extras = new Bundle();
 		extras.putParcelable(ClubFragment.EXTRA_CLUB, (Club) sectionAdapter.getItem(position));
@@ -77,9 +78,9 @@ public class ClubsFragmentProvider extends BaseFragmentProvider {
 	 */
 	@Override
 	public ListAdapter getListAdapter() {
-		sectionAdapter = new SectionAdapter(fragment.getActivity(), R.layout.list_header);
-		allAdapter = new MenuClubsAdapter(fragment.getActivity());
-		favoriteAdapter = new MenuClubsAdapter(fragment.getActivity());
+		sectionAdapter = new SectionAdapter(this.getActivity(), R.layout.list_header);
+		allAdapter = new MenuClubsAdapter(this.getActivity());
+		favoriteAdapter = new MenuClubsAdapter(this.getActivity());
 		sectionAdapter.addSection(new Section(1,"FAVORIS", favoriteAdapter));
 		sectionAdapter.addSection(new Section(2,"TOUS", allAdapter));
 		return sectionAdapter;

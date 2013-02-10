@@ -1,9 +1,8 @@
 package org.jared.android.volley.ui;
 
 import org.jared.android.volley.R;
-import org.jared.android.volley.ui.fragment.ContentFragment_;
+import org.jared.android.volley.ui.fragment.FavorisFragment_;
 import org.jared.android.volley.ui.fragment.MenuFragment_;
-import org.jared.android.volley.ui.fragment.provider.ChampionnatFragmentProvider;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import com.slidingmenu.lib.app.SlidingFragmentActivity;
  */
 @EActivity(R.layout.activity_main)
 public class MenuActivity extends SlidingFragmentActivity {
-	private Fragment mContent;
 	private boolean landScape = false;
 	@ViewById(R.id.content_frame)
 	View content;
@@ -35,14 +33,6 @@ public class MenuActivity extends SlidingFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.main_title);
-
-		// Si il n'y a rien on affiche le fragment par défaut (le championnat)
-		if (mContent == null) {
-			mContent = new ContentFragment_();
-			((ContentFragment_) mContent).setProvider(new ChampionnatFragmentProvider());
-			Bundle args = new Bundle();
-			mContent.setArguments(args);
-		}
 	}
 
 	@AfterViews
@@ -65,7 +55,7 @@ public class MenuActivity extends SlidingFragmentActivity {
 		}
 
 		// Display the current content : nothing
-		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mContent).commit();
+		switchContent(null, new FavorisFragment_());
 		// Display the menu
 		getSupportFragmentManager().beginTransaction().replace(R.id.menu_frame, new MenuFragment_()).commit();
 
@@ -107,7 +97,6 @@ public class MenuActivity extends SlidingFragmentActivity {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState, "mContent", mContent);
 	}
 
 	/**
@@ -115,19 +104,12 @@ public class MenuActivity extends SlidingFragmentActivity {
 	 * @param fragment
 	 */
 	public void switchContent(View source, final Fragment fragment) {
-		mContent = fragment;
-		// Animation.fadeOut(content, 200);
 		// Execute the transaction,
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		// ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-		// ft.setCustomAnimations(
-		// R.anim.card_flip_right_in, R.anim.card_flip_right_out,
-		// R.anim.card_flip_left_in, R.anim.card_flip_left_out);
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.replace(R.id.content_frame, fragment);
 		ft.addToBackStack("");
 		ft.commit();
-		// Animation.fadeIn(content, 1000);
 
 		Handler h = new Handler();
 		h.postDelayed(new Runnable() {

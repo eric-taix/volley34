@@ -3,22 +3,20 @@
  */
 package org.jared.android.volley.ui.fragment;
 
-import java.sql.SQLException;
-import java.util.Date;
-
 import org.jared.android.volley.R;
 import org.jared.android.volley.VolleyApplication;
+import org.jared.android.volley.http.RestClient;
 import org.jared.android.volley.model.Update;
 import org.jared.android.volley.repository.VolleyDatabaseHelper;
-import org.jared.android.volley.ui.fragment.provider.ContentFragmentProvider;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +28,7 @@ import com.googlecode.androidannotations.annotations.EFragment;
 import com.googlecode.androidannotations.annotations.OrmLiteDao;
 import com.googlecode.androidannotations.annotations.UiThread;
 import com.googlecode.androidannotations.annotations.ViewById;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
 /**
@@ -39,7 +38,7 @@ import com.j256.ormlite.dao.Dao;
  * @author eric.taix@gmail.com
  */
 @EFragment(R.layout.list_layout)
-public class ContentFragment extends Fragment {
+public abstract class ContentFragment extends Fragment implements OnItemClickListener {
 
 	@ViewById(R.id.list)
 	ListView listView;
@@ -51,23 +50,22 @@ public class ContentFragment extends Fragment {
 	TextView title;
 	@App
 	VolleyApplication application;
-	private ContentFragmentProvider provider;
+	private VolleyDatabaseHelper databaseHelper = null;
 
 	@OrmLiteDao(helper = VolleyDatabaseHelper.class, model = Update.class)
 	Dao<Update, String> updateDao;
 
 	@AfterViews
 	public void afterViews() {
-		this.provider.init(this);
-		title.setText(provider.getTitle());
+		title.setText(getTitle());
 
 		// Set a better L&F for the divider
 		listView.setCacheColorHint(getResources().getColor(R.color.transparent));
 		int[] colors = { 0, 0xFF777777, 0 };
 		listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
 		listView.setDividerHeight(0);
-		listView.setAdapter(provider.getListAdapter());
-		listView.setOnItemClickListener(provider);
+		listView.setAdapter(getListAdapter());
+		listView.setOnItemClickListener(this);
 		progressBar.setVisibility(View.VISIBLE);
 		updateUI();
 		// In the background, request the network
@@ -85,36 +83,29 @@ public class ContentFragment extends Fragment {
 	}
 
 	/**
-	 * Set the provider
-	 * 
-	 * @param provider
-	 */
-	public void setProvider(ContentFragmentProvider provider) {
-		this.provider = provider;
-	}
-
-	/**
 	 * Update datas : request the server
 	 */
 	@Background
 	void updateFromNetWork() {
 		try {
-			Object result = provider.doGetFromNetwork(application.restClient);
-			provider.doSaveToDatabase(result);
-			Update update = updateDao.queryForId(provider.getCode());
-			if (update == null) {
-				update = new Update();
-			}
-			update.dateTime = new Date();
-			updateDao.createOrUpdate(update);
-			updateUI();
+			Object result = doGetFromNetwork(application.restClient);
+			doSaveToDatabase(result);
+			VolleyDatabaseHelper.updateLastUpdate(updateDao, getCode());
+			updateUIAsync();
 		}
 		catch (Exception e) {
 			Log.e("Volley34", "Error while updating values from network", e);
 		}
-		finally {
-			updateUI();
-		}
+	}
+
+	/**
+	 * Update the UI in a thread
+	 * 
+	 * @param clubs
+	 */
+	@UiThread
+	void updateUIAsync() {
+		updateUI();
 	}
 
 	/**
@@ -122,27 +113,59 @@ public class ContentFragment extends Fragment {
 	 * 
 	 * @param clubs
 	 */
-	@UiThread
 	void updateUI() {
-		Update update;
-		try {
-			update = updateDao.queryForId(provider.getCode());
-			if (update != null && update.dateTime != null) {
-				maj.setText(DateUtils.getRelativeTimeSpanString(update.dateTime.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
-						DateUtils.FORMAT_NUMERIC_DATE));
-			}
-			else {
-				maj.setText("");
-			}
-			// Udpate concrete ui
-			provider.doUpdateUI();
-		}
-		catch (SQLException e) {
-			Log.e("Volley34", "Error while updating last update informations from DB", e);
-			maj.setText("");
-		}
-		finally {
-			progressBar.setVisibility(View.GONE);
-		}
+		progressBar.setVisibility(View.GONE);
+		maj.setText(VolleyDatabaseHelper.getLastUpdate(updateDao, getCode()));
+		// Udpate concrete ui
+		doUpdateUI();
+
 	}
+
+	/**
+	 * Retrieve the DatabaseHelper and create it if needed (can not be injected by AA)
+	 */
+	protected VolleyDatabaseHelper getHelper() {
+		if (databaseHelper == null) {
+			databaseHelper = OpenHelperManager.getHelper(this.getActivity(), VolleyDatabaseHelper.class);
+		}
+		return databaseHelper;
+	}
+
+	/**
+	 * Returns the adapter for the ListView
+	 * @return
+	 */
+	public abstract ListAdapter getListAdapter();
+
+	/**
+	 * Returns a unique code for the update DB table
+	 * @return
+	 */
+	public abstract String getCode();
+
+	/**
+	 * Returns the title
+	 * @return
+	 */
+	public abstract String getTitle();
+
+	/**
+	 * Update the UI according to the data stored in the DataBase
+	 * @param db
+	 */
+	public abstract void doUpdateUI();
+
+	/**
+	 * Retrieve datas from the server
+	 * @param client
+	 * @return
+	 */
+	public abstract Object doGetFromNetwork(RestClient client);
+
+	/**
+	 * Save data to the Database
+	 * @param oject
+	 * @param db
+	 */
+	public abstract void doSaveToDatabase(Object oject);
 }
